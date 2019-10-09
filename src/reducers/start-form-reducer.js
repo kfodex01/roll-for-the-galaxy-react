@@ -5,8 +5,6 @@ const initialState = {
 };
 
 const doTheThing = (state, data) => {
-    console.log('state', state);
-    
     return (
         {
             ...state,

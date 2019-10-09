@@ -7,8 +7,8 @@ class Game extends React.Component {
     render() {
         return (
             <>
-                <p>{this.props.startForm.message}</p>
-                <button onClick={this.props.actions.doTheThing}>{'Thing'}</button>
+                <p data-testid='message'>{this.props.startForm.message}</p>
+                <button data-testid='button' onClick={this.props.actions.doTheThing}>{'Thing'}</button>
             </>
         )
     }
