@@ -1,12 +1,12 @@
 import React from 'react';
-import Start from "./components/Start";
+import Start from "./components/Game";
 import {Provider} from "react-redux";
-import store from "./store.js";
+import {initializeStore} from "./store.js";
 
 class App extends React.Component {
     render() {
         return (
-            <Provider store={store}>
+            <Provider store={initializeStore()}>
                 <Start/>
             </Provider>
         );

@@ -1,11 +1,10 @@
 import React from 'react';
 import {render} from '@testing-library/react';
-import App from "../src/App.js";
 
-describe('App loads correctly', () => {
-
+describe('canary', () => {
     it('should work', () => {
-        const rendered = render(<App />);
+        const rendered = render(<div />);
+
 
     });
 });

@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import * as ActionCreators from '../action-creators/index.js'
 import {bindActionCreators} from "redux";
 
-class Start extends React.Component {
+class Game extends React.Component {
     render() {
         return (
             <>
@@ -19,4 +19,4 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = (dispatch) => ({actions: bindActionCreators(ActionCreators, dispatch)});
 
-export default connect(mapStateToProps, mapDispatchToProps, null)(Start);
+export default connect(mapStateToProps, mapDispatchToProps, null)(Game);
