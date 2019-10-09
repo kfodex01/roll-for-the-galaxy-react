@@ -1,17 +1,16 @@
 import React from 'react';
-import { Route, Router, Switch } from 'react-router-dom';
 import Start from "./components/Start";
+import {Provider} from "react-redux";
+import store from "./store.js";
 
-const { createBrowserHistory } = require('history');
-
-const App = () => {
-    return (
-        <Router history={createBrowserHistory()}>
-            <Switch>
-                <Route path="/start" component={Start} />
-            </Switch>
-        </Router>
-    );
+class App extends React.Component {
+    render() {
+        return (
+            <Provider store={store}>
+                <Start/>
+            </Provider>
+        );
+    }
 };
 
 export default App;
