@@ -1,20 +1,20 @@
-import {DO_THE_THING} from '../action-types.js';
+import {CREATE_PLAYERS} from '../action-types.js';
 
 const initialState = {
-    message: 'Hi'
+    players: []
 };
 
-const doTheThing = (state, data) => {
+const createPlayers = (state, data) => {
     return (
         {
             ...state,
-            message: data
+            players: data
         }
     )
 };
 
 const reducerMap = {
-    [DO_THE_THING]: doTheThing
+    [CREATE_PLAYERS]: createPlayers
 };
 
 export default (state = initialState, {type, data}) => {

@@ -2,20 +2,21 @@ import React from "react";
 import {connect} from "react-redux";
 import * as ActionCreators from '../action-creators/index.js'
 import {bindActionCreators} from "redux";
+import StartForm from "./StartForm";
 
 class Game extends React.Component {
     render() {
         return (
             <>
-                <p data-testid='message'>{this.props.startForm.message}</p>
-                <button data-testid='button' onClick={this.props.actions.doTheThing}>{'Thing'}</button>
+                {this.props.beginGameForm.visibility === true ?
+                    (<StartForm {...this.props} />) : null}
             </>
         )
     }
 }
 
 const mapStateToProps = state => {
-    return({startForm: state.startForm})
+    return ({beginGameForm: state.beginGameForm})
 };
 const mapDispatchToProps = (dispatch) => ({actions: bindActionCreators(ActionCreators, dispatch)});
 
