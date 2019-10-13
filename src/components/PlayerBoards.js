@@ -2,7 +2,8 @@ import React from "react";
 import {faSatellite, faGlobe, faMoneyCheckAlt} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import styled from 'styled-components';
-import {phases, tileTypes} from "../enums";
+import {phases, tileTypes, gameColors} from "../enums";
+import Dice from "./Dice";
 
 const FlexColumnDiv = styled.div`
   display: flex;
@@ -12,7 +13,7 @@ const FlexColumnDiv = styled.div`
 const PlayerColumnDiv = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: #dddddd;
+  background-color: #ededed;
   margin: 3px;
 `;
 
@@ -29,27 +30,27 @@ const BigText = styled.p`
 `;
 
 const BlueWorld = styled(FontAwesomeIcon)`
-  color: #00aadd;
+  color: ${gameColors.BLUE};
 `;
 
 const BrownWorld = styled(FontAwesomeIcon)`
-  color: #8b4513;
+  color: ${gameColors.BROWN};
 `;
 
 const Development = styled(FontAwesomeIcon)`
-  color: #000000;
+  color: ${gameColors.BLACK};
 `;
 
 const GrayWorld = styled(FontAwesomeIcon)`
-  color: #808080;
+  color: ${gameColors.GRAY};
 `;
 
 const GreenWorld = styled(FontAwesomeIcon)`
-  color: #008000;
+  color: ${gameColors.GREEN};
 `;
 
 const YellowWorld = styled(FontAwesomeIcon)`
-  color: #dddd00;
+  color: ${gameColors.YELLOW};
 `;
 
 const getCorrectIcon = (tile) => {
@@ -72,10 +73,10 @@ const getCorrectIcon = (tile) => {
 };
 
 const displayPowers = (phasePowers) => {
-    let powerList = [], id = 0;
+    let powerList = [];
     for (let phase in phases) {
         if(phasePowers[phases[phase]].length > 0){
-            powerList.push(phasePowers[phases[phase]].map((phasePower) => {
+            powerList.push(phasePowers[phases[phase]].map((phasePower, id = 0) => {
                 id++;
                 return (<p key={id}>{phases[phase]}: {phasePower}</p>);
             }));
@@ -93,6 +94,7 @@ const PlayerBoards = (props) => {
                             <FlexRowDiv>
                                 <FontAwesomeIcon icon={faMoneyCheckAlt} size='2x'/>
                                 <BigText>{player.credits}</BigText>
+                                <Dice />
                             </FlexRowDiv>
                             <FlexRowDiv>
                                 {player.tiles.map((tile) => {

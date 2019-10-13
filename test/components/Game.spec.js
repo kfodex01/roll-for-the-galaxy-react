@@ -239,6 +239,94 @@ describe('Game', () => {
                 expect(playerBoard.children[1].children[1].textContent).toBe('The Last of the Gnarssh');
                 expect(playerBoard.children[2].textContent).toBe('Produce: +$2 for each good represented by a Genes (green) die at the end of this phase.');
             });
+
+            it('should add Galactic Religion and Pilgrimage World to tableau', () => {
+                const {queryByTestId} = renderWithRedux(<Game/>, {
+                    initialState: {
+                        beginGameForm: {visibility: true},
+                        game: {
+                            ...initialGameState,
+                            factionTiles: initialGameState.factionTiles.filter(tile => tile.tileId === 6)
+                        }
+                    }
+                });
+                const buttonsDiv = queryByTestId('begin-game-form-number-buttons-div');
+                const playerOneButton = buttonsDiv.children[0];
+
+                fireEvent.click(playerOneButton);
+
+                const playerBoard = queryByTestId('player-boards').children[0];
+                expect(playerBoard.children.length).toBeGreaterThan(1);
+                expect(playerBoard.children[1].children[0].textContent).toBe('Galactic Religion');
+                expect(playerBoard.children[1].children[1].textContent).toBe('Pilgrimage World');
+                expect(playerBoard.children[2].textContent).toBe('Develop: +$1 for each Novelty (blue) die in your Citizenry at the end of this phase.');
+            });
+
+            it('should add Biological Adaptation and Aquatic Uplift World to tableau', () => {
+                const {queryByTestId} = renderWithRedux(<Game/>, {
+                    initialState: {
+                        beginGameForm: {visibility: true},
+                        game: {
+                            ...initialGameState,
+                            factionTiles: initialGameState.factionTiles.filter(tile => tile.tileId === 7)
+                        }
+                    }
+                });
+                const buttonsDiv = queryByTestId('begin-game-form-number-buttons-div');
+                const playerOneButton = buttonsDiv.children[0];
+
+                fireEvent.click(playerOneButton);
+
+                const playerBoard = queryByTestId('player-boards').children[0];
+                expect(playerBoard.children.length).toBeGreaterThan(1);
+                expect(playerBoard.children[1].children[0].textContent).toBe('Biological Adaptation');
+                expect(playerBoard.children[1].children[1].textContent).toBe('Aquatic Uplift World');
+                expect(playerBoard.children[2].textContent).toBe('Develop: All Reassign-power developments require one fewer developer to complete (but no fewer than one).');
+            });
+
+            it('should add Mining Industry and Meteorite Planet to tableau', () => {
+                const {queryByTestId} = renderWithRedux(<Game/>, {
+                    initialState: {
+                        beginGameForm: {visibility: true},
+                        game: {
+                            ...initialGameState,
+                            factionTiles: initialGameState.factionTiles.filter(tile => tile.tileId === 8)
+                        }
+                    }
+                });
+                const buttonsDiv = queryByTestId('begin-game-form-number-buttons-div');
+                const playerOneButton = buttonsDiv.children[0];
+
+                fireEvent.click(playerOneButton);
+
+                const playerBoard = queryByTestId('player-boards').children[0];
+                expect(playerBoard.children.length).toBeGreaterThan(1);
+                expect(playerBoard.children[1].children[0].textContent).toBe('Mining Industry');
+                expect(playerBoard.children[1].children[1].textContent).toBe('Meteorite Planet');
+                expect(playerBoard.children[2].textContent).toBe('Ship: +$1 for each good you Consume (not Trade) this phase from a Rare Elements (brown) world.');
+            });
+
+            it('should add Destroyed Colony and Awakened Alien Outpost to tableau', () => {
+                const {queryByTestId} = renderWithRedux(<Game/>, {
+                    initialState: {
+                        beginGameForm: {visibility: true},
+                        game: {
+                            ...initialGameState,
+                            factionTiles: initialGameState.factionTiles.filter(tile => tile.tileId === 9)
+                        }
+                    }
+                });
+                const buttonsDiv = queryByTestId('begin-game-form-number-buttons-div');
+                const playerOneButton = buttonsDiv.children[0];
+
+                fireEvent.click(playerOneButton);
+
+                const playerBoard = queryByTestId('player-boards').children[0];
+                expect(playerBoard.children.length).toBeGreaterThan(1);
+                expect(playerBoard.children[1].children[0].textContent).toBe('Destroyed Colony');
+                expect(playerBoard.children[1].children[1].textContent).toBe('Awakened Alien Outpost');
+                expect(playerBoard.children[2].textContent).toBe('');
+            });
         });
     });
 
