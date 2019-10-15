@@ -76,13 +76,21 @@ const displayPowers = (phasePowers) => {
     let powerList = [];
     for (let phase in phases) {
         if(phasePowers[phases[phase]].length > 0){
-            powerList.push(phasePowers[phases[phase]].map((phasePower, id = 0) => {
-                id++;
+            powerList.push(phasePowers[phases[phase]].map((phasePower, id) => {
                 return (<p key={id}>{phases[phase]}: {phasePower}</p>);
             }));
         }
     }
     return powerList;
+};
+
+const getDicePool = (dicePool) => {
+    if (dicePool) {
+        return dicePool.map((die, id) => {
+            return (<Dice key={id} color={die.color} face={die.value} />);
+        });
+    }
+    return null;
 };
 
 const PlayerBoards = (props) => {
@@ -94,13 +102,19 @@ const PlayerBoards = (props) => {
                             <FlexRowDiv>
                                 <FontAwesomeIcon icon={faMoneyCheckAlt} size='2x'/>
                                 <BigText>{player.credits}</BigText>
-                                <Dice />
+                                <FlexRowDiv>
+                                    <BigText>Citizenry: </BigText>{getDicePool(player.citizenry)}
+                                </FlexRowDiv>
+                                <FlexRowDiv>
+                                    <BigText>Cup: </BigText>{getDicePool(player.cup)}
+                                </FlexRowDiv>
                             </FlexRowDiv>
                             <FlexRowDiv>
                                 {player.tiles.map((tile) => {
                                     return (
                                         <FlexRowDiv key={tile.tileId}>
                                             {getCorrectIcon(tile)}
+                                            {getDicePool(tile.die)}
                                             <BigText>{tile.name}</BigText>
                                         </FlexRowDiv>
                                     );

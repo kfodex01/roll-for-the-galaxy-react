@@ -16,6 +16,16 @@ export const phases = {
     SHIP: 'Ship'
 };
 
+export const dieColors = {
+    BlUE: 'Blue',
+    BROWN: 'Brown',
+    GREEN: 'Green',
+    PURPLE: 'Purple',
+    RED: 'Red',
+    WHITE: 'White',
+    YELLOW: 'Yellow',
+};
+
 export const gameColors = {
     BLACK: '#000000',
     BLUE: '#00aadd',
@@ -42,7 +52,7 @@ const developmentPowers = {
     SPACE_PIRACY: '+$1 for every two Military (red) dice (rounded up) in your Citizenry at the end of the phase.'
 };
 
-const worldBonuses = {
+export const worldBonuses = {
     EIGHT_CREDITS: 'Begin the game with $8 instead of $1.',
     ONE_BROWN_DIE_TO_CUP: 'Gain a Rare Elements (brown) die into your cup when you place this world.',
     ONE_BROWN_DIE_TO_CITIZENRY: 'Gain a Rare Elements (brown) die into your Citizenry when you place this world.',
