@@ -173,17 +173,6 @@ describe('Game', () => {
                 expect(playerOneCredits.textContent).toBe('1');
             });
 
-            it('should create a player with correct number of credits with Doomed World', () => {
-                const queryByTestId = renderComponentWithSpecificStartingTiles(null, 2);
-                getButtons(queryByTestId);
-
-                fireEvent.click(playerOneButton);
-                getPlayerBoards(queryByTestId);
-
-                expect(playerOneBoard.children.length).toBeGreaterThan(0);
-                expect(playerOneCredits.textContent).toBe('8');
-            });
-
             describe('Faction Tile Setup', () => {
                 it('should add Space Piracy and Hidden Fortress to tableau with correct starting dice', () => {
                     const queryByTestId = renderComponentWithSpecificStartingTiles(1, 2);
@@ -328,6 +317,34 @@ describe('Game', () => {
                     expect(within(playerOneCitizenryDice).getAllByTestId('RedDie').length).toBe(1);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
                     expect(within(playerOneCupDice).getAllByTestId('PurpleDie').length).toBe(1);
+                });
+            });
+
+            describe('Home World Tile Setup', () => {
+                it('should add New Sparta to tableau with correct starting dice', () => {
+                    const queryByTestId = renderComponentWithSpecificStartingTiles(6, 1);
+                    getButtons(queryByTestId);
+
+                    fireEvent.click(playerOneButton);
+                    getPlayerBoards(queryByTestId);
+
+                    expect(playerOneBoard.children.length).toBeGreaterThan(1);
+                    expect(playerOneTileThree.textContent).toBe('New Sparta');
+                    expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(playerOneCitizenryDice).getAllByTestId('RedDie').length).toBe(2);
+                    expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
+                });
+
+                it('should add Doomed World to tableau with correct number of credits', () => {
+                    const queryByTestId = renderComponentWithSpecificStartingTiles(null, 2);
+                    getButtons(queryByTestId);
+
+                    fireEvent.click(playerOneButton);
+                    getPlayerBoards(queryByTestId);
+
+                    expect(playerOneBoard.children.length).toBeGreaterThan(1);
+                    expect(playerOneTileThree.textContent).toBe('Doomed World');
+                    expect(playerOneCredits.textContent).toBe('8');
                 });
             });
         });

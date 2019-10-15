@@ -4,61 +4,45 @@ import {dieColors, initialGameState, phases, worldBonuses} from "../enums";
 
 const chance = new Chance();
 
+const addDieToPool = (dicePool, dieColor, dieFace) => {
+    dicePool.push({
+       color: dieColor,
+       value: dieFace
+    });
+};
+
 const addBonus = (tile, citizenry, cup) => {
     switch (tile.bonus) {
         case worldBonuses.ONE_BROWN_DIE_TO_CITIZENRY:
-            citizenry.push({
-                color: dieColors.BROWN,
-                value: phases.EXPLORE
-            });
+            addDieToPool(citizenry, dieColors.BROWN, phases.EXPLORE);
             break;
         case worldBonuses.ONE_GREEN_DIE_TO_CITIZENRY:
-            citizenry.push({
-                color: dieColors.GREEN,
-                value: phases.EXPLORE
-            });
+            addDieToPool(citizenry, dieColors.GREEN, phases.EXPLORE);
             break;
         case worldBonuses.ONE_RED_DIE_TO_CITIZENRY:
-            citizenry.push({
-                color: dieColors.RED,
-                value: phases.EXPLORE
-            });
+            addDieToPool(citizenry, dieColors.RED, phases.EXPLORE);
             break;
         case worldBonuses.ONE_YELLOW_DIE_TO_CITIZENRY:
-            citizenry.push({
-                color: dieColors.YELLOW,
-                value: phases.DEVELOP
-            });
+            addDieToPool(citizenry, dieColors.YELLOW, phases.DEVELOP);
+            break;
+        case worldBonuses.TWO_RED_DICE_TO_CITIZENRY:
+            addDieToPool(citizenry, dieColors.RED, phases.EXPLORE);
+            addDieToPool(citizenry, dieColors.RED, phases.EXPLORE);
             break;
         case worldBonuses.ONE_BLUE_DIE_TO_CUP:
-            cup.push({
-                color: dieColors.BlUE,
-                value: phases.EXPLORE
-            });
+            addDieToPool(cup, dieColors.BLUE, phases.EXPLORE);
             break;
         case worldBonuses.ONE_BROWN_DIE_TO_CUP:
-            cup.push({
-                color: dieColors.BROWN,
-                value: phases.EXPLORE
-            });
+            addDieToPool(cup, dieColors.BROWN, phases.EXPLORE);
             break;
         case worldBonuses.ONE_GREEN_DIE_TO_CUP:
-            cup.push({
-                color: dieColors.GREEN,
-                value: phases.EXPLORE
-            });
+            addDieToPool(cup, dieColors.GREEN, phases.EXPLORE);
             break;
         case worldBonuses.ONE_PURPLE_DIE_TO_CUP:
-            cup.push({
-                color: dieColors.PURPLE,
-                value: phases.EXPLORE
-            });
+            addDieToPool(cup, dieColors.PURPLE, phases.EXPLORE);
             break;
         case worldBonuses.ONE_BLUE_DIE_TO_WORLD:
-            tile.die = [{
-                color: dieColors.BlUE,
-                value: phases.EXPLORE
-            }];
+            addDieToPool(tile.die = [], dieColors.BLUE, phases.EXPLORE);
             break;
         default:
             break;

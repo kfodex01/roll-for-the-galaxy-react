@@ -17,7 +17,7 @@ export const phases = {
 };
 
 export const dieColors = {
-    BlUE: 'Blue',
+    BLUE: 'Blue',
     BROWN: 'Brown',
     GREEN: 'Green',
     PURPLE: 'Purple',

@@ -63,7 +63,7 @@ const getDieFace = (dieFace) => {
 
 const Dice = (props) => {
     switch (props.color) {
-        case dieColors.BlUE:
+        case dieColors.BLUE:
             return (
                 <BlueDie data-testid='BlueDie'>
                     {getDieFace(props.face)}
