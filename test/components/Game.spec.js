@@ -24,7 +24,7 @@ const renderComponentWithSpecificStartingTiles = (factionTileId, homeworldTileId
             factionTiles: initialGameState.factionTiles.filter(tile => tile.tileId === factionTileId)
         };
     }
-    ;
+
     if (homeworldTileId !== null) {
         game = {
             ...game,
@@ -345,6 +345,105 @@ describe('Game', () => {
                     expect(playerOneBoard.children.length).toBeGreaterThan(1);
                     expect(playerOneTileThree.textContent).toBe('Doomed World');
                     expect(playerOneCredits.textContent).toBe('8');
+                });
+
+                it('should add Alpha Centauri to tableau with correct starting dice', () => {
+                    const queryByTestId = renderComponentWithSpecificStartingTiles(6, 3);
+                    getButtons(queryByTestId);
+
+                    fireEvent.click(playerOneButton);
+                    getPlayerBoards(queryByTestId);
+
+                    expect(playerOneBoard.children.length).toBeGreaterThan(1);
+                    expect(playerOneTileThree.textContent).toBe('Alpha Centauri');
+                    expect(within(playerOneTileThree).getAllByTestId('BrownDie').length).toBe(1);
+                    expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
+                });
+
+                it('should add Earth\'s Lost Colony to tableau with correct starting dice', () => {
+                    const queryByTestId = renderComponentWithSpecificStartingTiles(6, 4);
+                    getButtons(queryByTestId);
+
+                    fireEvent.click(playerOneButton);
+                    getPlayerBoards(queryByTestId);
+
+                    expect(playerOneBoard.children.length).toBeGreaterThan(1);
+                    expect(playerOneTileThree.textContent).toBe('Earth\'s Lost Colony');
+                    expect(within(playerOneTileThree).getAllByTestId('BlueDie').length).toBe(1);
+                    expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
+                });
+
+                it('should add Ancient Race to tableau with correct starting dice', () => {
+                    const queryByTestId = renderComponentWithSpecificStartingTiles(6, 5);
+                    getButtons(queryByTestId);
+
+                    fireEvent.click(playerOneButton);
+                    getPlayerBoards(queryByTestId);
+
+                    expect(playerOneBoard.children.length).toBeGreaterThan(1);
+                    expect(playerOneTileThree.textContent).toBe('Ancient Race');
+                    expect(within(playerOneTileThree).getAllByTestId('GreenDie').length).toBe(1);
+                    expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
+                });
+
+                it('should add Damaged Alien Factory to tableau with correct starting dice', () => {
+                    const queryByTestId = renderComponentWithSpecificStartingTiles(6, 6);
+                    getButtons(queryByTestId);
+
+                    fireEvent.click(playerOneButton);
+                    getPlayerBoards(queryByTestId);
+
+                    expect(playerOneBoard.children.length).toBeGreaterThan(1);
+                    expect(playerOneTileThree.textContent).toBe('Damaged Alien Factory');
+                    expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(playerOneCitizenryDice).getAllByTestId('YellowDie').length).toBe(1);
+                    expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
+                });
+
+                it('should add Old Earth to tableau with correct starting dice', () => {
+                    const queryByTestId = renderComponentWithSpecificStartingTiles(6, 7);
+                    getButtons(queryByTestId);
+
+                    fireEvent.click(playerOneButton);
+                    getPlayerBoards(queryByTestId);
+
+                    expect(playerOneBoard.children.length).toBeGreaterThan(1);
+                    expect(playerOneTileThree.textContent).toBe('Old Earth');
+                    expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(playerOneCitizenryDice).getAllByTestId('PurpleDie').length).toBe(1);
+                    expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
+                });
+
+                it('should add Separatist Colony to tableau with correct starting dice', () => {
+                    const queryByTestId = renderComponentWithSpecificStartingTiles(6, 8);
+                    getButtons(queryByTestId);
+
+                    fireEvent.click(playerOneButton);
+                    getPlayerBoards(queryByTestId);
+
+                    expect(playerOneBoard.children.length).toBeGreaterThan(1);
+                    expect(playerOneTileThree.textContent).toBe('Separatist Colony');
+                    expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(playerOneCupDice).getAllByTestId('RedDie').length).toBe(1);
+                });
+
+                it('should add Epsilon Eridani to tableau with correct starting dice', () => {
+                    const queryByTestId = renderComponentWithSpecificStartingTiles(6, 9);
+                    getButtons(queryByTestId);
+
+                    fireEvent.click(playerOneButton);
+                    getPlayerBoards(queryByTestId);
+
+                    expect(playerOneBoard.children.length).toBeGreaterThan(1);
+                    expect(playerOneTileThree.textContent).toBe('Epsilon Eridani');
+                    expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(playerOneCitizenryDice).getAllByTestId('BlueDie').length).toBe(1);
+                    expect(within(playerOneCitizenryDice).getAllByTestId('RedDie').length).toBe(1);
+                    expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
                 });
             });
         });
