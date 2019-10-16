@@ -93,7 +93,8 @@ const createPlayers = (state, data) => {
             [phases.DEVELOP]: [],
             [phases.SETTLE]: [],
             [phases.PRODUCE]: [],
-            [phases.SHIP]: []
+            [phases.SHIP]: [],
+            [phases.ENDGAME]: []
         };
         const citizenry = [
             {
