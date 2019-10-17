@@ -1,57 +1,20 @@
 import React from "react";
 import {faSatellite, faGlobe, faMoneyCheckAlt} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import styled from 'styled-components';
-import {phases, tileTypes, gameColors} from "../enums";
+import {phases, tileTypes} from "../enums";
 import Dice from "./Dice";
-
-const FlexColumnDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const PlayerColumnDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  background-color: #ededed;
-  margin: 3px;
-`;
-
-const FlexRowDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-const BigText = styled.p`
-  font-family: sans-serif;
-  font-size: 20px;
-  margin: 0;
-  padding: 5px;
-`;
-
-const BlueWorld = styled(FontAwesomeIcon)`
-  color: ${gameColors.BLUE};
-`;
-
-const BrownWorld = styled(FontAwesomeIcon)`
-  color: ${gameColors.BROWN};
-`;
-
-const Development = styled(FontAwesomeIcon)`
-  color: ${gameColors.BLACK};
-`;
-
-const GrayWorld = styled(FontAwesomeIcon)`
-  color: ${gameColors.GRAY};
-`;
-
-const GreenWorld = styled(FontAwesomeIcon)`
-  color: ${gameColors.GREEN};
-`;
-
-const YellowWorld = styled(FontAwesomeIcon)`
-  color: ${gameColors.YELLOW};
-`;
+import {
+    BigText,
+    BlueWorld,
+    BrownWorld,
+    Development,
+    FlexColumnDiv,
+    FlexRowDiv,
+    GrayWorld,
+    GreenWorld,
+    PlayerColumnDiv,
+    YellowWorld
+} from "../styled-components";
 
 const getCorrectIcon = (tile) => {
     switch (tile.tileType) {

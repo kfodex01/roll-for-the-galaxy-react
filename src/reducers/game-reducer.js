@@ -66,6 +66,7 @@ const addBonus = (tile, citizenry, cup) => {
 };
 
 const createPlayers = (state, data) => {
+    const victoryPointPool = 12 * data;
     const players = [];
     for (let i = 0; i < data; i++) {
         const factionTile = chance.pickone(state.factionTiles);
@@ -145,7 +146,8 @@ const createPlayers = (state, data) => {
     return (
         {
             ...state,
-            players
+            players,
+            victoryPointPool
         }
     )
 };

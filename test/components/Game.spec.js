@@ -50,6 +50,7 @@ describe('Game', () => {
             playerThreeButton,
             playerFourButton,
             playerFiveButton,
+            victoryPointPool,
             playerBoards,
             playerOneBoard,
             playerOneCredits,
@@ -72,6 +73,7 @@ describe('Game', () => {
         };
 
         const getPlayerBoards = (queryByTestId) => {
+            victoryPointPool = queryByTestId('victory-point-pool');
             playerBoards = queryByTestId('player-boards');
             playerOneBoard = playerBoards.children[0];
             playerOneCredits = playerOneBoard.children[0].children[1];
@@ -105,6 +107,7 @@ describe('Game', () => {
                 getPlayerBoards(queryByTestId);
 
                 expect(queryByTestId('begin-game-form')).toBeNull();
+                expect(victoryPointPool.textContent).toBe('Victory Point Pool: 12');
                 expect(playerBoards.children.length).toBe(1);
             });
 
@@ -116,6 +119,7 @@ describe('Game', () => {
                 getPlayerBoards(queryByTestId);
 
                 expect(queryByTestId('begin-game-form')).toBeNull();
+                expect(victoryPointPool.textContent).toBe('Victory Point Pool: 24');
                 expect(playerBoards.children.length).toBe(2);
             });
 
@@ -127,6 +131,7 @@ describe('Game', () => {
                 getPlayerBoards(queryByTestId);
 
                 expect(queryByTestId('begin-game-form')).toBeNull();
+                expect(victoryPointPool.textContent).toBe('Victory Point Pool: 36');
                 expect(playerBoards.children.length).toBe(3);
             });
 
@@ -138,6 +143,7 @@ describe('Game', () => {
                 getPlayerBoards(queryByTestId);
 
                 expect(queryByTestId('begin-game-form')).toBeNull();
+                expect(victoryPointPool.textContent).toBe('Victory Point Pool: 48');
                 expect(playerBoards.children.length).toBe(4);
             });
 
@@ -149,6 +155,7 @@ describe('Game', () => {
                 getPlayerBoards(queryByTestId);
 
                 expect(queryByTestId('begin-game-form')).toBeNull();
+                expect(victoryPointPool.textContent).toBe('Victory Point Pool: 60');
                 expect(playerBoards.children.length).toBe(5);
             });
         });

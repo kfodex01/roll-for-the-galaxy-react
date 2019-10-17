@@ -4,6 +4,7 @@ import * as ActionCreators from '../action-creators/index.js'
 import {bindActionCreators} from "redux";
 import StartForm from "./StartForm";
 import PlayerBoards from "./PlayerBoards";
+import {BigText} from "../styled-components";
 
 class Game extends React.Component {
     render() {
@@ -12,8 +13,11 @@ class Game extends React.Component {
                 {this.props.beginGameForm.visibility === true ?
                     (
                         <StartForm {...this.props} />
-                        ) :
-                    <PlayerBoards {...this.props} />
+                    ) :
+                    <>
+                        <BigText data-testid='victory-point-pool'>Victory Point Pool: {this.props.game.victoryPointPool}</BigText>
+                        <PlayerBoards {...this.props} />
+                    </>
                 }
             </>
         )
