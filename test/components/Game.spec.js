@@ -348,13 +348,14 @@ describe('Game', () => {
 
                     expect(playerOneBoard.children.length).toBeGreaterThan(1);
                     expect(playerOneTileThree.textContent).toBe('New Sparta');
+                    expect(playerOnePoints.textContent).toBe('7');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCitizenryDice).getAllByTestId('RedDie').length).toBe(2);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
                 });
 
-                it('should add Doomed World to tableau with correct number of credits', () => {
-                    const queryByTestId = renderComponentWithSpecificStartingTiles(null, 2);
+                it('should add Doomed World to tableau with correct credits and starting dice', () => {
+                    const queryByTestId = renderComponentWithSpecificStartingTiles(6, 2);
                     getButtons(queryByTestId);
 
                     fireEvent.click(playerOneButton);
@@ -362,7 +363,10 @@ describe('Game', () => {
 
                     expect(playerOneBoard.children.length).toBeGreaterThan(1);
                     expect(playerOneTileThree.textContent).toBe('Doomed World');
+                    expect(playerOnePoints.textContent).toBe('5');
                     expect(playerOneCredits.textContent).toBe('8');
+                    expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
                 });
 
                 it('should add Alpha Centauri to tableau with correct starting dice', () => {
@@ -374,6 +378,7 @@ describe('Game', () => {
 
                     expect(playerOneBoard.children.length).toBeGreaterThan(1);
                     expect(playerOneTileThree.textContent).toBe('Alpha Centauri');
+                    expect(playerOnePoints.textContent).toBe('6');
                     expect(within(playerOneTileThree).getAllByTestId('BrownDie').length).toBe(1);
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
@@ -388,6 +393,7 @@ describe('Game', () => {
 
                     expect(playerOneBoard.children.length).toBeGreaterThan(1);
                     expect(playerOneTileThree.textContent).toBe('Earth\'s Lost Colony');
+                    expect(playerOnePoints.textContent).toBe('7');
                     expect(within(playerOneTileThree).getAllByTestId('BlueDie').length).toBe(1);
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
@@ -402,6 +408,7 @@ describe('Game', () => {
 
                     expect(playerOneBoard.children.length).toBeGreaterThan(1);
                     expect(playerOneTileThree.textContent).toBe('Ancient Race');
+                    expect(playerOnePoints.textContent).toBe('5');
                     expect(within(playerOneTileThree).getAllByTestId('GreenDie').length).toBe(1);
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
@@ -416,6 +423,7 @@ describe('Game', () => {
 
                     expect(playerOneBoard.children.length).toBeGreaterThan(1);
                     expect(playerOneTileThree.textContent).toBe('Damaged Alien Factory');
+                    expect(playerOnePoints.textContent).toBe('6');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCitizenryDice).getAllByTestId('YellowDie').length).toBe(1);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
@@ -430,6 +438,7 @@ describe('Game', () => {
 
                     expect(playerOneBoard.children.length).toBeGreaterThan(1);
                     expect(playerOneTileThree.textContent).toBe('Old Earth');
+                    expect(playerOnePoints.textContent).toBe('8');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCitizenryDice).getAllByTestId('PurpleDie').length).toBe(1);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
@@ -444,6 +453,7 @@ describe('Game', () => {
 
                     expect(playerOneBoard.children.length).toBeGreaterThan(1);
                     expect(playerOneTileThree.textContent).toBe('Separatist Colony');
+                    expect(playerOnePoints.textContent).toBe('7');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
                     expect(within(playerOneCupDice).getAllByTestId('RedDie').length).toBe(1);
@@ -458,6 +468,7 @@ describe('Game', () => {
 
                     expect(playerOneBoard.children.length).toBeGreaterThan(1);
                     expect(playerOneTileThree.textContent).toBe('Epsilon Eridani');
+                    expect(playerOnePoints.textContent).toBe('7');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCitizenryDice).getAllByTestId('BlueDie').length).toBe(1);
                     expect(within(playerOneCitizenryDice).getAllByTestId('RedDie').length).toBe(1);
