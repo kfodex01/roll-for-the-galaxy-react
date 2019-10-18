@@ -1,5 +1,5 @@
 import React from "react";
-import {faSatellite, faGlobe, faMoneyCheckAlt} from "@fortawesome/free-solid-svg-icons";
+import {faSatellite, faGlobe, faMoneyCheckAlt, faStar} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {phases, tileTypes} from "../enums";
 import Dice from "./Dice";
@@ -63,6 +63,8 @@ const PlayerBoards = (props) => {
                     return (
                         <PlayerColumnDiv key={player.id}>
                             <FlexRowDiv>
+                                <FontAwesomeIcon icon={faStar} size='2x' />
+                                <BigText>{player.points}</BigText>
                                 <FontAwesomeIcon icon={faMoneyCheckAlt} size='2x'/>
                                 <BigText>{player.credits}</BigText>
                                 <FlexRowDiv>

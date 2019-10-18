@@ -53,6 +53,7 @@ describe('Game', () => {
             victoryPointPool,
             playerBoards,
             playerOneBoard,
+            playerOnePoints,
             playerOneCredits,
             playerOneCitizenryDice,
             playerOneCupDice,
@@ -76,9 +77,10 @@ describe('Game', () => {
             victoryPointPool = queryByTestId('victory-point-pool');
             playerBoards = queryByTestId('player-boards');
             playerOneBoard = playerBoards.children[0];
-            playerOneCredits = playerOneBoard.children[0].children[1];
-            playerOneCitizenryDice = playerOneBoard.children[0].children[2];
-            playerOneCupDice = playerOneBoard.children[0].children[3];
+            playerOnePoints = playerOneBoard.children[0].children[1];
+            playerOneCredits = playerOneBoard.children[0].children[3];
+            playerOneCitizenryDice = playerOneBoard.children[0].children[4];
+            playerOneCupDice = playerOneBoard.children[0].children[5];
             [playerOneTileOne, playerOneTileTwo, playerOneTileThree] = playerOneBoard.children[1].children;
             playerOnePhasePowers = playerOneBoard.children[2];
         };
@@ -192,6 +194,7 @@ describe('Game', () => {
                     expect(playerOneTileOne.textContent).toBe('Space Piracy');
                     expect(playerOneTileTwo.textContent).toBe('Hidden Fortress');
                     expect(playerOnePhasePowers.textContent).toBe('Ship: +$1 for every two Military (red) dice (rounded up) in your Citizenry at the end of the phase.');
+                    expect(playerOnePoints.textContent).toBe('2');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCitizenryDice).getAllByTestId('RedDie').length).toBe(1);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
@@ -208,6 +211,7 @@ describe('Game', () => {
                     expect(playerOneTileOne.textContent).toBe('Alien Archaeology');
                     expect(playerOneTileTwo.textContent).toBe('Alien Rosetta Stone World');
                     expect(playerOnePhasePowers.textContent).toBe('Ship: +$4 (instead of +$2) when Stocking with an Alien Technology (yellow) explorer.');
+                    expect(playerOnePoints.textContent).toBe('2');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCitizenryDice).getAllByTestId('YellowDie').length).toBe(1);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
@@ -224,6 +228,7 @@ describe('Game', () => {
                     expect(playerOneTileOne.textContent).toBe('Consumer Markets');
                     expect(playerOneTileTwo.textContent).toBe('Space Mall');
                     expect(playerOnePhasePowers.textContent).toBe('Produce: +$1 for each good on a Novelty (blue) world at the end of this phase.');
+                    expect(playerOnePoints.textContent).toBe('3');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
                     expect(within(playerOneCupDice).getAllByTestId('BlueDie').length).toBe(1);
@@ -240,6 +245,7 @@ describe('Game', () => {
                     expect(playerOneTileOne.textContent).toBe('Improved Reconnaissance');
                     expect(playerOneTileTwo.textContent).toBe('Wormhole Station');
                     expect(playerOnePhasePowers.textContent).toBe('Explore: You may place new tiles on top of your stacks when Scouting.');
+                    expect(playerOnePoints.textContent).toBe('5');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
                     expect(within(playerOneCupDice).getAllByTestId('BrownDie').length).toBe(1);
@@ -256,6 +262,7 @@ describe('Game', () => {
                     expect(playerOneTileOne.textContent).toBe('Genetics Lab');
                     expect(playerOneTileTwo.textContent).toBe('The Last of the Gnarssh');
                     expect(playerOnePhasePowers.textContent).toBe('Produce: +$2 for each good represented by a Genes (green) die at the end of this phase.');
+                    expect(playerOnePoints.textContent).toBe('2');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCitizenryDice).getAllByTestId('GreenDie').length).toBe(1);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
@@ -273,6 +280,7 @@ describe('Game', () => {
                     expect(playerOneTileTwo.textContent).toBe('Pilgrimage World');
                     expect(within(playerOneTileTwo).getAllByTestId('BlueDie').length).toBe(1);
                     expect(playerOnePhasePowers.textContent).toBe('Develop: +$1 for each Novelty (blue) die in your Citizenry at the end of this phase.');
+                    expect(playerOnePoints.textContent).toBe('5');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
                 });
@@ -288,6 +296,7 @@ describe('Game', () => {
                     expect(playerOneTileOne.textContent).toBe('Biological Adaptation');
                     expect(playerOneTileTwo.textContent).toBe('Aquatic Uplift World');
                     expect(playerOnePhasePowers.textContent).toBe('Develop: All Reassign-power developments require one fewer developer to complete (but no fewer than one).');
+                    expect(playerOnePoints.textContent).toBe('4');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
                     expect(within(playerOneCupDice).getAllByTestId('GreenDie').length).toBe(1);
@@ -304,6 +313,7 @@ describe('Game', () => {
                     expect(playerOneTileOne.textContent).toBe('Mining Industry');
                     expect(playerOneTileTwo.textContent).toBe('Meteorite Planet');
                     expect(playerOnePhasePowers.textContent).toBe('Ship: +$1 for each good you Consume (not Trade) this phase from a Rare Elements (brown) world.');
+                    expect(playerOnePoints.textContent).toBe('3');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCitizenryDice).getAllByTestId('BrownDie').length).toBe(1);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
@@ -320,6 +330,7 @@ describe('Game', () => {
                     expect(playerOneTileOne.textContent).toBe('Destroyed Colony');
                     expect(playerOneTileTwo.textContent).toBe('Awakened Alien Outpost');
                     expect(playerOnePhasePowers.textContent).toBe('');
+                    expect(playerOnePoints.textContent).toBe('3');
                     expect(within(playerOneCitizenryDice).getAllByTestId('WhiteDie').length).toBe(2);
                     expect(within(playerOneCitizenryDice).getAllByTestId('RedDie').length).toBe(1);
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);

@@ -74,6 +74,7 @@ const createPlayers = (state, data) => {
         const homeWorldTile = chance.pickone(state.homeWorldTiles);
         state.homeWorldTiles = state.homeWorldTiles.filter(tile => tile.tileId !== homeWorldTile.tileId);
         const credits = homeWorldTile.tileId !== 2 ? 1 : 8;
+        let points = 0;
         const tiles = [
             {
                 ...factionTile.tiles[0],
@@ -128,6 +129,7 @@ const createPlayers = (state, data) => {
                 }
             }
 
+            points = points + tile.points;
             addBonus(tile, citizenry, cup);
         });
         players.push(
@@ -138,6 +140,7 @@ const createPlayers = (state, data) => {
                 cup,
                 nextTileId: 4,
                 phasePowers,
+                points,
                 tiles
             }
         );
