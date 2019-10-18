@@ -1,5 +1,5 @@
 import React from "react";
-import {faSatellite, faGlobe, faMoneyCheckAlt, faStar} from "@fortawesome/free-solid-svg-icons";
+import {faSatellite, faGlobe, faMoneyCheckAlt, faStar, faWrench} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {phases, tileTypes} from "../enums";
 import Dice from "./Dice";
@@ -38,7 +38,7 @@ const getCorrectIcon = (tile) => {
 const displayPowers = (phasePowers) => {
     let powerList = [];
     for (let phase in phases) {
-        if(phasePowers[phases[phase]].length > 0){
+        if (phasePowers[phases[phase]].length > 0) {
             powerList.push(phasePowers[phases[phase]].map((phasePower, id) => {
                 return (<p key={id}>{phases[phase]}: {phasePower}</p>);
             }));
@@ -50,7 +50,7 @@ const displayPowers = (phasePowers) => {
 const getDicePool = (dicePool) => {
     if (dicePool) {
         return dicePool.map((die, id) => {
-            return (<Dice key={id} color={die.color} face={die.value} />);
+            return (<Dice key={id} color={die.color} face={die.value}/>);
         });
     }
     return null;
@@ -60,37 +60,46 @@ const PlayerBoards = (props) => {
     return (
         <FlexColumnDiv data-testid='player-boards'>
             {props.game.players.map((player) => {
-                    return (
-                        <PlayerColumnDiv key={player.id}>
+                return (
+                    <PlayerColumnDiv key={player.id}>
+                        <FlexRowDiv>
+                            <FontAwesomeIcon icon={faStar} size='2x' />
+                            <BigText>{player.points}</BigText>
+                            <FontAwesomeIcon icon={faMoneyCheckAlt} size='2x' />
+                            <BigText>{player.credits}</BigText>
                             <FlexRowDiv>
-                                <FontAwesomeIcon icon={faStar} size='2x' />
-                                <BigText>{player.points}</BigText>
-                                <FontAwesomeIcon icon={faMoneyCheckAlt} size='2x'/>
-                                <BigText>{player.credits}</BigText>
-                                <FlexRowDiv>
-                                    <BigText>Citizenry: </BigText>{getDicePool(player.citizenry)}
-                                </FlexRowDiv>
-                                <FlexRowDiv>
-                                    <BigText>Cup: </BigText>{getDicePool(player.cup)}
-                                </FlexRowDiv>
+                                <FontAwesomeIcon icon={faWrench} size='2x' />
+                                <BigText>{player.developBuildQueue[0].tiles[0].points}</BigText>
+                                {getCorrectIcon(player.developBuildQueue[0].tiles[0])}
+                                <BigText>{player.developBuildQueue[0].tiles[0].name}</BigText>
+                                <BigText>{player.settleBuildQueue[0].tiles[1].points}</BigText>
+                                {getCorrectIcon(player.settleBuildQueue[0].tiles[1])}
+                                <BigText>{player.settleBuildQueue[0].tiles[1].name}</BigText>
                             </FlexRowDiv>
                             <FlexRowDiv>
-                                {player.tiles.map((tile) => {
-                                    return (
-                                        <FlexRowDiv key={tile.tileId}>
-                                            {getCorrectIcon(tile)}
-                                            {getDicePool(tile.die)}
-                                            <BigText>{tile.name}</BigText>
-                                        </FlexRowDiv>
-                                    );
-                                })}
+                                <BigText>Citizenry: </BigText>{getDicePool(player.citizenry)}
                             </FlexRowDiv>
-                            <div>
-                                {displayPowers(player.phasePowers)}
-                            </div>
-                        </PlayerColumnDiv>
-                    );
-                }
+                            <FlexRowDiv>
+                                <BigText>Cup: </BigText>{getDicePool(player.cup)}
+                            </FlexRowDiv>
+                        </FlexRowDiv>
+                        <FlexRowDiv>
+                            {player.tiles.map((tile) => {
+                                return (
+                                    <FlexRowDiv key={tile.tileId}>
+                                        {getCorrectIcon(tile)}
+                                        {getDicePool(tile.die)}
+                                        <BigText>{tile.name}</BigText>
+                                    </FlexRowDiv>
+                                );
+                            })}
+                        </FlexRowDiv>
+                        <div>
+                            {displayPowers(player.phasePowers)}
+                        </div>
+                    </PlayerColumnDiv>
+                );
+            }
             )}
         </FlexColumnDiv>
     );

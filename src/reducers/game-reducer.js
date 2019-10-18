@@ -6,8 +6,8 @@ const chance = new Chance();
 
 const addDieToPool = (dicePool, dieColor, dieFace) => {
     dicePool.push({
-       color: dieColor,
-       value: dieFace
+        color: dieColor,
+        value: dieFace
     });
 };
 
@@ -65,6 +65,13 @@ const addBonus = (tile, citizenry, cup) => {
     }
 };
 
+const getLowestConstructionQueueTotal = (tiles) => {
+    if (tiles[0].tiles[0].points + tiles[1].tiles[1].points > tiles[0].tiles[1].points + tiles[1].tiles[0].points) {
+        return [tiles[1], tiles[0]];
+    }
+    return (tiles);
+};
+
 const createPlayers = (state, data) => {
     const victoryPointPool = 12 * data;
     const players = [];
@@ -73,6 +80,12 @@ const createPlayers = (state, data) => {
         state.factionTiles = state.factionTiles.filter(tile => tile.tileId !== factionTile.tileId);
         const homeWorldTile = chance.pickone(state.homeWorldTiles);
         state.homeWorldTiles = state.homeWorldTiles.filter(tile => tile.tileId !== homeWorldTile.tileId);
+        let buildQueueTiles = [];
+        buildQueueTiles.push(chance.pickone(state.gameTiles));
+        state.gameTiles = state.gameTiles.filter(tile => tile.tileId !== buildQueueTiles[0].tileId);
+        buildQueueTiles.push(chance.pickone(state.gameTiles));
+        state.gameTiles = state.gameTiles.filter(tile => tile.tileId !== buildQueueTiles[1].tileId);
+        buildQueueTiles = getLowestConstructionQueueTotal(buildQueueTiles);
         const credits = homeWorldTile.tileId !== 2 ? 1 : 8;
         let points = 0;
         const tiles = [
@@ -138,9 +151,11 @@ const createPlayers = (state, data) => {
                 credits,
                 citizenry,
                 cup,
+                developBuildQueue: [buildQueueTiles[0]],
                 nextTileId: 4,
                 phasePowers,
                 points,
+                settleBuildQueue: [buildQueueTiles[1]],
                 tiles
             }
         );

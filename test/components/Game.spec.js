@@ -79,8 +79,8 @@ describe('Game', () => {
             playerOneBoard = playerBoards.children[0];
             playerOnePoints = playerOneBoard.children[0].children[1];
             playerOneCredits = playerOneBoard.children[0].children[3];
-            playerOneCitizenryDice = playerOneBoard.children[0].children[4];
-            playerOneCupDice = playerOneBoard.children[0].children[5];
+            playerOneCitizenryDice = playerOneBoard.children[0].children[5];
+            playerOneCupDice = playerOneBoard.children[0].children[6];
             [playerOneTileOne, playerOneTileTwo, playerOneTileThree] = playerOneBoard.children[1].children;
             playerOnePhasePowers = playerOneBoard.children[2];
         };
