@@ -33,7 +33,6 @@ const renderComponentWithSpecificStartingTiles = (factionTileId, homeworldTileId
     }
     const {queryByTestId} = renderWithRedux(<Game/>, {
         initialState: {
-            beginGameForm: {visibility: true},
             game
         }
     });
@@ -166,7 +165,6 @@ describe('Game', () => {
             it('should create a player with correct number of credits', () => {
                 const {queryByTestId} = renderWithRedux(<Game/>, {
                     initialState: {
-                        beginGameForm: {visibility: true},
                         game: {
                             ...initialGameState,
                             homeWorldTiles: initialGameState.homeWorldTiles.filter(tile => tile.tileId !== 2)
@@ -475,14 +473,6 @@ describe('Game', () => {
                     expect(within(playerOneCupDice).getAllByTestId('WhiteDie').length).toBe(3);
                 });
             });
-        });
-    });
-
-    describe('Begin game form is not visible', () => {
-        it('should not show the begin game form', () => {
-            const {queryByTestId} = renderWithRedux(<Game/>, {initialState: {beginGameForm: {visibility: false}}});
-
-            expect(queryByTestId('begin-game-form')).toBeNull();
         });
     });
 });

@@ -7,15 +7,30 @@ import PlayerBoards from "./PlayerBoards";
 import {BigText} from "../styled-components";
 
 class Game extends React.Component {
+    state = {
+        visibility: true
+    };
+
+    hideBeginGameForm = () => {
+        this.setState({
+            visibility: false
+        })
+    };
+
+    createPlayers = (numberOfPlayers) => {
+        this.props.actions.createPlayers(numberOfPlayers);
+    };
+
     render() {
         return (
             <>
-                {this.props.beginGameForm.visibility === true ?
+                {this.state.visibility === true ?
                     (
-                        <StartForm {...this.props} />
+                        <StartForm hideBeginGameForm={this.hideBeginGameForm} createPlayers={this.createPlayers} />
                     ) :
                     <>
-                        <BigText data-testid='victory-point-pool'>Victory Point Pool: {this.props.game.victoryPointPool}</BigText>
+                        <BigText data-testid='victory-point-pool'>Victory Point
+                            Pool: {this.props.game.victoryPointPool}</BigText>
                         <PlayerBoards {...this.props} />
                     </>
                 }

@@ -2,8 +2,8 @@ import React from "react";
 
 const StartForm = (props) => {
     const buildPlayersAndHideForm = (numberOfPlayers) => {
-        props.actions.hideBeginGameForm();
-        props.actions.createPlayers(numberOfPlayers);
+        props.hideBeginGameForm();
+        props.createPlayers(numberOfPlayers);
     };
 
     return (
