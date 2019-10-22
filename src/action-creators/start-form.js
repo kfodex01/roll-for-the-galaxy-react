@@ -1,10 +1,10 @@
-import {DO_THE_THING} from '../action-types.js';
+import {SET_BEGIN_GAME_FORM_VISIBILITY} from '../action-types.js';
 
-export const doTheThing = () => {
+export const hideBeginGameForm = () => {
     return (
         {
-            data: `Thing done`,
-            type: DO_THE_THING
+            data: false,
+            type: SET_BEGIN_GAME_FORM_VISIBILITY
         }
     )
 };

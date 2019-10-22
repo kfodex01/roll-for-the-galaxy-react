@@ -1,20 +1,20 @@
-import {DO_THE_THING} from '../action-types.js';
+import {SET_BEGIN_GAME_FORM_VISIBILITY} from '../action-types.js';
 
 const initialState = {
-    message: 'Hi'
+    visibility: true
 };
 
-const doTheThing = (state, data) => {
+const setBeginGameFormVisibility = (state, data) => {
     return (
         {
             ...state,
-            message: data
+            visibility: data
         }
     )
 };
 
 const reducerMap = {
-    [DO_THE_THING]: doTheThing
+    [SET_BEGIN_GAME_FORM_VISIBILITY]: setBeginGameFormVisibility
 };
 
 export default (state = initialState, {type, data}) => {
