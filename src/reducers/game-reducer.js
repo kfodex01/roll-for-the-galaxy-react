@@ -52,13 +52,13 @@ const addBonus = (tile, citizenry, cup) => {
             addDieToPool(cup, dieColors.RED, phases.EXPLORE);
             break;
         case bonuses.ONE_BLUE_DIE_TO_WORLD:
-            addDieToPool(tile.die = [], dieColors.BLUE, phases.EXPLORE);
+            addDieToPool(tile.dice = [], dieColors.BLUE, phases.EXPLORE);
             break;
         case bonuses.ONE_BROWN_DIE_TO_WORLD:
-            addDieToPool(tile.die = [], dieColors.BROWN, phases.EXPLORE);
+            addDieToPool(tile.dice = [], dieColors.BROWN, phases.EXPLORE);
             break;
         case bonuses.ONE_GREEN_DIE_TO_WORLD:
-            addDieToPool(tile.die = [], dieColors.GREEN, phases.EXPLORE);
+            addDieToPool(tile.dice = [], dieColors.GREEN, phases.EXPLORE);
             break;
         default:
             break;

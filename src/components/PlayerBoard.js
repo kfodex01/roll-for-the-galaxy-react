@@ -7,8 +7,8 @@ import {
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMoneyCheckAlt, faStar, faWrench} from "@fortawesome/free-solid-svg-icons";
 import {phases} from "../enums";
-import Die from "./Die";
 import Tile from "./Tile";
+import DicePool from "./DicePool";
 
 class PlayerBoard extends React.Component {
     displayPowers = (phasePowers) => {
@@ -23,15 +23,6 @@ class PlayerBoard extends React.Component {
         return powerList;
     };
 
-    getDicePool = (dicePool) => {
-        if (dicePool) {
-            return dicePool.map((die, id) => {
-                return (<Die key={id} color={die.color} face={die.value}/>);
-            });
-        }
-        return null;
-    };
-
     render() {
         return(
             <PlayerColumnDiv>
@@ -43,21 +34,23 @@ class PlayerBoard extends React.Component {
                     <FlexRowDiv>
                         <FontAwesomeIcon icon={faWrench} size='2x' />
                         <BigText>{this.props.developBuildQueue[0].tiles[0].points}</BigText>
-                        <Tile key={this.props.developBuildQueue[0].tiles[0].tileId} getDicePool={this.getDicePool} {...this.props.developBuildQueue[0].tiles[0]} />
+                        <Tile key={this.props.developBuildQueue[0].tiles[0].tileId} {...this.props.developBuildQueue[0].tiles[0]} />
                         <BigText>{this.props.settleBuildQueue[0].tiles[1].points}</BigText>
-                        <Tile key={this.props.settleBuildQueue[0].tiles[1].tileId} getDicePool={this.getDicePool} {...this.props.settleBuildQueue[0].tiles[1]} />
+                        <Tile key={this.props.settleBuildQueue[0].tiles[1].tileId} {...this.props.settleBuildQueue[0].tiles[1]} />
                     </FlexRowDiv>
                     <FlexRowDiv>
-                        <BigText>Citizenry: </BigText>{this.getDicePool(this.props.citizenry)}
+                        <BigText>Citizenry: </BigText>
+                        <DicePool dice={this.props.citizenry} />
                     </FlexRowDiv>
                     <FlexRowDiv>
-                        <BigText>Cup: </BigText>{this.getDicePool(this.props.cup)}
+                        <BigText>Cup: </BigText>
+                        <DicePool dice={this.props.cup} />
                     </FlexRowDiv>
                 </FlexRowDiv>
                 <FlexRowDiv>
                     {this.props.tiles.map((tile) => {
                         return (
-                            <Tile key={tile.tileId} getDicePool={this.getDicePool} {...tile} />
+                            <Tile key={tile.tileId} {...tile} />
                         );
                     })}
                 </FlexRowDiv>

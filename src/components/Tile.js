@@ -11,6 +11,7 @@ import {
 } from "../styled-components";
 import {tileTypes} from "../enums";
 import {faGlobe, faSatellite} from "@fortawesome/free-solid-svg-icons";
+import DicePool from "./DicePool";
 
 class Tile extends React.Component {
     getCorrectIcon = (tile) => {
@@ -36,7 +37,7 @@ class Tile extends React.Component {
         return (
             <FlexRowDiv key={this.props.tileId}>
                 {this.getCorrectIcon(this.props)}
-                {this.props.getDicePool(this.props.die)}
+                <DicePool dice={this.props.dice} />
                 <BigText>{this.props.name}</BigText>
             </FlexRowDiv>
         );
