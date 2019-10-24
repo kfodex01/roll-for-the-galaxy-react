@@ -1,16 +1,12 @@
 import React from "react";
 import {
     BigText,
-    BlueWorld,
-    BrownWorld,
-    Development,
     FlexRowDiv,
-    GrayWorld, GreenWorld,
-    PlayerColumnDiv, YellowWorld
+    PlayerColumnDiv
 } from "../styled-components";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faGlobe, faMoneyCheckAlt, faSatellite, faStar, faWrench} from "@fortawesome/free-solid-svg-icons";
-import {phases, tileTypes} from "../enums";
+import {faMoneyCheckAlt, faStar, faWrench} from "@fortawesome/free-solid-svg-icons";
+import {phases} from "../enums";
 import Die from "./Die";
 import Tile from "./Tile";
 
