@@ -66,11 +66,9 @@ class PlayerBoard extends React.Component {
                     <FlexRowDiv>
                         <FontAwesomeIcon icon={faWrench} size='2x' />
                         <BigText>{this.props.developBuildQueue[0].tiles[0].points}</BigText>
-                        {this.getCorrectIcon(this.props.developBuildQueue[0].tiles[0])}
-                        <BigText>{this.props.developBuildQueue[0].tiles[0].name}</BigText>
+                        <Tile key={this.props.developBuildQueue[0].tiles[0].tileId} getDicePool={this.getDicePool} {...this.props.developBuildQueue[0].tiles[0]} />
                         <BigText>{this.props.settleBuildQueue[0].tiles[1].points}</BigText>
-                        {this.getCorrectIcon(this.props.settleBuildQueue[0].tiles[1])}
-                        <BigText>{this.props.settleBuildQueue[0].tiles[1].name}</BigText>
+                        <Tile key={this.props.settleBuildQueue[0].tiles[1].tileId} getDicePool={this.getDicePool} {...this.props.settleBuildQueue[0].tiles[1]} />
                     </FlexRowDiv>
                     <FlexRowDiv>
                         <BigText>Citizenry: </BigText>{this.getDicePool(this.props.citizenry)}

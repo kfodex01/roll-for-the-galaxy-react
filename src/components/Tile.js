@@ -14,7 +14,6 @@ import {faGlobe, faSatellite} from "@fortawesome/free-solid-svg-icons";
 
 class Tile extends React.Component {
     getCorrectIcon = (tile) => {
-        console.log('tile', tile);
         switch (tile.tileType) {
             case tileTypes.BLUE_WORLD:
                 return <BlueWorld icon={faGlobe} size='2x'/>;
