@@ -15,25 +15,6 @@ import Die from "./Die";
 import Tile from "./Tile";
 
 class PlayerBoard extends React.Component {
-    getCorrectIcon = (tile) => {
-        switch (tile.tileType) {
-            case tileTypes.BLUE_WORLD:
-                return <BlueWorld icon={faGlobe} size='2x'/>;
-            case tileTypes.BROWN_WORLD:
-                return <BrownWorld icon={faGlobe} size='2x'/>;
-            case tileTypes.DEVELOPMENT:
-                return <Development icon={faSatellite} size='2x'/>;
-            case tileTypes.GRAY_WORLD:
-                return <GrayWorld icon={faGlobe} size='2x'/>;
-            case tileTypes.GREEN_WORLD:
-                return <GreenWorld icon={faGlobe} size='2x'/>;
-            case tileTypes.YELLOW_WORLD:
-                return <YellowWorld icon={faGlobe} size='2x'/>;
-            default:
-                return null;
-        }
-    };
-
     displayPowers = (phasePowers) => {
         let powerList = [];
         for (let phase in phases) {
