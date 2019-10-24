@@ -1,14 +1,11 @@
 import React from "react";
-import {
-    BigText,
-    FlexRowDiv,
-    PlayerColumnDiv
-} from "../styled-components";
+import {BigText, FlexRowDiv, PlayerColumnDiv} from "../styled-components";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faMoneyCheckAlt, faStar, faWrench} from "@fortawesome/free-solid-svg-icons";
+import {faMoneyCheckAlt, faStar} from "@fortawesome/free-solid-svg-icons";
 import {phases} from "../enums";
 import Tile from "./Tile";
 import DicePool from "./DicePool";
+import ConstructionZone from "./ConstructionZone";
 
 class PlayerBoard extends React.Component {
     displayPowers = (phasePowers) => {
@@ -31,13 +28,7 @@ class PlayerBoard extends React.Component {
                     <BigText>{this.props.points}</BigText>
                     <FontAwesomeIcon icon={faMoneyCheckAlt} size='2x' />
                     <BigText>{this.props.credits}</BigText>
-                    <FlexRowDiv>
-                        <FontAwesomeIcon icon={faWrench} size='2x' />
-                        <BigText>{this.props.developBuildQueue[0].tiles[0].points}</BigText>
-                        <Tile key={this.props.developBuildQueue[0].tiles[0].tileId} {...this.props.developBuildQueue[0].tiles[0]} />
-                        <BigText>{this.props.settleBuildQueue[0].tiles[1].points}</BigText>
-                        <Tile key={this.props.settleBuildQueue[0].tiles[1].tileId} {...this.props.settleBuildQueue[0].tiles[1]} />
-                    </FlexRowDiv>
+                    <ConstructionZone developBuildQueue={this.props.developBuildQueue} settleBuildQueue={this.props.settleBuildQueue} />
                     <FlexRowDiv>
                         <BigText>Citizenry: </BigText>
                         <DicePool dice={this.props.citizenry} />
