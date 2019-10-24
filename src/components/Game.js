@@ -3,8 +3,8 @@ import {connect} from "react-redux";
 import * as ActionCreators from '../action-creators/index.js'
 import {bindActionCreators} from "redux";
 import StartForm from "./StartForm";
-import PlayerBoards from "./PlayerBoards";
-import {BigText} from "../styled-components";
+import {BigText, FlexColumnDiv} from "../styled-components";
+import PlayerBoard from "./PlayerBoard";
 
 class Game extends React.Component {
     state = {
@@ -31,7 +31,14 @@ class Game extends React.Component {
                     <>
                         <BigText data-testid='victory-point-pool'>Victory Point
                             Pool: {this.props.game.victoryPointPool}</BigText>
-                        <PlayerBoards {...this.props} />
+                        <FlexColumnDiv data-testid='player-boards'>
+                            {this.props.game.players.map((player) => {
+                                    return (
+                                        <PlayerBoard key={player.id} {...player} />
+                                    );
+                                }
+                            )}
+                        </FlexColumnDiv>
                     </>
                 }
             </>
