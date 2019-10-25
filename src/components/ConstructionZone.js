@@ -9,10 +9,18 @@ class ConstructionZone extends React.Component {
         return (
             <FlexRowDiv>
                 <FontAwesomeIcon icon={faWrench} size='2x' />
-                <BigText>{this.props.developBuildQueue[0].tiles[0].points}</BigText>
-                <Tile key={this.props.developBuildQueue[0].tiles[0].tileId} {...this.props.developBuildQueue[0].tiles[0]} />
-                <BigText>{this.props.settleBuildQueue[0].tiles[1].points}</BigText>
-                <Tile key={this.props.settleBuildQueue[0].tiles[1].tileId} {...this.props.settleBuildQueue[0].tiles[1]} />
+                {this.props.developBuildQueue.length > 0 ?
+                <>
+                    <BigText>{this.props.developBuildQueue[0].tiles[0].points}</BigText>
+                    <Tile key={this.props.developBuildQueue[0].tiles[0].tileId} {...this.props.developBuildQueue[0].tiles[0]} />
+                </>
+                    : null}
+                {this.props.settleBuildQueue.length > 0 ?
+                    <>
+                        <BigText>{this.props.settleBuildQueue[0].tiles[1].points}</BigText>
+                        <Tile key={this.props.settleBuildQueue[0].tiles[1].tileId} {...this.props.settleBuildQueue[0].tiles[1]} />
+                    </>
+                    : null}
             </FlexRowDiv>
         )
     }
