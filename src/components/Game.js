@@ -78,16 +78,18 @@ const getLowestConstructionQueueTotal = (tiles) => {
 const createPlayers = (state, numberOfPlayers) => {
     const victoryPointPool = 12 * numberOfPlayers;
     const players = [];
+    const factionTiles = chance.pickset(state.factionTiles, numberOfPlayers);
+    const homeWorldTiles = chance.pickset(state.homeWorldTiles, numberOfPlayers);
+    const gameTiles = chance.pickset(state.gameTiles, numberOfPlayers * 2);
+    state.factionTiles = state.factionTiles.filter(tile => !factionTiles.includes(tile));
+    state.homeWorldTiles = state.homeWorldTiles.filter(tile => !homeWorldTiles.includes(tile));
+    state.gameTiles = state.gameTiles.filter(tile => !gameTiles.includes(tile));
     for (let i = 0; i < numberOfPlayers; i++) {
-        const factionTile = chance.pickone(state.factionTiles);
-        state.factionTiles = state.factionTiles.filter(tile => tile.tileId !== factionTile.tileId);
-        const homeWorldTile = chance.pickone(state.homeWorldTiles);
-        state.homeWorldTiles = state.homeWorldTiles.filter(tile => tile.tileId !== homeWorldTile.tileId);
+        const factionTile = factionTiles[i];
+        const homeWorldTile = homeWorldTiles[i];
         let buildQueueTiles = [];
-        buildQueueTiles.push(chance.pickone(state.gameTiles));
-        state.gameTiles = state.gameTiles.filter(tile => tile.tileId !== buildQueueTiles[0].tileId);
-        buildQueueTiles.push(chance.pickone(state.gameTiles));
-        state.gameTiles = state.gameTiles.filter(tile => tile.tileId !== buildQueueTiles[1].tileId);
+        buildQueueTiles.push(gameTiles[i * 2]);
+        buildQueueTiles.push(gameTiles[(i * 2) + 1]);
         buildQueueTiles = getLowestConstructionQueueTotal(buildQueueTiles);
         const credits = homeWorldTile.tileId !== 2 ? 1 : 8;
         let points = 0;
