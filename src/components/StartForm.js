@@ -7,9 +7,9 @@ const StartForm = (props) => {
     };
 
     return (
-        <div data-testid='begin-game-form'>
+        <div>
             <p>{'Please select number of players'}</p>
-            <div data-testid='begin-game-form-number-buttons-div'>
+            <div>
                 <button onClick={() => buildPlayersAndHideForm(1)}>{'1'}</button>
                 <button onClick={() => buildPlayersAndHideForm(2)}>{'2'}</button>
                 <button onClick={() => buildPlayersAndHideForm(3)}>{'3'}</button>
