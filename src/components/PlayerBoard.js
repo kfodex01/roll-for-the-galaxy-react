@@ -25,8 +25,8 @@ class PlayerBoard extends React.Component {
         return (
             <PlayerColumnDiv>
                 <FlexRowDiv>
-                    <FontAwesomeIcon icon={faStar} size='2x'/>
-                    <BigText>{this.props.points}</BigText>
+                    <FontAwesomeIcon data-testid='points-icon' icon={faStar} size='2x'/>
+                    <BigText data-testid='points'>{this.props.points}</BigText>
                     <FontAwesomeIcon icon={faMoneyCheckAlt} size='2x'/>
                     <BigText>{this.props.credits}</BigText>
                     <ConstructionZone developBuildQueue={this.props.developBuildQueue}

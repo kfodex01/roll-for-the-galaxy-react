@@ -91,7 +91,7 @@ const createPlayers = (state, numberOfPlayers) => {
         buildQueueTiles.push(gameTiles[i * 2]);
         buildQueueTiles.push(gameTiles[(i * 2) + 1]);
         buildQueueTiles = getLowestConstructionQueueTotal(buildQueueTiles);
-        const credits = homeWorldTile.tileId !== 2 ? 1 : 8;
+        const credits = homeWorldTile.tile.bonus === bonuses.EIGHT_CREDITS ? 8 : 1;
         let points = 0;
         const tiles = [
             {

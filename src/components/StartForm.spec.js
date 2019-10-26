@@ -44,13 +44,13 @@ describe('StartForm', () => {
         const {queryByText, queryByTestId} = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
         getFormElements(queryByText);
 
-        expect(queryByTestId('start-form')).not.toBeNull();
-        expect(formText).not.toBeNull();
-        expect(playerOneButton).not.toBeNull();
-        expect(playerTwoButton).not.toBeNull();
-        expect(playerThreeButton).not.toBeNull();
-        expect(playerFourButton).not.toBeNull();
-        expect(playerFiveButton).not.toBeNull();
+        expect(queryByTestId('start-form')).toBeTruthy();
+        expect(formText).toBeTruthy();
+        expect(playerOneButton).toBeTruthy();
+        expect(playerTwoButton).toBeTruthy();
+        expect(playerThreeButton).toBeTruthy();
+        expect(playerFourButton).toBeTruthy();
+        expect(playerFiveButton).toBeTruthy();
     });
 
     it('should fire both events with the correct parameters when playerOneButton is clicked', () => {
