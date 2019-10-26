@@ -21,17 +21,9 @@ describe('Game', () => {
     afterEach(cleanup);
 
     it('should display the start form', () => {
-        const {queryByText} = render(<Game />);
+        const {queryByTestId} = render(<Game />);
 
-        const formText = queryByText('Please select number of players');
-        getButtons(queryByText);
-
-        expect(formText).not.toBeNull();
-        expect(playerOneButton).not.toBeNull();
-        expect(playerTwoButton).not.toBeNull();
-        expect(playerThreeButton).not.toBeNull();
-        expect(playerFourButton).not.toBeNull();
-        expect(playerFiveButton).not.toBeNull();
+        expect(queryByTestId('start-form')).not.toBeNull();
     });
 
     it('should hide the start form, create a victory point pool with 12 points, and create 1 player', () => {
@@ -41,7 +33,7 @@ describe('Game', () => {
         fireEvent.click(playerOneButton);
         const playerBoards = queryByTestId('player-boards');
 
-        expect(queryByText('Please select number of players')).toBeNull();
+        expect(queryByTestId('start-form')).toBeNull();
         expect(queryByText('Victory Point Pool: 12')).not.toBeNull();
         expect(playerBoards).not.toBeNull();
         expect(playerBoards.children.length).toBe(1);
@@ -54,7 +46,7 @@ describe('Game', () => {
         fireEvent.click(playerTwoButton);
         const playerBoards = queryByTestId('player-boards');
 
-        expect(queryByText('Please select number of players')).toBeNull();
+        expect(queryByTestId('start-form')).toBeNull();
         expect(queryByText('Victory Point Pool: 24')).not.toBeNull();
         expect(playerBoards).not.toBeNull();
         expect(playerBoards.children.length).toBe(2);
@@ -67,7 +59,7 @@ describe('Game', () => {
         fireEvent.click(playerThreeButton);
         const playerBoards = queryByTestId('player-boards');
 
-        expect(queryByText('Please select number of players')).toBeNull();
+        expect(queryByTestId('start-form')).toBeNull();
         expect(queryByText('Victory Point Pool: 36')).not.toBeNull();
         expect(playerBoards).not.toBeNull();
         expect(playerBoards.children.length).toBe(3);
@@ -80,7 +72,7 @@ describe('Game', () => {
         fireEvent.click(playerFourButton);
         const playerBoards = queryByTestId('player-boards');
 
-        expect(queryByText('Please select number of players')).toBeNull();
+        expect(queryByTestId('start-form')).toBeNull();
         expect(queryByText('Victory Point Pool: 48')).not.toBeNull();
         expect(playerBoards).not.toBeNull();
         expect(playerBoards.children.length).toBe(4);
@@ -93,7 +85,7 @@ describe('Game', () => {
         fireEvent.click(playerFiveButton);
         const playerBoards = queryByTestId('player-boards');
 
-        expect(queryByText('Please select number of players')).toBeNull();
+        expect(queryByTestId('start-form')).toBeNull();
         expect(queryByText('Victory Point Pool: 60')).not.toBeNull();
         expect(playerBoards).not.toBeNull();
         expect(playerBoards.children.length).toBe(5);
