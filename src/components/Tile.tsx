@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {
     BigText,
     BlueWorld,
@@ -13,8 +13,14 @@ import {tileTypes} from "../enums";
 import {faGlobe, faSatellite} from "@fortawesome/free-solid-svg-icons";
 import DicePool from "./DicePool";
 
-class Tile extends React.Component {
-    getCorrectIcon = (tile) => {
+type TileProps = {
+    dice: any,
+    name: string,
+    tileId: number
+}
+
+class Tile extends React.Component<TileProps, {}> {
+    getCorrectIcon = (tile: any) => {
         switch (tile.tileType) {
             case tileTypes.BLUE_WORLD:
                 return <BlueWorld icon={faGlobe} size='2x'/>;
