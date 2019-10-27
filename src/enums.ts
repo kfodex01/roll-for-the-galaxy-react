@@ -17,14 +17,23 @@ export const phases = {
     SHIP: 'Ship'
 };
 
-export const dieColors = {
+export const dieColor = {
     BLUE: 'Blue',
     BROWN: 'Brown',
     GREEN: 'Green',
     PURPLE: 'Purple',
     RED: 'Red',
     WHITE: 'White',
-    YELLOW: 'Yellow',
+    YELLOW: 'Yellow'
+};
+
+export const dieFace = {
+    DEVELOP: 'Develop',
+    EXPLORE: 'Explore',
+    PRODUCE: 'Produce',
+    SETTLE: 'Settle',
+    SHIP: 'Ship',
+    WILD: 'Wild'
 };
 
 export const gameColors = {

@@ -2,7 +2,7 @@ import React from 'react';
 import {render, cleanup} from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Chance from 'chance';
-import {dieColors, initialGameState, phases} from "../enums";
+import {dieColor, initialGameState, phases} from "../enums";
 import PlayerBoard from "./PlayerBoard";
 
 const chance = new Chance();
@@ -18,14 +18,14 @@ describe('PlayerBoard', () => {
     playerState = {
         citizenry: chance.unique(() => {
             return ({
-                color: dieColors.WHITE,
+                color: dieColor.WHITE,
                 value: phases.EXPLORE
             });
         }, chance.d6(), null),
         credits: chance.integer({min: 1, max: 10}),
         cup: chance.unique(() => {
             return ({
-                color: dieColors.WHITE,
+                color: dieColor.WHITE,
                 value: phases.EXPLORE
             });
         }, chance.d6(), null),

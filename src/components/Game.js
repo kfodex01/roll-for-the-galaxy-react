@@ -2,7 +2,7 @@ import React from "react";
 import StartForm from "./StartForm";
 import {BigText, FlexColumnDiv} from "../styled-components";
 import PlayerBoard from "./PlayerBoard";
-import {bonuses, dieColors, initialGameState, phases} from "../enums";
+import {bonuses, dieColor, initialGameState, phases} from "../enums";
 import Chance from "chance";
 
 const chance = new Chance();
@@ -17,51 +17,51 @@ const addDieToPool = (dicePool, dieColor, dieFace) => {
 const addBonus = (tile, citizenry, cup) => {
     switch (tile.bonus) {
         case bonuses.ONE_BROWN_DIE_TO_CITIZENRY:
-            addDieToPool(citizenry, dieColors.BROWN, phases.EXPLORE);
+            addDieToPool(citizenry, dieColor.BROWN, phases.EXPLORE);
             break;
         case bonuses.ONE_GREEN_DIE_TO_CITIZENRY:
-            addDieToPool(citizenry, dieColors.GREEN, phases.EXPLORE);
+            addDieToPool(citizenry, dieColor.GREEN, phases.EXPLORE);
             break;
         case bonuses.ONE_PURPLE_DIE_TO_CITIZENRY:
-            addDieToPool(citizenry, dieColors.PURPLE, phases.EXPLORE);
+            addDieToPool(citizenry, dieColor.PURPLE, phases.EXPLORE);
             break;
         case bonuses.ONE_RED_DIE_TO_CITIZENRY:
-            addDieToPool(citizenry, dieColors.RED, phases.EXPLORE);
+            addDieToPool(citizenry, dieColor.RED, phases.EXPLORE);
             break;
         case bonuses.ONE_YELLOW_DIE_TO_CITIZENRY:
-            addDieToPool(citizenry, dieColors.YELLOW, phases.DEVELOP);
+            addDieToPool(citizenry, dieColor.YELLOW, phases.DEVELOP);
             break;
         case bonuses.ONE_BLUE_DIE_AND_ONE_RED_DIE_TO_CITIZENRY:
-            addDieToPool(citizenry, dieColors.BLUE, phases.EXPLORE);
-            addDieToPool(citizenry, dieColors.RED, phases.EXPLORE);
+            addDieToPool(citizenry, dieColor.BLUE, phases.EXPLORE);
+            addDieToPool(citizenry, dieColor.RED, phases.EXPLORE);
             break;
         case bonuses.TWO_RED_DICE_TO_CITIZENRY:
-            addDieToPool(citizenry, dieColors.RED, phases.EXPLORE);
-            addDieToPool(citizenry, dieColors.RED, phases.EXPLORE);
+            addDieToPool(citizenry, dieColor.RED, phases.EXPLORE);
+            addDieToPool(citizenry, dieColor.RED, phases.EXPLORE);
             break;
         case bonuses.ONE_BLUE_DIE_TO_CUP:
-            addDieToPool(cup, dieColors.BLUE, phases.EXPLORE);
+            addDieToPool(cup, dieColor.BLUE, phases.EXPLORE);
             break;
         case bonuses.ONE_BROWN_DIE_TO_CUP:
-            addDieToPool(cup, dieColors.BROWN, phases.EXPLORE);
+            addDieToPool(cup, dieColor.BROWN, phases.EXPLORE);
             break;
         case bonuses.ONE_GREEN_DIE_TO_CUP:
-            addDieToPool(cup, dieColors.GREEN, phases.EXPLORE);
+            addDieToPool(cup, dieColor.GREEN, phases.EXPLORE);
             break;
         case bonuses.ONE_PURPLE_DIE_TO_CUP:
-            addDieToPool(cup, dieColors.PURPLE, phases.EXPLORE);
+            addDieToPool(cup, dieColor.PURPLE, phases.EXPLORE);
             break;
         case bonuses.ONE_RED_DIE_TO_CUP:
-            addDieToPool(cup, dieColors.RED, phases.EXPLORE);
+            addDieToPool(cup, dieColor.RED, phases.EXPLORE);
             break;
         case bonuses.ONE_BLUE_DIE_TO_WORLD:
-            addDieToPool(tile.dice = [], dieColors.BLUE, phases.EXPLORE);
+            addDieToPool(tile.dice = [], dieColor.BLUE, phases.EXPLORE);
             break;
         case bonuses.ONE_BROWN_DIE_TO_WORLD:
-            addDieToPool(tile.dice = [], dieColors.BROWN, phases.EXPLORE);
+            addDieToPool(tile.dice = [], dieColor.BROWN, phases.EXPLORE);
             break;
         case bonuses.ONE_GREEN_DIE_TO_WORLD:
-            addDieToPool(tile.dice = [], dieColors.GREEN, phases.EXPLORE);
+            addDieToPool(tile.dice = [], dieColor.GREEN, phases.EXPLORE);
             break;
         default:
             break;
@@ -118,25 +118,25 @@ const createPlayers = (state, numberOfPlayers) => {
         };
         const citizenry = [
             {
-                color: dieColors.WHITE,
+                color: dieColor.WHITE,
                 value: phases.EXPLORE
             },
             {
-                color: dieColors.WHITE,
+                color: dieColor.WHITE,
                 value: phases.EXPLORE
             }
         ];
         const cup = [
             {
-                color: dieColors.WHITE,
+                color: dieColor.WHITE,
                 value: phases.EXPLORE
             },
             {
-                color: dieColors.WHITE,
+                color: dieColor.WHITE,
                 value: phases.EXPLORE
             },
             {
-                color: dieColors.WHITE,
+                color: dieColor.WHITE,
                 value: phases.EXPLORE
             }
         ];
