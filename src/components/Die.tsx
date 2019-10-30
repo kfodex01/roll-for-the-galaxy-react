@@ -42,12 +42,12 @@ const YellowDie = styled(DieDiv)`
   background: ${gameColors.YELLOW};
 `;
 
-export type DieProps = {
-    color: string,
-    face: string
+export interface DieProps {
+    color: string;
+    face: string;
 }
 
-class Die extends React.Component<DieProps, {}> {
+class Die extends React.Component<DieProps> {
     getDieFace = (face: string) => {
         switch (face) {
             case dieFace.EXPLORE:

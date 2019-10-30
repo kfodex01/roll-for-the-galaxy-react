@@ -1,11 +1,11 @@
 import React from "react";
 import Die, {DieProps} from "./Die";
 
-export type DicePoolProps = {
-    dice: Array<DieProps>
+export interface DicePoolProps {
+    dice: Array<DieProps>;
 }
 
-class DicePool extends React.Component<DicePoolProps, {}> {
+class DicePool extends React.Component<DicePoolProps> {
     getDicePool = (dicePool: any) => {
         if (dicePool) {
             return dicePool.map((die: any, id: any) => {

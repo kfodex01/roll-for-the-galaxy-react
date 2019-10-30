@@ -4,17 +4,19 @@ import {BigText, FlexColumnDiv} from "../styled-components";
 import PlayerBoard from "./PlayerBoard";
 import {bonuses, dieColor, initialGameState, phases} from "../enums";
 import Chance from "chance";
+import {DieProps} from "./Die";
+import {TileProps} from "./Tile";
 
 const chance = new Chance();
 
-const addDieToPool = (dicePool, dieColor, dieFace) => {
+const addDieToPool = (dicePool: Array<DieProps>, dieColor: string, dieFace: string) => {
     dicePool.push({
         color: dieColor,
-        value: dieFace
+        face: dieFace
     });
 };
 
-const addBonus = (tile, citizenry, cup) => {
+const addBonus = (tile: TileProps, citizenry: Array<DieProps>, cup: Array<DieProps>) => {
     switch (tile.bonus) {
         case bonuses.ONE_BROWN_DIE_TO_CITIZENRY:
             addDieToPool(citizenry, dieColor.BROWN, phases.EXPLORE);
@@ -68,14 +70,14 @@ const addBonus = (tile, citizenry, cup) => {
     }
 };
 
-const getLowestConstructionQueueTotal = (tiles) => {
+const getLowestConstructionQueueTotal = (tiles: Array<Array>) => {
     if (tiles[0].tiles[0].points + tiles[1].tiles[1].points > tiles[0].tiles[1].points + tiles[1].tiles[0].points) {
         return [tiles[1], tiles[0]];
     }
     return (tiles);
 };
 
-const createPlayers = (state, numberOfPlayers) => {
+const createPlayers = (state, numberOfPlayers: number) => {
     const victoryPointPool = 12 * numberOfPlayers;
     const players = [];
     const factionTiles = chance.pickset(state.factionTiles, numberOfPlayers);

@@ -4,17 +4,17 @@ import {faWrench} from "@fortawesome/free-solid-svg-icons";
 import {BigText, FlexRowDiv} from "../styled-components";
 import Tile, {TileProps} from "./Tile";
 
-type Tiles = {
-    tileId: number,
-    tiles: Array<TileProps>
+export interface Tiles {
+    tileId: number;
+    tiles: Array<TileProps>;
 }
 
-type ConstructionZoneProps = {
-    developBuildQueue: Array<Tiles>,
-    settleBuildQueue: Array<Tiles>
+interface ConstructionZoneProps {
+    developBuildQueue: Array<Tiles>;
+    settleBuildQueue: Array<Tiles>;
 }
 
-class ConstructionZone extends React.Component<ConstructionZoneProps, {}> {
+class ConstructionZone extends React.Component<ConstructionZoneProps> {
     render() {
         return (
             <FlexRowDiv>
