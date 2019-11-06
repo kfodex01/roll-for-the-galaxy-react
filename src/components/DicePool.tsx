@@ -9,7 +9,7 @@ class DicePool extends React.Component<DicePoolProps> {
     getDicePool = (dicePool: any) => {
         if (dicePool) {
             return dicePool.map((die: any, id: any) => {
-                return (<Die key={id} color={die.color} face={die.value}/>);
+                return (<Die key={id} color={die.color} face={die.face}/>);
             });
         }
         return null;

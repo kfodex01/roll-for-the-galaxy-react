@@ -33,13 +33,13 @@ describe('PlayerBoard', () => {
         id: chance.integer({min: 1, max: 5}),
         nextTileId: chance.integer({min: 1, max: 20}),
         phasePowers: {
-            [phases.ASSIGNMENT]: [],
-            [phases.EXPLORE]: [],
-            [phases.DEVELOP]: [],
-            [phases.SETTLE]: [],
-            [phases.PRODUCE]: [],
-            [phases.SHIP]: [],
-            [phases.ENDGAME]: []
+            assignment: [],
+            explore: [],
+            develop: [],
+            settle: [],
+            produce: [],
+            ship: [],
+            endGame: []
         },
         points: chance.integer({min: 0, max: 100}),
         settleBuildQueue: chance.pickset(initialGameState.gameTiles, chance.d6()),

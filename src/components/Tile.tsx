@@ -12,21 +12,20 @@ import {
 import {tileTypes} from "../enums";
 import {faGlobe, faSatellite} from "@fortawesome/free-solid-svg-icons";
 import DicePool, {DicePoolProps} from "./DicePool";
-import {DieProps} from "./Die";
 
 export interface TileProps {
-    dice: Array<DieProps>;
+    dicePool: DicePoolProps;
     name: string;
     points: number;
     tileId: number;
     bonus: string;
-    Assignment: string;
-    Explore: string;
-    Develop: string;
-    Settle: string;
-    Produce: string;
-    Ship: string;
-    EndGame: string;
+    assignment: string;
+    explore: string;
+    develop: string;
+    settle: string;
+    produce: string;
+    ship: string;
+    endGame: string;
 }
 
 class Tile extends React.Component<TileProps> {
@@ -53,7 +52,7 @@ class Tile extends React.Component<TileProps> {
         return (
             <FlexRowDiv key={this.props.tileId}>
                 {this.getCorrectIcon(this.props)}
-                <DicePool dice={this.props.dice} />
+                {this.props.dicePool ? <DicePool dice={this.props.dicePool.dice} /> : null}
                 <BigText>{this.props.name}</BigText>
             </FlexRowDiv>
         );

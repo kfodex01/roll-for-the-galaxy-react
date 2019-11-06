@@ -1,23 +1,23 @@
 import React from "react";
 import StartForm from "./StartForm";
 import {BigText, FlexColumnDiv} from "../styled-components";
-import PlayerBoard from "./PlayerBoard";
+import PlayerBoard, { PhasePowersProps, PlayerBoardProps } from "./PlayerBoard";
 import {bonuses, dieColor, initialGameState, phases} from "../enums";
 import Chance from "chance";
-import {DieProps} from "./Die";
-import Tile, {TileProps} from "./Tile";
+import {TileProps} from "./Tile";
 import { Tiles } from "./ConstructionZone";
+import { DicePoolProps } from "./DicePool";
 
 const chance = new Chance();
 
-const addDieToPool = (dicePool: Array<DieProps>, dieColor: string, dieFace: string) => {
-    dicePool.push({
+const addDieToPool = (dicePool: DicePoolProps, dieColor: string, dieFace: string) => {
+    dicePool.dice.push({
         color: dieColor,
         face: dieFace
     });
 };
 
-const addBonus = (tile: TileProps, citizenry: Array<DieProps>, cup: Array<DieProps>) => {
+const addBonus = (tile: TileProps, citizenry: DicePoolProps, cup: DicePoolProps) => {
     switch (tile.bonus) {
         case bonuses.ONE_BROWN_DIE_TO_CITIZENRY:
             addDieToPool(citizenry, dieColor.BROWN, phases.EXPLORE);
@@ -58,13 +58,13 @@ const addBonus = (tile: TileProps, citizenry: Array<DieProps>, cup: Array<DiePro
             addDieToPool(cup, dieColor.RED, phases.EXPLORE);
             break;
         case bonuses.ONE_BLUE_DIE_TO_WORLD:
-            addDieToPool(tile.dice = [], dieColor.BLUE, phases.EXPLORE);
+            addDieToPool(tile.dicePool = {dice: []}, dieColor.BLUE, phases.EXPLORE);
             break;
         case bonuses.ONE_BROWN_DIE_TO_WORLD:
-            addDieToPool(tile.dice = [], dieColor.BROWN, phases.EXPLORE);
+            addDieToPool(tile.dicePool = {dice: []}, dieColor.BROWN, phases.EXPLORE);
             break;
         case bonuses.ONE_GREEN_DIE_TO_WORLD:
-            addDieToPool(tile.dice = [], dieColor.GREEN, phases.EXPLORE);
+            addDieToPool(tile.dicePool = {dice: []}, dieColor.GREEN, phases.EXPLORE);
             break;
         default:
             break;
@@ -80,23 +80,23 @@ const getLowestConstructionQueueTotal = (tiles: Array<Tiles>): Array<Tiles> => {
 
 const createPlayers = (state : any, numberOfPlayers: number) => {
     const victoryPointPool = 12 * numberOfPlayers;
-    const players = [];
-    const factionTiles = chance.pickset(state.factionTiles, numberOfPlayers);
-    const homeWorldTiles = chance.pickset(state.homeWorldTiles, numberOfPlayers);
-    const gameTiles = chance.pickset(state.gameTiles, numberOfPlayers * 2);
-    state.factionTiles = state.factionTiles.filter(tile => !factionTiles.includes(tile));
-    state.homeWorldTiles = state.homeWorldTiles.filter(tile => !homeWorldTiles.includes(tile));
-    state.gameTiles = state.gameTiles.filter(tile => !gameTiles.includes(tile));
+    const players: Array<PlayerBoardProps> = [];
+    const factionTiles: Array<Tiles> = chance.pickset(state.factionTiles, numberOfPlayers);
+    const homeWorldTiles: Array<Tiles> = chance.pickset(state.homeWorldTiles, numberOfPlayers);
+    const gameTiles: Array<Tiles> = chance.pickset(state.gameTiles, numberOfPlayers * 2);
+    state.factionTiles = state.factionTiles.filter((tile: Tiles) => !factionTiles.includes(tile));
+    state.homeWorldTiles = state.homeWorldTiles.filter((tile: Tiles) => !homeWorldTiles.includes(tile));
+    state.gameTiles = state.gameTiles.filter((tile: Tiles) => !gameTiles.includes(tile));
     for (let i = 0; i < numberOfPlayers; i++) {
-        const factionTile = factionTiles[i];
-        const homeWorldTile = homeWorldTiles[i];
-        let buildQueueTiles = [];
+        const factionTile: Tiles = factionTiles[i];
+        const homeWorldTile: Tiles = homeWorldTiles[i];
+        let buildQueueTiles: Array<Tiles> = [];
         buildQueueTiles.push(gameTiles[i * 2]);
         buildQueueTiles.push(gameTiles[(i * 2) + 1]);
         buildQueueTiles = getLowestConstructionQueueTotal(buildQueueTiles);
-        const credits = homeWorldTile.tile.bonus === bonuses.EIGHT_CREDITS ? 8 : 1;
+        const credits = homeWorldTile.tiles[0].bonus === bonuses.EIGHT_CREDITS ? 8 : 1;
         let points = 0;
-        const tiles = [
+        const tiles: Array<TileProps> = [
             {
                 ...factionTile.tiles[0],
                 tileId: 1
@@ -106,49 +106,55 @@ const createPlayers = (state : any, numberOfPlayers: number) => {
                 tileId: 2
             },
             {
-                ...homeWorldTile.tile,
+                ...homeWorldTile.tiles[0],
                 tileId: 3
             }
         ];
-        const phasePowers = {
-            [phases.ASSIGNMENT]: [],
-            [phases.EXPLORE]: [],
-            [phases.DEVELOP]: [],
-            [phases.SETTLE]: [],
-            [phases.PRODUCE]: [],
-            [phases.SHIP]: [],
-            [phases.ENDGAME]: []
+        const phasePowers: PhasePowersProps = {
+            assignment: [],
+            explore: [],
+            develop: [],
+            settle: [],
+            produce: [],
+            ship: [],
+            endGame: []
         };
-        const citizenry = [
-            {
-                color: dieColor.WHITE,
-                value: phases.EXPLORE
-            },
-            {
-                color: dieColor.WHITE,
-                value: phases.EXPLORE
-            }
-        ];
-        const cup = [
-            {
-                color: dieColor.WHITE,
-                value: phases.EXPLORE
-            },
-            {
-                color: dieColor.WHITE,
-                value: phases.EXPLORE
-            },
-            {
-                color: dieColor.WHITE,
-                value: phases.EXPLORE
-            }
-        ];
-        tiles.forEach((tile) => {
-            for (let phase in phases) {
-                if (tile[phases[phase]]) {
-                    phasePowers[phases[phase]].push(tile[phases[phase]]);
+        const citizenry: DicePoolProps = {
+            dice: [
+                {
+                    color: dieColor.WHITE,
+                    face: phases.EXPLORE
+                },
+                {
+                    color: dieColor.WHITE,
+                    face: phases.EXPLORE
                 }
-            }
+            ]
+        };
+        const cup: DicePoolProps = {
+            dice: [
+                {
+                    color: dieColor.WHITE,
+                    face: phases.EXPLORE
+                },
+                {
+                    color: dieColor.WHITE,
+                    face: phases.EXPLORE
+                },
+                {
+                    color: dieColor.WHITE,
+                    face: phases.EXPLORE
+                }
+            ]
+        };
+        tiles.forEach((tile) => {
+            if(tile.assignment) {phasePowers.assignment.push(tile.assignment)};
+            if(tile.explore) {phasePowers.explore.push(tile.explore)};
+            if(tile.develop) {phasePowers.develop.push(tile.develop)};
+            if(tile.settle) {phasePowers.settle.push(tile.settle)};
+            if(tile.produce) {phasePowers.produce.push(tile.produce)};
+            if(tile.ship) {phasePowers.ship.push(tile.ship)};
+            if(tile.endGame) {phasePowers.endGame.push(tile.endGame)};
 
             points = points + tile.points;
             addBonus(tile, citizenry, cup);
@@ -206,7 +212,7 @@ class Game extends React.Component {
                     <>
                         <BigText>Victory Point Pool: {this.state.victoryPointPool}</BigText>
                         <FlexColumnDiv data-testid='player-boards'>
-                            {this.state.game.players.map((player) => {
+                            {this.state.game.players.map((player: PlayerBoardProps) => {
                                     return (
                                         <PlayerBoard key={player.id} {...player} />
                                     );

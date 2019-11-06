@@ -167,7 +167,7 @@ const factionTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 0,
                 name: 'Space Piracy',
-                [phases.SHIP]: developmentPowers.SPACE_PIRACY
+                ship: developmentPowers.SPACE_PIRACY
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -184,7 +184,7 @@ const factionTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 1,
                 name: 'Alien Archaeology',
-                [phases.SHIP]: developmentPowers.ALIEN_ARCHAEOLOGY
+                ship: developmentPowers.ALIEN_ARCHAEOLOGY
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -201,7 +201,7 @@ const factionTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Consumer Markets',
-                [phases.PRODUCE]: developmentPowers.CONSUMER_MARKETS
+                produce: developmentPowers.CONSUMER_MARKETS
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -218,7 +218,7 @@ const factionTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Improved Reconnaissance',
-                [phases.EXPLORE]: developmentPowers.IMPROVED_RECONNAISSANCE
+                explore: developmentPowers.IMPROVED_RECONNAISSANCE
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -235,7 +235,7 @@ const factionTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Genetics Lab',
-                [phases.PRODUCE]: developmentPowers.GENETICS_LAB
+                produce: developmentPowers.GENETICS_LAB
             },
             {
                 tileType: tileTypes.GREEN_WORLD,
@@ -252,7 +252,7 @@ const factionTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Galactic Religion',
-                [phases.DEVELOP]: developmentPowers.GALACTIC_RELIGION
+                develop: developmentPowers.GALACTIC_RELIGION
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -269,7 +269,7 @@ const factionTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Biological Adaptation',
-                [phases.DEVELOP]: developmentPowers.BIOLOGICAL_ADAPTATION
+                develop: developmentPowers.BIOLOGICAL_ADAPTATION
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -286,7 +286,7 @@ const factionTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Mining Industry',
-                [phases.SHIP]: developmentPowers.MINING_INDUSTRY
+                ship: developmentPowers.MINING_INDUSTRY
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -318,84 +318,102 @@ const factionTiles = [
 const homeWorldTiles = [
     {
         tileId: 1,
-        tile: {
-            tileType: tileTypes.GRAY_WORLD,
-            points: 2,
-            name: 'New Sparta',
-            bonus: bonuses.TWO_RED_DICE_TO_CITIZENRY
-        }
+        tiles: [
+            {
+                tileType: tileTypes.GRAY_WORLD,
+                points: 2,
+                name: 'New Sparta',
+                bonus: bonuses.TWO_RED_DICE_TO_CITIZENRY
+            }
+        ]
     },
     {
         tileId: 2,
-        tile: {
-            tileType: tileTypes.GRAY_WORLD,
-            points: 0,
-            name: 'Doomed World',
-            bonus: bonuses.EIGHT_CREDITS
-        }
+        tiles: [
+            {
+                tileType: tileTypes.GRAY_WORLD,
+                points: 0,
+                name: 'Doomed World',
+                bonus: bonuses.EIGHT_CREDITS
+            }
+        ]
     },
     {
         tileId: 3,
-        tile: {
-            tileType: tileTypes.BROWN_WORLD,
-            points: 1,
-            name: 'Alpha Centauri',
-            bonus: bonuses.ONE_BROWN_DIE_TO_WORLD
-        }
+        tiles: [
+            {
+                tileType: tileTypes.BROWN_WORLD,
+                points: 1,
+                name: 'Alpha Centauri',
+                bonus: bonuses.ONE_BROWN_DIE_TO_WORLD
+            }
+        ]
     },
     {
         tileId: 4,
-        tile: {
-            tileType: tileTypes.BLUE_WORLD,
-            points: 2,
-            name: 'Earth\'s Lost Colony',
-            bonus: bonuses.ONE_BLUE_DIE_TO_WORLD
-        }
+        tiles: [
+            {
+                tileType: tileTypes.BLUE_WORLD,
+                points: 2,
+                name: 'Earth\'s Lost Colony',
+                bonus: bonuses.ONE_BLUE_DIE_TO_WORLD
+            }
+        ]
     },
     {
         tileId: 5,
-        tile: {
-            tileType: tileTypes.GREEN_WORLD,
-            points: 0,
-            name: 'Ancient Race',
-            bonus: bonuses.ONE_GREEN_DIE_TO_WORLD
-        }
+        tiles: [
+            {
+                tileType: tileTypes.GREEN_WORLD,
+                points: 0,
+                name: 'Ancient Race',
+                bonus: bonuses.ONE_GREEN_DIE_TO_WORLD
+            }
+        ]
     },
     {
         tileId: 6,
-        tile: {
-            tileType: tileTypes.YELLOW_WORLD,
-            points: 1,
-            name: 'Damaged Alien Factory',
-            bonus: bonuses.ONE_YELLOW_DIE_TO_CITIZENRY
-        }
+        tiles: [
+            {
+                tileType: tileTypes.YELLOW_WORLD,
+                points: 1,
+                name: 'Damaged Alien Factory',
+                bonus: bonuses.ONE_YELLOW_DIE_TO_CITIZENRY
+            }
+        ]
     },
     {
         tileId: 7,
-        tile: {
-            tileType: tileTypes.GRAY_WORLD,
-            points: 3,
-            name: 'Old Earth',
-            bonus: bonuses.ONE_PURPLE_DIE_TO_CITIZENRY
-        }
+        tiles: [
+            {
+                tileType: tileTypes.GRAY_WORLD,
+                points: 3,
+                name: 'Old Earth',
+                bonus: bonuses.ONE_PURPLE_DIE_TO_CITIZENRY
+            }
+        ]
     },
     {
         tileId: 8,
-        tile: {
-            tileType: tileTypes.GRAY_WORLD,
-            points: 2,
-            name: 'Separatist Colony',
-            bonus: bonuses.ONE_RED_DIE_TO_CUP
-        }
+        tiles: [
+            {
+                tileType: tileTypes.GRAY_WORLD,
+                points: 2,
+                name: 'Separatist Colony',
+                bonus: bonuses.ONE_RED_DIE_TO_CUP
+            }
+        ]
     },
     {
         tileId: 9,
-        tile: {
-            tileType: tileTypes.GRAY_WORLD,
-            points: 2,
-            name: 'Epsilon Eridani',
-            bonus: bonuses.ONE_BLUE_DIE_AND_ONE_RED_DIE_TO_CITIZENRY
-        }
+        tiles: [
+            {
+                tileType: tileTypes.GRAY_WORLD,
+                points: 2,
+                name: 'Epsilon Eridani',
+                bonus: bonuses.ONE_BLUE_DIE_AND_ONE_RED_DIE_TO_CITIZENRY
+            }
+        ]
     }
 ];
 
@@ -407,7 +425,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 1,
                 name: 'Advanced Logistics',
-                [phases.EXPLORE]: developmentPowers.ADVANCED_LOGISTICS
+                explore: developmentPowers.ADVANCED_LOGISTICS
             },
             {
                 tileType: tileTypes.GREEN_WORLD,
@@ -424,7 +442,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 5,
                 name: 'Alien Research Ship',
-                [phases.EXPLORE]: developmentPowers.ALIEN_RESEARCH_SHIP
+                explore: developmentPowers.ALIEN_RESEARCH_SHIP
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -441,7 +459,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Alien Research Team',
-                [phases.EXPLORE]: developmentPowers.ALIEN_RESEARCH_TEAM
+                explore: developmentPowers.ALIEN_RESEARCH_TEAM
             },
             {
                 tileType: tileTypes.GREEN_WORLD,
@@ -458,7 +476,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Alien Uplift Blueprints',
-                [phases.SETTLE]: developmentPowers.ALIEN_UPLIFT_BLUEPRINTS
+                settle: developmentPowers.ALIEN_UPLIFT_BLUEPRINTS
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -475,7 +493,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 1,
                 name: 'Backup Planning',
-                [phases.ASSIGNMENT]: developmentPowers.BACKUP_PLANNING
+                assignment: developmentPowers.BACKUP_PLANNING
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -509,7 +527,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Colonial Affinity',
-                [phases.ASSIGNMENT]: developmentPowers.COLONIAL_AFFINITY
+                assignment: developmentPowers.COLONIAL_AFFINITY
             },
             {
                 tileType: tileTypes.GREEN_WORLD,
@@ -526,7 +544,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 1,
                 name: 'Diversification',
-                [phases.ASSIGNMENT]: developmentPowers.DIVERSIFICATION
+                assignment: developmentPowers.DIVERSIFICATION
             },
             {
                 tileType: tileTypes.GREEN_WORLD,
@@ -543,7 +561,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Executive Powers',
-                [phases.ASSIGNMENT]: developmentPowers.EXECUTIVE_POWER
+                assignment: developmentPowers.EXECUTIVE_POWER
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -560,7 +578,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Export Duties',
-                [phases.SHIP]: developmentPowers.EXPORT_DUTIES
+                ship: developmentPowers.EXPORT_DUTIES
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -577,8 +595,8 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 6,
                 name: 'Free Trade Association',
-                [phases.SHIP]: developmentPowers.FREE_TRADE_ASSOCIATION,
-                [phases.ENDGAME]: developmentPowers.FREE_TRADE_ASSOCIATION_ENDGAME
+                ship: developmentPowers.FREE_TRADE_ASSOCIATION,
+                endGame: developmentPowers.FREE_TRADE_ASSOCIATION_ENDGAME
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -595,7 +613,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Free Trade Zone',
-                [phases.SETTLE]: developmentPowers.FREE_TRADE_ZONE
+                settle: developmentPowers.FREE_TRADE_ZONE
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -612,8 +630,8 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 6,
                 name: 'Galactic Bankers',
-                [phases.SHIP]: developmentPowers.GALACTIC_BANKERS,
-                [phases.ENDGAME]: developmentPowers.GALACTIC_BANKERS_ENDGAME
+                ship: developmentPowers.GALACTIC_BANKERS,
+                endGame: developmentPowers.GALACTIC_BANKERS_ENDGAME
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -630,7 +648,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Galactic Demand',
-                [phases.SHIP]: developmentPowers.GALACTIC_DEMAND
+                ship: developmentPowers.GALACTIC_DEMAND
             },
             {
                 tileType: tileTypes.YELLOW_WORLD,
@@ -647,8 +665,8 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 6,
                 name: 'Galactic Exchange',
-                [phases.SETTLE]: developmentPowers.GALACTIC_EXCHANGE,
-                [phases.ENDGAME]: developmentPowers.GALACTIC_EXCHANGE_ENDGAME
+                settle: developmentPowers.GALACTIC_EXCHANGE,
+                endGame: developmentPowers.GALACTIC_EXCHANGE_ENDGAME
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -665,8 +683,8 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 6,
                 name: 'Galactic Federation',
-                [phases.DEVELOP]: developmentPowers.GALACTIC_FEDERATION,
-                [phases.ENDGAME]: developmentPowers.GALACTIC_FEDERATION_ENDGAME
+                develop: developmentPowers.GALACTIC_FEDERATION,
+                endGame: developmentPowers.GALACTIC_FEDERATION_ENDGAME
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -683,7 +701,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Galactic Influence',
-                [phases.ASSIGNMENT]: developmentPowers.GALACTIC_INFLUENCE
+                assignment: developmentPowers.GALACTIC_INFLUENCE
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -700,7 +718,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 5,
                 name: 'Galactic Investors',
-                [phases.DEVELOP]: developmentPowers.GALACTIC_INVESTORS
+                develop: developmentPowers.GALACTIC_INVESTORS
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -717,7 +735,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Galactic Mandate',
-                [phases.ASSIGNMENT]: developmentPowers.GALACTIC_MANDATE
+                assignment: developmentPowers.GALACTIC_MANDATE
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -734,8 +752,8 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Galactic Recycling',
-                [phases.DEVELOP]: developmentPowers.GALACTIC_RECYCLING,
-                [phases.SETTLE]: developmentPowers.GALACTIC_RECYCLING
+                develop: developmentPowers.GALACTIC_RECYCLING,
+                settle: developmentPowers.GALACTIC_RECYCLING
             },
             {
                 tileType: tileTypes.YELLOW_WORLD,
@@ -752,8 +770,8 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 6,
                 name: 'Galactic Renaissance',
-                [phases.SHIP]: developmentPowers.GALACTIC_RENAISSANCE,
-                [phases.ENDGAME]: developmentPowers.GALACTIC_RENAISSANCE_ENDGAME
+                ship: developmentPowers.GALACTIC_RENAISSANCE,
+                endGame: developmentPowers.GALACTIC_RENAISSANCE_ENDGAME
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -770,8 +788,8 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 6,
                 name: 'Galactic Reserves',
-                [phases.PRODUCE]: developmentPowers.GALACTIC_RESERVES,
-                [phases.ENDGAME]: developmentPowers.GALACTIC_RESERVES_ENDGAME
+                produce: developmentPowers.GALACTIC_RESERVES,
+                endGame: developmentPowers.GALACTIC_RESERVES_ENDGAME
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -788,7 +806,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 4,
                 name: 'Galactic Salon',
-                [phases.SHIP]: developmentPowers.GALACTIC_SALON
+                ship: developmentPowers.GALACTIC_SALON
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -805,7 +823,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Homeworld Patriotism',
-                [phases.ASSIGNMENT]: developmentPowers.HOMEWORLD_PATRIOTISM
+                assignment: developmentPowers.HOMEWORLD_PATRIOTISM
             },
             {
                 tileType: tileTypes.GREEN_WORLD,
@@ -822,7 +840,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 1,
                 name: 'Hydroponics Guild',
-                [phases.ASSIGNMENT]: developmentPowers.HYDROPONICS_GUILD
+                assignment: developmentPowers.HYDROPONICS_GUILD
             },
             {
                 tileType: tileTypes.YELLOW_WORLD,
@@ -856,7 +874,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 4,
                 name: 'Investment Credits',
-                [phases.DEVELOP]: developmentPowers.INVESTMENT_CREDITS
+                develop: developmentPowers.INVESTMENT_CREDITS
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -873,7 +891,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Isolation Policy',
-                [phases.ASSIGNMENT]: developmentPowers.ISOLATION_POLICY
+                assignment: developmentPowers.ISOLATION_POLICY
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -890,7 +908,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 1,
                 name: 'JumpDrive Research',
-                [phases.SHIP]: developmentPowers.JUMPDRIVE_RESEARCH
+                ship: developmentPowers.JUMPDRIVE_RESEARCH
             },
             {
                 tileType: tileTypes.YELLOW_WORLD,
@@ -907,7 +925,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Local Subsidies',
-                [phases.ASSIGNMENT]: developmentPowers.LOCAL_SUBSIDIES
+                assignment: developmentPowers.LOCAL_SUBSIDIES
             },
             {
                 tileType: tileTypes.GREEN_WORLD,
@@ -924,7 +942,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Mad Scientists',
-                [phases.ASSIGNMENT]: developmentPowers.MAD_SCIENTISTS
+                assignment: developmentPowers.MAD_SCIENTISTS
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -941,7 +959,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Major Research Labs',
-                [phases.EXPLORE]: developmentPowers.MAJOR_RESEARCH_LABS
+                explore: developmentPowers.MAJOR_RESEARCH_LABS
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -958,7 +976,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Merchant Guild',
-                [phases.PRODUCE]: developmentPowers.MERCHANT_GUILD
+                produce: developmentPowers.MERCHANT_GUILD
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -975,8 +993,8 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 6,
                 name: 'Mining League',
-                [phases.PRODUCE]: developmentPowers.MINING_LEAGUE,
-                [phases.ENDGAME]: developmentPowers.MINING_LEAGUE_ENDGAME
+                produce: developmentPowers.MINING_LEAGUE,
+                endGame: developmentPowers.MINING_LEAGUE_ENDGAME
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -993,7 +1011,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Minor Research Labs',
-                [phases.SHIP]: developmentPowers.MINOR_RESEARCH_LABS
+                ship: developmentPowers.MINOR_RESEARCH_LABS
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -1010,7 +1028,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 5,
                 name: 'Nanotechnology',
-                [phases.ASSIGNMENT]: developmentPowers.NANOTECHNOLOGY
+                assignment: developmentPowers.NANOTECHNOLOGY
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -1027,8 +1045,8 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 6,
                 name: 'New Economy',
-                [phases.SHIP]: developmentPowers.NEW_ECONOMY,
-                [phases.ENDGAME]: developmentPowers.NEW_ECONOMY_ENDGAME
+                ship: developmentPowers.NEW_ECONOMY,
+                endGame: developmentPowers.NEW_ECONOMY_ENDGAME
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -1045,8 +1063,8 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 6,
                 name: 'New Galactic Order',
-                [phases.SETTLE]: developmentPowers.NEW_GALACTIC_ORDER,
-                [phases.ENDGAME]: developmentPowers.NEW_GALACTIC_ORDER_ENDGAME
+                settle: developmentPowers.NEW_GALACTIC_ORDER,
+                endGame: developmentPowers.NEW_GALACTIC_ORDER_ENDGAME
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -1063,7 +1081,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Operation Affinity',
-                [phases.ASSIGNMENT]: developmentPowers.OPERATIONS_AFFINITY
+                assignment: developmentPowers.OPERATIONS_AFFINITY
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -1080,7 +1098,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 5,
                 name: 'Organic Shipyards',
-                [phases.SHIP]: developmentPowers.ORGANIC_SHIPYARDS
+                ship: developmentPowers.ORGANIC_SHIPYARDS
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -1097,7 +1115,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 4,
                 name: 'Propaganda Campaign',
-                [phases.ASSIGNMENT]: developmentPowers.PROPAGANDA_CAMPAIGN
+                assignment: developmentPowers.PROPAGANDA_CAMPAIGN
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -1114,7 +1132,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 1,
                 name: 'Public Works',
-                [phases.DEVELOP]: developmentPowers.PUBLIC_WORKS
+                develop: developmentPowers.PUBLIC_WORKS
             },
             {
                 tileType: tileTypes.YELLOW_WORLD,
@@ -1131,7 +1149,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 4,
                 name: 'Replicant Robots',
-                [phases.SETTLE]: developmentPowers.REPLICANT_ROBOTS
+                settle: developmentPowers.REPLICANT_ROBOTS
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -1148,7 +1166,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 5,
                 name: 'Robot Surveyors',
-                [phases.SETTLE]: developmentPowers.ROBOT_SURVEYORS
+                settle: developmentPowers.ROBOT_SURVEYORS
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -1165,7 +1183,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Shipping Affinity',
-                [phases.ASSIGNMENT]: developmentPowers.SHIPPING_AFFINITY
+                assignment: developmentPowers.SHIPPING_AFFINITY
             },
             {
                 tileType: tileTypes.GREEN_WORLD,
@@ -1182,7 +1200,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Space Docks',
-                [phases.SHIP]: developmentPowers.SPACE_DOCKS
+                ship: developmentPowers.SPACE_DOCKS
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -1216,7 +1234,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 1,
                 name: 'Space Mercenaries',
-                [phases.ASSIGNMENT]: developmentPowers.SPACE_MERCENARIES
+                assignment: developmentPowers.SPACE_MERCENARIES
             },
             {
                 tileType: tileTypes.YELLOW_WORLD,
@@ -1233,7 +1251,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Space Refineries',
-                [phases.SHIP]: developmentPowers.SPACE_REFINERIES
+                ship: developmentPowers.SPACE_REFINERIES
             },
             {
                 tileType: tileTypes.GREEN_WORLD,
@@ -1250,7 +1268,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Space Tourism',
-                [phases.SHIP]: developmentPowers.SPACE_TOURISM
+                ship: developmentPowers.SPACE_TOURISM
             },
             {
                 tileType: tileTypes.BLUE_WORLD,
@@ -1267,7 +1285,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 6,
                 name: 'System Diversification',
-                [phases.ASSIGNMENT]: developmentPowers.SYSTEM_DIVERSIFICATION
+                assignment: developmentPowers.SYSTEM_DIVERSIFICATION
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
@@ -1284,7 +1302,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 2,
                 name: 'Technology Affinity',
-                [phases.ASSIGNMENT]: developmentPowers.TECHNOLOGY_AFFINITY
+                assignment: developmentPowers.TECHNOLOGY_AFFINITY
             },
             {
                 tileType: tileTypes.GREEN_WORLD,
@@ -1301,8 +1319,8 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 1,
                 name: 'Technology Unions',
-                [phases.EXPLORE]: developmentPowers.TECHNOLOGY_UNIONS,
-                [phases.PRODUCE]: developmentPowers.TECHNOLOGY_UNIONS
+                explore: developmentPowers.TECHNOLOGY_UNIONS,
+                produce: developmentPowers.TECHNOLOGY_UNIONS
             },
             {
                 tileType: tileTypes.YELLOW_WORLD,
@@ -1319,7 +1337,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 1,
                 name: 'Terraforming Robots',
-                [phases.SETTLE]: developmentPowers.TERRAFORMING_ROBOTS
+                settle: developmentPowers.TERRAFORMING_ROBOTS
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -1336,7 +1354,7 @@ const gameTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 3,
                 name: 'Trade Levies',
-                [phases.SHIP]: developmentPowers.TRADE_LEVIES
+                ship: developmentPowers.TRADE_LEVIES
             },
             {
                 tileType: tileTypes.BROWN_WORLD,
