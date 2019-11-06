@@ -9,6 +9,7 @@ class StartForm extends React.Component {
     render() {
         return (
             <div data-testid='start-form'>
+                <p>I was changed</p>
                 <p>{'Please select number of players'}</p>
                 <div>
                     <button onClick={() => this.buildPlayersAndHideForm(1)}>{'1'}</button>
