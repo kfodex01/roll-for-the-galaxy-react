@@ -5,7 +5,8 @@ import PlayerBoard from "./PlayerBoard";
 import {bonuses, dieColor, initialGameState, phases} from "../enums";
 import Chance from "chance";
 import {DieProps} from "./Die";
-import {TileProps} from "./Tile";
+import Tile, {TileProps} from "./Tile";
+import { Tiles } from "./ConstructionZone";
 
 const chance = new Chance();
 
@@ -70,14 +71,14 @@ const addBonus = (tile: TileProps, citizenry: Array<DieProps>, cup: Array<DiePro
     }
 };
 
-const getLowestConstructionQueueTotal = (tiles: Array<Array>) => {
+const getLowestConstructionQueueTotal = (tiles: Array<Tiles>): Array<Tiles> => {
     if (tiles[0].tiles[0].points + tiles[1].tiles[1].points > tiles[0].tiles[1].points + tiles[1].tiles[0].points) {
         return [tiles[1], tiles[0]];
     }
     return (tiles);
 };
 
-const createPlayers = (state, numberOfPlayers: number) => {
+const createPlayers = (state : any, numberOfPlayers: number) => {
     const victoryPointPool = 12 * numberOfPlayers;
     const players = [];
     const factionTiles = chance.pickset(state.factionTiles, numberOfPlayers);
@@ -180,6 +181,7 @@ const createPlayers = (state, numberOfPlayers: number) => {
 class Game extends React.Component {
     state = {
         game: {...initialGameState},
+        victoryPointPool: 0,
         visibility: true
     };
 
@@ -189,7 +191,7 @@ class Game extends React.Component {
         });
     };
 
-    createPlayers = (numberOfPlayers) => {
+    createPlayers = (numberOfPlayers: number) => {
         const game = createPlayers(this.state.game, numberOfPlayers);
         this.setState({game});
     };
@@ -202,7 +204,7 @@ class Game extends React.Component {
                         <StartForm hideBeginGameForm={this.hideBeginGameForm} createPlayers={this.createPlayers} />
                     ) :
                     <>
-                        <BigText>Victory Point Pool: {this.state.game.victoryPointPool}</BigText>
+                        <BigText>Victory Point Pool: {this.state.victoryPointPool}</BigText>
                         <FlexColumnDiv data-testid='player-boards'>
                             {this.state.game.players.map((player) => {
                                     return (
