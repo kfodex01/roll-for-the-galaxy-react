@@ -48,7 +48,7 @@ export interface DieProps {
 }
 
 class Die extends React.Component<DieProps> {
-    getDieFace = (face: string) => {
+    getDieFace = (face: string): JSX.Element => {
         switch (face) {
             case dieFace.EXPLORE:
                 return (<FontAwesomeIcon icon={faEye}/>);
@@ -63,7 +63,7 @@ class Die extends React.Component<DieProps> {
             case dieFace.WILD:
                 return (<FontAwesomeIcon icon={faStarOfLife}/>);
             default:
-                return null;
+                return (<></>);
         }
     };
 

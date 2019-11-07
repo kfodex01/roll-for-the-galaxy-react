@@ -30,7 +30,7 @@ export interface PlayerBoardProps {
 }
 
 class PlayerBoard extends React.Component<PlayerBoardProps> {
-    displayPowers = (phasePowers: PhasePowersProps) => {
+    displayPowers = (phasePowers: PhasePowersProps): Array<Array<JSX.Element>> => {
         let powerList = [];
         powerList.push(phasePowers.assignment.map((phasePower, id) => {
             return (<p key={id}>{'Assignment: '}{phasePower}</p>);

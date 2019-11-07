@@ -30,7 +30,7 @@ export interface TileProps {
 }
 
 class Tile extends React.Component<TileProps> {
-    getCorrectIcon = (tile: TileProps) => {
+    getCorrectIcon = (tile: TileProps): JSX.Element => {
         switch (tile.tileType) {
             case tileTypes.BLUE_WORLD:
                 return <BlueWorld icon={faGlobe} size='2x'/>;
@@ -45,7 +45,7 @@ class Tile extends React.Component<TileProps> {
             case tileTypes.YELLOW_WORLD:
                 return <YellowWorld icon={faGlobe} size='2x'/>;
             default:
-                return null;
+                return (<></>);
         }
     };
 

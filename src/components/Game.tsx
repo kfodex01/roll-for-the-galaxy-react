@@ -10,14 +10,14 @@ import { DicePoolProps } from "./DicePool";
 
 const chance = new Chance();
 
-const addDieToPool = (dicePool: DicePoolProps, dieColor: string, dieFace: string) => {
+const addDieToPool = (dicePool: DicePoolProps, dieColor: string, dieFace: string): void => {
     dicePool.dice.push({
         color: dieColor,
         face: dieFace
     });
 };
 
-const addBonus = (tile: TileProps, citizenry: DicePoolProps, cup: DicePoolProps) => {
+const addBonus = (tile: TileProps, citizenry: DicePoolProps, cup: DicePoolProps): void => {
     switch (tile.bonus) {
         case bonuses.ONE_BROWN_DIE_TO_CITIZENRY:
             addDieToPool(citizenry, dieColor.BROWN, phases.EXPLORE);
@@ -86,7 +86,7 @@ export interface gameState {
     victoryPointPool: number
 }
 
-const createPlayers = (state: gameState, numberOfPlayers: number) => {
+const createPlayers = (state: gameState, numberOfPlayers: number): gameState => {
     const victoryPointPool = 12 * numberOfPlayers;
     const players: Array<PlayerBoardProps> = [];
     const factionTiles: Array<Tiles> = chance.pickset(state.factionTiles, numberOfPlayers);
@@ -203,13 +203,13 @@ class Game extends React.Component<null, state> {
         visibility: true
     };
 
-    hideBeginGameForm = () => {
+    hideBeginGameForm = (): void => {
         this.setState({
             visibility: false
         });
     };
 
-    createPlayers = (numberOfPlayers: number) => {
+    createPlayers = (numberOfPlayers: number): void => {
         const game = createPlayers(this.state.game, numberOfPlayers);
         this.setState({ game });
     };
