@@ -1,7 +1,12 @@
 import React from "react";
 
-class StartForm extends React.Component {
-    buildPlayersAndHideForm = (numberOfPlayers) => {
+interface StartFormProps {
+    hideBeginGameForm: () => void
+    createPlayers: (numberOfPlayers: number) => void
+}
+
+class StartForm extends React.Component<StartFormProps> {
+    buildPlayersAndHideForm = (numberOfPlayers: number) => {
         this.props.hideBeginGameForm();
         this.props.createPlayers(numberOfPlayers);
     };

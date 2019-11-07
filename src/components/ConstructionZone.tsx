@@ -2,9 +2,19 @@ import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faWrench} from "@fortawesome/free-solid-svg-icons";
 import {BigText, FlexRowDiv} from "../styled-components";
-import Tile from "./Tile";
+import Tile, {TileProps} from "./Tile";
 
-class ConstructionZone extends React.Component {
+export interface Tiles {
+    tileId: number;
+    tiles: Array<TileProps>;
+}
+
+interface ConstructionZoneProps {
+    developBuildQueue: Array<Tiles>;
+    settleBuildQueue: Array<Tiles>;
+}
+
+class ConstructionZone extends React.Component<ConstructionZoneProps> {
     render() {
         return (
             <FlexRowDiv>
