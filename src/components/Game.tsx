@@ -1,10 +1,10 @@
 import React from "react";
 import StartForm from "./StartForm";
-import {BigText, FlexColumnDiv} from "../styled-components";
+import { BigText, FlexColumnDiv } from "../styled-components";
 import PlayerBoard, { PhasePowersProps, PlayerBoardProps } from "./PlayerBoard";
-import {bonuses, dieColor, initialGameState, phases} from "../enums";
+import { bonuses, dieColor, initialGameState, phases } from "../enums";
 import Chance from "chance";
-import {TileProps} from "./Tile";
+import { TileProps } from "./Tile";
 import { Tiles } from "./ConstructionZone";
 import { DicePoolProps } from "./DicePool";
 
@@ -58,13 +58,13 @@ const addBonus = (tile: TileProps, citizenry: DicePoolProps, cup: DicePoolProps)
             addDieToPool(cup, dieColor.RED, phases.EXPLORE);
             break;
         case bonuses.ONE_BLUE_DIE_TO_WORLD:
-            addDieToPool(tile.dicePool = {dice: []}, dieColor.BLUE, phases.EXPLORE);
+            addDieToPool(tile.dicePool = { dice: [] }, dieColor.BLUE, phases.EXPLORE);
             break;
         case bonuses.ONE_BROWN_DIE_TO_WORLD:
-            addDieToPool(tile.dicePool = {dice: []}, dieColor.BROWN, phases.EXPLORE);
+            addDieToPool(tile.dicePool = { dice: [] }, dieColor.BROWN, phases.EXPLORE);
             break;
         case bonuses.ONE_GREEN_DIE_TO_WORLD:
-            addDieToPool(tile.dicePool = {dice: []}, dieColor.GREEN, phases.EXPLORE);
+            addDieToPool(tile.dicePool = { dice: [] }, dieColor.GREEN, phases.EXPLORE);
             break;
         default:
             break;
@@ -78,7 +78,15 @@ const getLowestConstructionQueueTotal = (tiles: Array<Tiles>): Array<Tiles> => {
     return (tiles);
 };
 
-const createPlayers = (state : any, numberOfPlayers: number) => {
+export interface gameState {
+    factionTiles: Array<Tiles>,
+    gameTiles: Array<Tiles>,
+    homeWorldTiles: Array<Tiles>,
+    players?: Array<PlayerBoardProps>,
+    victoryPointPool: number
+}
+
+const createPlayers = (state: gameState, numberOfPlayers: number) => {
     const victoryPointPool = 12 * numberOfPlayers;
     const players: Array<PlayerBoardProps> = [];
     const factionTiles: Array<Tiles> = chance.pickset(state.factionTiles, numberOfPlayers);
@@ -148,13 +156,13 @@ const createPlayers = (state : any, numberOfPlayers: number) => {
             ]
         };
         tiles.forEach((tile) => {
-            if(tile.assignment) {phasePowers.assignment.push(tile.assignment)};
-            if(tile.explore) {phasePowers.explore.push(tile.explore)};
-            if(tile.develop) {phasePowers.develop.push(tile.develop)};
-            if(tile.settle) {phasePowers.settle.push(tile.settle)};
-            if(tile.produce) {phasePowers.produce.push(tile.produce)};
-            if(tile.ship) {phasePowers.ship.push(tile.ship)};
-            if(tile.endGame) {phasePowers.endGame.push(tile.endGame)};
+            if (tile.assignment) { phasePowers.assignment.push(tile.assignment) };
+            if (tile.explore) { phasePowers.explore.push(tile.explore) };
+            if (tile.develop) { phasePowers.develop.push(tile.develop) };
+            if (tile.settle) { phasePowers.settle.push(tile.settle) };
+            if (tile.produce) { phasePowers.produce.push(tile.produce) };
+            if (tile.ship) { phasePowers.ship.push(tile.ship) };
+            if (tile.endGame) { phasePowers.endGame.push(tile.endGame) };
 
             points = points + tile.points;
             addBonus(tile, citizenry, cup);
@@ -184,9 +192,14 @@ const createPlayers = (state : any, numberOfPlayers: number) => {
     )
 };
 
-class Game extends React.Component {
+interface state {
+    game: gameState,
+    visibility: boolean
+}
+
+class Game extends React.Component<null, state> {
     state = {
-        game: {...initialGameState},
+        game: { ...initialGameState },
         visibility: true
     };
 
@@ -198,7 +211,7 @@ class Game extends React.Component {
 
     createPlayers = (numberOfPlayers: number) => {
         const game = createPlayers(this.state.game, numberOfPlayers);
-        this.setState({game});
+        this.setState({ game });
     };
 
     render() {
@@ -211,12 +224,11 @@ class Game extends React.Component {
                     <>
                         <BigText>Victory Point Pool: {this.state.game.victoryPointPool}</BigText>
                         <FlexColumnDiv data-testid='player-boards'>
-                            {this.state.game.players.map((player: PlayerBoardProps) => {
-                                    return (
-                                        <PlayerBoard key={player.id} {...player} />
-                                    );
-                                }
-                            )}
+                            {this.state.game.players ? this.state.game.players.map((player: PlayerBoardProps) => {
+                                return (
+                                    <PlayerBoard key={player.id} {...player} />
+                                );
+                            }) : null}
                         </FlexColumnDiv>
                     </>
                 }

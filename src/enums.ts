@@ -1,3 +1,6 @@
+import { gameState } from "./components/Game";
+import { Tiles } from "./components/ConstructionZone";
+
 export const tileTypes = {
     BLUE_WORLD: 'Blue World',
     BROWN_WORLD: 'Brown World',
@@ -159,7 +162,7 @@ const developmentPowers = {
     TRADE_LEVIES: '+$1 for each good you Consume this phase.'
 };
 
-const factionTiles = [
+const factionTiles: Array<Tiles> = [
     {
         tileId: 1,
         tiles: [
@@ -167,7 +170,7 @@ const factionTiles = [
                 tileType: tileTypes.DEVELOPMENT,
                 points: 0,
                 name: 'Space Piracy',
-                ship: developmentPowers.SPACE_PIRACY
+                ship: developmentPowers.SPACE_PIRACY,
             },
             {
                 tileType: tileTypes.GRAY_WORLD,
@@ -315,7 +318,7 @@ const factionTiles = [
     }
 ];
 
-const homeWorldTiles = [
+const homeWorldTiles: Array<Tiles> = [
     {
         tileId: 1,
         tiles: [
@@ -417,7 +420,7 @@ const homeWorldTiles = [
     }
 ];
 
-const gameTiles = [
+const gameTiles: Array<Tiles> = [
     {
         tileId: 1,
         tiles: [
@@ -1366,8 +1369,7 @@ const gameTiles = [
     }
 ];
 
-export const initialGameState = {
-    players: [],
+export const initialGameState: gameState = {
     factionTiles,
     homeWorldTiles,
     gameTiles,

@@ -14,22 +14,23 @@ import {faGlobe, faSatellite} from "@fortawesome/free-solid-svg-icons";
 import DicePool, {DicePoolProps} from "./DicePool";
 
 export interface TileProps {
-    dicePool: DicePoolProps;
+    dicePool?: DicePoolProps;
     name: string;
     points: number;
-    tileId: number;
-    bonus: string;
-    assignment: string;
-    explore: string;
-    develop: string;
-    settle: string;
-    produce: string;
-    ship: string;
-    endGame: string;
+    tileId?: number;
+    bonus?: string;
+    assignment?: string;
+    explore?: string;
+    develop?: string;
+    settle?: string;
+    produce?: string;
+    ship?: string;
+    endGame?: string;
+    tileType: string;
 }
 
 class Tile extends React.Component<TileProps> {
-    getCorrectIcon = (tile: any) => {
+    getCorrectIcon = (tile: TileProps) => {
         switch (tile.tileType) {
             case tileTypes.BLUE_WORLD:
                 return <BlueWorld icon={faGlobe} size='2x'/>;
