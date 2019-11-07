@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, fireEvent, cleanup} from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import StartForm from "./StartForm.js";
+import StartForm from "./StartForm";
 
 describe('StartForm', () => {
     let formText,

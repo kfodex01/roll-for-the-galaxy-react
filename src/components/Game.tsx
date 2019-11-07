@@ -187,7 +187,6 @@ const createPlayers = (state : any, numberOfPlayers: number) => {
 class Game extends React.Component {
     state = {
         game: {...initialGameState},
-        victoryPointPool: 0,
         visibility: true
     };
 
@@ -210,7 +209,7 @@ class Game extends React.Component {
                         <StartForm hideBeginGameForm={this.hideBeginGameForm} createPlayers={this.createPlayers} />
                     ) :
                     <>
-                        <BigText>Victory Point Pool: {this.state.victoryPointPool}</BigText>
+                        <BigText>Victory Point Pool: {this.state.game.victoryPointPool}</BigText>
                         <FlexColumnDiv data-testid='player-boards'>
                             {this.state.game.players.map((player: PlayerBoardProps) => {
                                     return (

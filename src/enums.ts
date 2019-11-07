@@ -1370,5 +1370,6 @@ export const initialGameState = {
     players: [],
     factionTiles,
     homeWorldTiles,
-    gameTiles
+    gameTiles,
+    victoryPointPool: 0
 };
