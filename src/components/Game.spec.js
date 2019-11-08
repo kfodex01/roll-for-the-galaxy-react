@@ -1,7 +1,8 @@
 import React from 'react';
 import {render, fireEvent, cleanup} from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import Game from "./Game";
+import Game from './Game';
+import {initialGameState} from '../enums';
 
 describe('Game', () => {
     let playerOneButton,
@@ -22,13 +23,13 @@ describe('Game', () => {
 
     describe('Setup', () => {
         it('should display the start form', () => {
-            const {queryByTestId} = render(<Game />);
+            const {queryByTestId} = render(<Game initialGameState={{...initialGameState}} />);
 
             expect(queryByTestId('start-form')).toBeTruthy();
         });
 
         it('should hide the start form, create a victory point pool with 12 points, and create 1 player', () => {
-            const {queryByText, queryByTestId} = render(<Game />);
+            const {queryByText, queryByTestId} = render(<Game initialGameState={{...initialGameState}} />);
 
             getButtons(queryByText);
             fireEvent.click(playerOneButton);
@@ -41,7 +42,7 @@ describe('Game', () => {
         });
 
         it('should hide the start form, create a victory point pool with 24 points, and create 2 players', () => {
-            const {queryByText, queryByTestId} = render(<Game />);
+            const {queryByText, queryByTestId} = render(<Game initialGameState={{...initialGameState}} />);
 
             getButtons(queryByText);
             fireEvent.click(playerTwoButton);
@@ -54,7 +55,7 @@ describe('Game', () => {
         });
 
         it('should hide the start form, create a victory point pool with 36 points, and create 3 players', () => {
-            const {queryByText, queryByTestId} = render(<Game />);
+            const {queryByText, queryByTestId} = render(<Game initialGameState={{...initialGameState}} />);
 
             getButtons(queryByText);
             fireEvent.click(playerThreeButton);
@@ -67,7 +68,7 @@ describe('Game', () => {
         });
 
         it('should hide the start form, create a victory point pool with 48 points, and create 4 players', () => {
-            const {queryByText, queryByTestId} = render(<Game />);
+            const {queryByText, queryByTestId} = render(<Game initialGameState={{...initialGameState}} />);
 
             getButtons(queryByText);
             fireEvent.click(playerFourButton);
@@ -80,7 +81,7 @@ describe('Game', () => {
         });
 
         it('should hide the start form, create a victory point pool with 60 points, and create 5 players', () => {
-            const {queryByText, queryByTestId} = render(<Game />);
+            const {queryByText, queryByTestId} = render(<Game initialGameState={{...initialGameState}} />);
 
             getButtons(queryByText);
             fireEvent.click(playerFiveButton);

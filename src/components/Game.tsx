@@ -2,7 +2,7 @@ import React from "react";
 import StartForm from "./StartForm";
 import { BigText, FlexColumnDiv } from "../styled-components";
 import PlayerBoard, { PhasePowersProps, PlayerBoardProps } from "./PlayerBoard";
-import { bonuses, dieColor, initialGameState, phases } from "../enums";
+import { bonuses, dieColor, phases } from "../enums";
 import Chance from "chance";
 import { TileProps } from "./Tile";
 import { Tiles } from "./ConstructionZone";
@@ -197,11 +197,27 @@ interface state {
     visibility: boolean
 }
 
-class Game extends React.Component<null, state> {
+interface gameProps {
+    initialGameState: gameState
+}
+
+class Game extends React.Component<gameProps, state> {
     state = {
-        game: { ...initialGameState },
+        game: {
+            factionTiles: [],
+            gameTiles: [],
+            homeWorldTiles: [],
+            victoryPointPool: 0,
+            players: []
+        },
         visibility: true
     };
+
+    componentDidMount() {
+        this.setState({
+            game: this.props.initialGameState
+        });
+    }
 
     hideBeginGameForm = (): void => {
         this.setState({
