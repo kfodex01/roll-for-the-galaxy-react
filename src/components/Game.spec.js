@@ -128,6 +128,17 @@ describe('Game', () => {
                 expect(playerBoards).toBeTruthy();
                 expect(playerBoards.children.length).toBe(5);
             });
+
+            it('should create a player with three white dice in cup and two white dice in citizenry', () => {
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+                const cup = getByTestId('cup');
+                const citizenry = getByTestId('citizenry');
+
+                expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+            });
         });
 
         describe('Bonus Tests', () => {
@@ -162,6 +173,28 @@ describe('Game', () => {
                 const citizenry = getByTestId('citizenry');
 
                 expect(within(citizenry).queryAllByTestId('PurpleDie').length).toBe(1);
+            });
+
+            it('should add one red die to citizenry', () => {
+                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_RED_DIE_TO_CITIZENRY;
+
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+                const citizenry = getByTestId('citizenry');
+
+                expect(within(citizenry).queryAllByTestId('RedDie').length).toBe(1);
+            });
+
+            it('should add one yellow die to citizenry', () => {
+                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_YELLOW_DIE_TO_CITIZENRY;
+
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+                const citizenry = getByTestId('citizenry');
+
+                expect(within(citizenry).queryAllByTestId('YellowDie').length).toBe(1);
             });
 
             it('should add one blue die and one red die to citizenry', () => {
