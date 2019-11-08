@@ -330,7 +330,6 @@ describe('Game', () => {
 
                 for (let i = 0; i < 10; i++) {
                     const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
-
                     getButtons(queryByText);
                     fireEvent.click(playerOneButton);
 
@@ -341,6 +340,78 @@ describe('Game', () => {
 
                     cleanup();
                 }
+            });
+        });
+
+        describe('Phase Powers', () => {
+            it('should add an assignment phase power', () => {
+                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].assignment = 'Ima power.';
+
+                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+
+                expect(queryByText('Assignment: Ima power.')).toBeTruthy();
+            });
+
+            it('should add an explore phase power', () => {
+                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].explore = 'Ima power.';
+
+                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+
+                expect(queryByText('Explore: Ima power.')).toBeTruthy();
+            });
+
+            it('should add a develop phase power', () => {
+                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].develop = 'Ima power.';
+
+                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+
+                expect(queryByText('Develop: Ima power.')).toBeTruthy();
+            });
+
+            it('should add a settle phase power', () => {
+                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].settle = 'Ima power.';
+
+                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+
+                expect(queryByText('Settle: Ima power.')).toBeTruthy();
+            });
+
+            it('should add a produce phase power', () => {
+                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].produce = 'Ima power.';
+
+                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+
+                expect(queryByText('Produce: Ima power.')).toBeTruthy();
+            });
+
+            it('should add a ship phase power', () => {
+                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].ship = 'Ima power.';
+
+                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+
+                expect(queryByText('Ship: Ima power.')).toBeTruthy();
+            });
+
+            it('should add an end game phase power', () => {
+                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].endGame = 'Ima power.';
+
+                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+
+                expect(queryByText('End Game: Ima power.')).toBeTruthy();
             });
         });
     });

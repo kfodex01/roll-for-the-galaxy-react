@@ -240,11 +240,11 @@ class Game extends React.Component<gameProps, state> {
                     <>
                         <BigText>Victory Point Pool: {this.state.game.victoryPointPool}</BigText>
                         <FlexColumnDiv data-testid='player-boards'>
-                            {this.state.game.players ? this.state.game.players.map((player: PlayerBoardProps) => {
+                            {this.state.game.players.map((player: PlayerBoardProps) => {
                                 return (
                                     <PlayerBoard key={player.id} {...player} />
                                 );
-                            }) : null}
+                            })}
                         </FlexColumnDiv>
                     </>
                 }
