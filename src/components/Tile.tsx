@@ -51,7 +51,7 @@ class Tile extends React.Component<TileProps> {
 
     render() {
         return (
-            <FlexRowDiv key={this.props.tileId}>
+            <FlexRowDiv data-testid={this.props.name} key={this.props.tileId}>
                 {this.getCorrectIcon(this.props)}
                 {this.props.dicePool ? <DicePool dice={this.props.dicePool.dice} /> : null}
                 <BigText>{this.props.name}</BigText>
