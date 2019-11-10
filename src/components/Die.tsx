@@ -48,22 +48,22 @@ export interface DieProps {
 }
 
 class Die extends React.Component<DieProps> {
-    getDieFace = (face: string) => {
+    getDieFace = (face: string): JSX.Element => {
         switch (face) {
             case dieFace.EXPLORE:
-                return (<FontAwesomeIcon icon={faEye}/>);
+                return (<FontAwesomeIcon data-testid='explore-face' icon={faEye}/>);
             case dieFace.DEVELOP:
-                return (<FontAwesomeIcon icon={faSatellite}/>);
+                return (<FontAwesomeIcon data-testid='develop-face' icon={faSatellite}/>);
             case dieFace.SETTLE:
-                return (<FontAwesomeIcon icon={faGlobe}/>);
+                return (<FontAwesomeIcon data-testid='settle-face' icon={faGlobe}/>);
             case dieFace.PRODUCE:
-                return (<FontAwesomeIcon icon={faIndustry}/>);
+                return (<FontAwesomeIcon data-testid='produce-face' icon={faIndustry}/>);
             case dieFace.SHIP:
-                return (<FontAwesomeIcon icon={faRocket}/>);
+                return (<FontAwesomeIcon data-testid='ship-face' icon={faRocket}/>);
             case dieFace.WILD:
-                return (<FontAwesomeIcon icon={faStarOfLife}/>);
+                return (<FontAwesomeIcon data-testid='wild-face' icon={faStarOfLife}/>);
             default:
-                return null;
+        return (<p>{`Invalid die face: ${face}`}</p>);
         }
     };
 
@@ -112,7 +112,7 @@ class Die extends React.Component<DieProps> {
                     </YellowDie>
                 );
             default:
-                return null;
+        return (<p>{`Invalid die color: ${this.props.color}`}</p>);
         }
     }
 }

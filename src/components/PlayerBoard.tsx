@@ -30,7 +30,7 @@ export interface PlayerBoardProps {
 }
 
 class PlayerBoard extends React.Component<PlayerBoardProps> {
-    displayPowers = (phasePowers: PhasePowersProps) => {
+    displayPowers = (phasePowers: PhasePowersProps): Array<Array<JSX.Element>> => {
         let powerList = [];
         powerList.push(phasePowers.assignment.map((phasePower, id) => {
             return (<p key={id}>{'Assignment: '}{phasePower}</p>);
@@ -60,19 +60,19 @@ class PlayerBoard extends React.Component<PlayerBoardProps> {
         return (
             <PlayerColumnDiv>
                 <FlexRowDiv>
-                    <FontAwesomeIcon data-testid='points-icon' icon={faStar} size='2x'/>
+                    <FontAwesomeIcon icon={faStar} size='2x'/>
                     <BigText data-testid='points'>{this.props.points}</BigText>
                     <FontAwesomeIcon icon={faMoneyCheckAlt} size='2x'/>
-                    <BigText>{this.props.credits}</BigText>
+                    <BigText data-testid='credits'>{this.props.credits}</BigText>
                     <ConstructionZone
                         developBuildQueue={this.props.developBuildQueue}
                         settleBuildQueue={this.props.settleBuildQueue}
                      />
-                    <FlexRowDiv>
+                    <FlexRowDiv data-testid='citizenry'>
                         <BigText>Citizenry: </BigText>
                         <DicePool {...this.props.citizenry}/>
                     </FlexRowDiv>
-                    <FlexRowDiv>
+                    <FlexRowDiv data-testid='cup'>
                         <BigText>Cup: </BigText>
                         <DicePool {...this.props.cup}/>
                     </FlexRowDiv>
