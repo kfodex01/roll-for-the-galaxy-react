@@ -4,7 +4,6 @@ import '@testing-library/jest-dom/extend-expect';
 import Chance from 'chance';
 import Tile from './Tile';
 import { tileTypes } from '../enums';
-import {ErrorBoundary} from './ErrorBoundary';
 
 const chance = new Chance();
 
