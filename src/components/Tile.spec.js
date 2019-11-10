@@ -8,18 +8,23 @@ import { tileTypes } from '../enums';
 const chance = new Chance();
 
 describe('Tile', () => {
-    let expectedTileProps = {
-        name: chance.word(),
-        points: chance.integer({ min: 1, max: 100 }),
-        tileType: chance.pickone([
-            tileTypes.BLUE_WORLD,
-            tileTypes.BROWN_WORLD,
-            tileTypes.DEVELOPMENT,
-            tileTypes.GRAY_WORLD,
-            tileTypes.GREEN_WORLD,
-            tileTypes.YELLOW_WORLD
-        ])
-    };
+    let expectedTileProps;
+
+    beforeEach(() => {
+        expectedTileProps = {
+            name: chance.word(),
+            points: chance.integer({ min: 1, max: 100 }),
+            tileType: chance.pickone([
+                tileTypes.BLUE_WORLD,
+                tileTypes.BROWN_WORLD,
+                tileTypes.DEVELOPMENT,
+                tileTypes.GRAY_WORLD,
+                tileTypes.GREEN_WORLD,
+                tileTypes.YELLOW_WORLD
+            ])
+        };
+    });
+
     afterEach(cleanup);
 
     it('should render a blue world tile', () => {
