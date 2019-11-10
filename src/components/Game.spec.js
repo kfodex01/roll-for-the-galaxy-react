@@ -139,6 +139,30 @@ describe('Game', () => {
                 expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
                 expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
             });
+
+            it('should create a player with the correct number of points', () => {
+                mockSinglePlayerStartingState.factionTiles[0].tiles[0].points = 1;
+                mockSinglePlayerStartingState.factionTiles[0].tiles[1].points = 2;
+                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].points = 3;
+
+                const { queryByText, getByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+                const points = getByTestId('points');
+
+                expect(points).toBeTruthy();
+                expect(points.textContent).toBe('6');
+            });
+
+            it('should create a player with the correct number of credits', () => {
+                const { queryByText, getByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+                const credits = getByTestId('credits');
+
+                expect(credits).toBeTruthy();
+                expect(credits.textContent).toBe('1');
+            });
         });
 
         describe('Bonus Tests', () => {
@@ -361,7 +385,7 @@ describe('Game', () => {
                     ]
                 }
 
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < 100; i++) {
                     const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
                     getButtons(queryByText);
                     fireEvent.click(playerOneButton);

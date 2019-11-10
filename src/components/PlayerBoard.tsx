@@ -60,7 +60,7 @@ class PlayerBoard extends React.Component<PlayerBoardProps> {
         return (
             <PlayerColumnDiv>
                 <FlexRowDiv>
-                    <FontAwesomeIcon data-testid='points-icon' icon={faStar} size='2x'/>
+                    <FontAwesomeIcon icon={faStar} size='2x'/>
                     <BigText data-testid='points'>{this.props.points}</BigText>
                     <FontAwesomeIcon icon={faMoneyCheckAlt} size='2x'/>
                     <BigText data-testid='credits'>{this.props.credits}</BigText>
