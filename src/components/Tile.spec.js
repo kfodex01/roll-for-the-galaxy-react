@@ -3,6 +3,7 @@ import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Chance from 'chance';
 import Tile from './Tile';
+import { tileTypes } from '../enums';
 
 const chance = new Chance();
 
@@ -14,7 +15,7 @@ describe('Tile', () => {
     afterEach(cleanup);
 
     it('should render a blue world tile', () => {
-        expectedTileProps.tileType = 'Blue World';
+        expectedTileProps.tileType = tileTypes.BLUE_WORLD;
 
         const {getByTestId} = render(<Tile {...expectedTileProps} />);
 
@@ -22,7 +23,7 @@ describe('Tile', () => {
     });
 
     it('should render a brown world tile', () => {
-        expectedTileProps.tileType = 'Brown World';
+        expectedTileProps.tileType = tileTypes.BROWN_WORLD;
 
         const {getByTestId} = render(<Tile {...expectedTileProps} />);
 
@@ -30,7 +31,7 @@ describe('Tile', () => {
     });
 
     it('should render a development tile', () => {
-        expectedTileProps.tileType = 'Development';
+        expectedTileProps.tileType = tileTypes.DEVELOPMENT;
 
         const {getByTestId} = render(<Tile {...expectedTileProps} />);
 
@@ -38,7 +39,7 @@ describe('Tile', () => {
     });
 
     it('should render a gray world tile', () => {
-        expectedTileProps.tileType = 'Gray World';
+        expectedTileProps.tileType = tileTypes.GRAY_WORLD;
 
         const {getByTestId} = render(<Tile {...expectedTileProps} />);
 
@@ -46,7 +47,7 @@ describe('Tile', () => {
     });
 
     it('should render a green world tile', () => {
-        expectedTileProps.tileType = 'Green World';
+        expectedTileProps.tileType = tileTypes.GREEN_WORLD;
 
         const {getByTestId} = render(<Tile {...expectedTileProps} />);
 
@@ -54,7 +55,7 @@ describe('Tile', () => {
     });
 
     it('should render a yellow world tile', () => {
-        expectedTileProps.tileType = 'Yellow World';
+        expectedTileProps.tileType = tileTypes.YELLOW_WORLD;
 
         const {getByTestId} = render(<Tile {...expectedTileProps} />);
 
