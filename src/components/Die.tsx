@@ -63,7 +63,7 @@ class Die extends React.Component<DieProps> {
             case dieFace.WILD:
                 return (<FontAwesomeIcon data-testid='wild-face' icon={faStarOfLife}/>);
             default:
-                return (<></>);
+        return (<p>{`Invalid die face: ${face}`}</p>);
         }
     };
 
@@ -112,7 +112,7 @@ class Die extends React.Component<DieProps> {
                     </YellowDie>
                 );
             default:
-                return (<></>);
+        return (<p>{`Invalid die color: ${this.props.color}`}</p>);
         }
     }
 }

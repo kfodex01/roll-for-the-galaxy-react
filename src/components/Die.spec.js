@@ -8,25 +8,30 @@ import { dieColor, dieFace } from '../enums';
 const chance = new Chance();
 
 describe('Die', () => {
-    let expectedDieProps = {
-        color: chance.pickone([
-            dieColor.BLUE,
-            dieColor.BROWN,
-            dieColor.GREEN,
-            dieColor.PURPLE,
-            dieColor.RED,
-            dieColor.WHITE,
-            dieColor.YELLOW
-        ]),
-        face: chance.pickone([
-            dieFace.EXPLORE,
-            dieFace.DEVELOP,
-            dieFace.SETTLE,
-            dieFace.PRODUCE,
-            dieFace.SHIP,
-            dieFace.WILD
-        ])
-    }
+    let expectedDieProps;
+
+    beforeEach(() => {
+        expectedDieProps = {
+            color: chance.pickone([
+                dieColor.BLUE,
+                dieColor.BROWN,
+                dieColor.GREEN,
+                dieColor.PURPLE,
+                dieColor.RED,
+                dieColor.WHITE,
+                dieColor.YELLOW
+            ]),
+            face: chance.pickone([
+                dieFace.EXPLORE,
+                dieFace.DEVELOP,
+                dieFace.SETTLE,
+                dieFace.PRODUCE,
+                dieFace.SHIP,
+                dieFace.WILD
+            ])
+        }
+    });
+
     afterEach(cleanup);
 
     describe('Die Colors', () => {
@@ -85,6 +90,14 @@ describe('Die', () => {
     
             expect(getByTestId('YellowDie')).toBeTruthy();
         });
+
+        it('should render an error when the color is invalid', () => {
+            expectedDieProps.color = 'WAT';
+    
+            const {getByText} = render(<Die {...expectedDieProps} />);
+
+            expect(getByText('Invalid die color: WAT')).toBeTruthy();
+        });
     });
 
     describe('Die Faces', () => {
@@ -134,6 +147,14 @@ describe('Die', () => {
             const {getByTestId} = render(<Die {...expectedDieProps} />);
     
             expect(getByTestId('wild-face')).toBeTruthy();
+        });
+
+        it('should render an error when the face is invalid', () => {
+            expectedDieProps.face = 'WAT';
+    
+            const {getByText} = render(<Die {...expectedDieProps} />);
+    
+            expect(getByText('Invalid die face: WAT')).toBeTruthy();
         });
     })
 });
