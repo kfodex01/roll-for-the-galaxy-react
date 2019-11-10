@@ -1,11 +1,11 @@
 import React from 'react';
 import Game from "./components/Game";
-import {initialGameState} from "./enums";
+import {initialState} from "./enums";
 
 class App extends React.Component {
     render() {
         return (
-            <Game initialGameState={initialGameState} />
+            <Game initialState={JSON.parse(JSON.stringify(initialState))} />
         );
     }
 }

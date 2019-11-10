@@ -1,4 +1,4 @@
-import { gameState } from "./components/Game";
+import { gameState, state } from "./components/Game";
 import { Tiles } from "./components/ConstructionZone";
 
 export const tileTypes = {
@@ -1369,9 +1369,14 @@ const gameTiles: Array<Tiles> = [
     }
 ];
 
-export const initialGameState: gameState = {
+const initialGameState: gameState = {
     factionTiles,
     homeWorldTiles,
     gameTiles,
     victoryPointPool: 0
 };
+
+export const initialState: state = {
+    game: {...initialGameState},
+    visibility: true
+}

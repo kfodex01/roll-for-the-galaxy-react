@@ -1,7 +1,7 @@
 import React from 'react';
 import ConstructionZone from './ConstructionZone';
 import Chance from 'chance';
-import { initialGameState } from "../enums";
+import { initialState } from "../enums";
 import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -11,8 +11,8 @@ describe('ConstructionZone', () => {
     let expectedDevelopBuildQueue, expectedSettleBuildQueue;
 
     beforeEach(() => {
-        expectedDevelopBuildQueue = chance.pickset(initialGameState.gameTiles, chance.d6());
-        expectedSettleBuildQueue = chance.pickset(initialGameState.gameTiles, chance.d6());
+        expectedDevelopBuildQueue = chance.pickset(initialState.game.gameTiles, chance.d6());
+        expectedSettleBuildQueue = chance.pickset(initialState.game.gameTiles, chance.d6());
     });
 
     afterEach(cleanup);

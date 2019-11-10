@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Game from './Game';
-import { initialGameState, tileTypes, bonuses } from '../enums';
+import { initialState, tileTypes, bonuses } from '../enums';
 import Chance from 'chance';
 
 const chance = new Chance();
@@ -30,7 +30,9 @@ describe('Game', () => {
         playerTwoButton,
         playerThreeButton,
         playerFourButton,
-        playerFiveButton;
+        playerFiveButton,
+        initialTestState,
+        mockSinglePlayerStartingState;
 
     const getButtons = (queryByText) => {
         playerOneButton = queryByText('1');
@@ -40,32 +42,38 @@ describe('Game', () => {
         playerFiveButton = queryByText('5');
     };
 
-    let mockSinglePlayerStartingState = {
-        factionTiles: [
-            generateRandomGenericTile()
-        ],
-        homeWorldTiles: [
-            generateRandomGenericTile()
-        ],
-        gameTiles: [
-            generateRandomGenericTile(),
-            generateRandomGenericTile()
-        ],
-        victoryPointPool: 0
-    }
+    beforeEach(() => {
+        initialTestState = JSON.parse(JSON.stringify(initialState));
+        mockSinglePlayerStartingState = {
+            game: {
+                factionTiles: [
+                    generateRandomGenericTile()
+                ],
+                homeWorldTiles: [
+                    generateRandomGenericTile()
+                ],
+                gameTiles: [
+                    generateRandomGenericTile(),
+                    generateRandomGenericTile()
+                ],
+                victoryPointPool: 0
+            },
+            visibility: true
+        }
+    });
 
     afterEach(cleanup);
 
     describe('Setup', () => {
         describe('Player Creation', () => {
             it('should display the start form', () => {
-                const { getByTestId } = render(<Game initialGameState={{ ...initialGameState }} />);
+                const { getByTestId } = render(<Game initialState={initialTestState} />);
 
                 expect(getByTestId('start-form')).toBeTruthy();
             });
 
             it('should hide the start form, create a victory point pool with 12 points, and create 1 player', () => {
-                const { queryByText, getByTestId, queryByTestId } = render(<Game initialGameState={{ ...initialGameState }} />);
+                const { queryByText, getByTestId, queryByTestId } = render(<Game initialState={initialTestState} />);
 
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
@@ -78,7 +86,7 @@ describe('Game', () => {
             });
 
             it('should hide the start form, create a victory point pool with 24 points, and create 2 players', () => {
-                const { queryByText, getByTestId, queryByTestId } = render(<Game initialGameState={{ ...initialGameState }} />);
+                const { queryByText, getByTestId, queryByTestId } = render(<Game initialState={initialTestState} />);
 
                 getButtons(queryByText);
                 fireEvent.click(playerTwoButton);
@@ -91,7 +99,7 @@ describe('Game', () => {
             });
 
             it('should hide the start form, create a victory point pool with 36 points, and create 3 players', () => {
-                const { queryByText, getByTestId, queryByTestId } = render(<Game initialGameState={{ ...initialGameState }} />);
+                const { queryByText, getByTestId, queryByTestId } = render(<Game initialState={initialTestState} />);
 
                 getButtons(queryByText);
                 fireEvent.click(playerThreeButton);
@@ -104,7 +112,8 @@ describe('Game', () => {
             });
 
             it('should hide the start form, create a victory point pool with 48 points, and create 4 players', () => {
-                const { queryByText, getByTestId, queryByTestId } = render(<Game initialGameState={{ ...initialGameState }} />);
+
+                const { queryByText, getByTestId, queryByTestId } = render(<Game initialState={initialTestState} />);
 
                 getButtons(queryByText);
                 fireEvent.click(playerFourButton);
@@ -117,7 +126,7 @@ describe('Game', () => {
             });
 
             it('should hide the start form, create a victory point pool with 60 points, and create 5 players', () => {
-                const { queryByText, getByTestId, queryByTestId } = render(<Game initialGameState={{ ...initialGameState }} />);
+                const { queryByText, getByTestId, queryByTestId } = render(<Game initialState={initialTestState} />);
 
                 getButtons(queryByText);
                 fireEvent.click(playerFiveButton);
@@ -130,7 +139,7 @@ describe('Game', () => {
             });
 
             it('should create a player with three white dice in cup and two white dice in citizenry', () => {
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const cup = getByTestId('cup');
@@ -141,11 +150,11 @@ describe('Game', () => {
             });
 
             it('should create a player with the correct number of points', () => {
-                mockSinglePlayerStartingState.factionTiles[0].tiles[0].points = 1;
-                mockSinglePlayerStartingState.factionTiles[0].tiles[1].points = 2;
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].points = 3;
+                mockSinglePlayerStartingState.game.factionTiles[0].tiles[0].points = 1;
+                mockSinglePlayerStartingState.game.factionTiles[0].tiles[1].points = 2;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].points = 3;
 
-                const { queryByText, getByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const points = getByTestId('points');
@@ -155,7 +164,7 @@ describe('Game', () => {
             });
 
             it('should create a player with the correct number of credits', () => {
-                const { queryByText, getByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const credits = getByTestId('credits');
@@ -167,9 +176,9 @@ describe('Game', () => {
 
         describe('Bonus Tests', () => {
             it('should add one brown die to citizenry', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BROWN_DIE_TO_CITIZENRY;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BROWN_DIE_TO_CITIZENRY;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const citizenry = getByTestId('citizenry');
@@ -178,9 +187,9 @@ describe('Game', () => {
             });
 
             it('should add one green die to citizenry', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_GREEN_DIE_TO_CITIZENRY;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_GREEN_DIE_TO_CITIZENRY;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const citizenry = getByTestId('citizenry');
@@ -189,9 +198,9 @@ describe('Game', () => {
             });
 
             it('should add one purple die to citizenry', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_PURPLE_DIE_TO_CITIZENRY;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_PURPLE_DIE_TO_CITIZENRY;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const citizenry = getByTestId('citizenry');
@@ -200,9 +209,9 @@ describe('Game', () => {
             });
 
             it('should add one red die to citizenry', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_RED_DIE_TO_CITIZENRY;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_RED_DIE_TO_CITIZENRY;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const citizenry = getByTestId('citizenry');
@@ -211,9 +220,9 @@ describe('Game', () => {
             });
 
             it('should add one yellow die to citizenry', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_YELLOW_DIE_TO_CITIZENRY;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_YELLOW_DIE_TO_CITIZENRY;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const citizenry = getByTestId('citizenry');
@@ -222,9 +231,9 @@ describe('Game', () => {
             });
 
             it('should add one blue die and one red die to citizenry', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BLUE_DIE_AND_ONE_RED_DIE_TO_CITIZENRY;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BLUE_DIE_AND_ONE_RED_DIE_TO_CITIZENRY;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const citizenry = getByTestId('citizenry');
@@ -234,9 +243,9 @@ describe('Game', () => {
             });
 
             it('should add two red dice to citizenry', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.TWO_RED_DICE_TO_CITIZENRY;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.TWO_RED_DICE_TO_CITIZENRY;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const citizenry = getByTestId('citizenry');
@@ -245,9 +254,9 @@ describe('Game', () => {
             });
 
             it('should add one blue die to cup', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BLUE_DIE_TO_CUP;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BLUE_DIE_TO_CUP;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const cup = getByTestId('cup');
@@ -256,9 +265,9 @@ describe('Game', () => {
             });
 
             it('should add one brown die to cup', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BROWN_DIE_TO_CUP;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BROWN_DIE_TO_CUP;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const cup = getByTestId('cup');
@@ -267,9 +276,9 @@ describe('Game', () => {
             });
 
             it('should add one green die to cup', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_GREEN_DIE_TO_CUP;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_GREEN_DIE_TO_CUP;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const cup = getByTestId('cup');
@@ -278,9 +287,9 @@ describe('Game', () => {
             });
 
             it('should add one purple die to cup', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_PURPLE_DIE_TO_CUP;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_PURPLE_DIE_TO_CUP;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const cup = getByTestId('cup');
@@ -289,9 +298,9 @@ describe('Game', () => {
             });
 
             it('should add one red die to cup', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_RED_DIE_TO_CUP;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_RED_DIE_TO_CUP;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const cup = getByTestId('cup');
@@ -300,10 +309,10 @@ describe('Game', () => {
             });
 
             it('should add one blue die to world', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].name = 'Here I am';
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BLUE_DIE_TO_WORLD;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].name = 'Here I am';
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BLUE_DIE_TO_WORLD;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const world = getByTestId('Here I am');
@@ -312,9 +321,9 @@ describe('Game', () => {
             });
 
             it('should add one brown die to world', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].name = 'Here I am';
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BROWN_DIE_TO_WORLD;
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].name = 'Here I am';
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BROWN_DIE_TO_WORLD;
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
 
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
@@ -324,10 +333,10 @@ describe('Game', () => {
             });
 
             it('should add one green die to world', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].name = 'Here I am';
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_GREEN_DIE_TO_WORLD;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].name = 'Here I am';
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_GREEN_DIE_TO_WORLD;
 
-                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
                 const world = getByTestId('Here I am');
@@ -336,9 +345,9 @@ describe('Game', () => {
             });
 
             it('should start the player with eight credits', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].bonus = bonuses.EIGHT_CREDITS;
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.EIGHT_CREDITS;
 
-                const { queryByText, getByTestId } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText, getByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
 
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
@@ -349,44 +358,42 @@ describe('Game', () => {
 
         describe('Picking build queue tiles', () => {
             it('should keep the build queue totals as low as possible', () => {
-                mockSinglePlayerStartingState = {
-                    ...mockSinglePlayerStartingState,
-                    gameTiles: [
-                        {
-                            tileId: chance.integer({ min: 1, max: 100 }),
-                            tiles: [
-                                {
-                                    tileType: chance.pickone(tileTypes),
-                                    points: 1,
-                                    name: 'Low Dev'
-                                },
-                                {
-                                    tileType: chance.pickone(tileTypes),
-                                    points: 10,
-                                    name: 'High Settle'
-                                }
-                            ]
-                        },
-                        {
-                            tileId: chance.integer({ min: 1, max: 100 }),
-                            tiles: [
-                                {
-                                    tileType: chance.pickone(tileTypes),
-                                    points: 10,
-                                    name: 'High Dev'
-                                },
-                                {
-                                    tileType: chance.pickone(tileTypes),
-                                    points: 1,
-                                    name: 'Low Settle'
-                                }
-                            ]
-                        }
-                    ]
-                }
+                const customGameTiles = [
+                    {
+                        tileId: chance.integer({ min: 1, max: 100 }),
+                        tiles: [
+                            {
+                                tileType: chance.pickone(tileTypes),
+                                points: 1,
+                                name: 'Low Dev'
+                            },
+                            {
+                                tileType: chance.pickone(tileTypes),
+                                points: 10,
+                                name: 'High Settle'
+                            }
+                        ]
+                    },
+                    {
+                        tileId: chance.integer({ min: 1, max: 100 }),
+                        tiles: [
+                            {
+                                tileType: chance.pickone(tileTypes),
+                                points: 10,
+                                name: 'High Dev'
+                            },
+                            {
+                                tileType: chance.pickone(tileTypes),
+                                points: 1,
+                                name: 'Low Settle'
+                            }
+                        ]
+                    }
+                ];
+                mockSinglePlayerStartingState.game.gameTiles = customGameTiles;
 
                 for (let i = 0; i < 100; i++) {
-                    const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                    const { queryByText } = render(<Game initialState={JSON.parse(JSON.stringify(mockSinglePlayerStartingState))} />);
                     getButtons(queryByText);
                     fireEvent.click(playerOneButton);
 
@@ -402,9 +409,9 @@ describe('Game', () => {
 
         describe('Phase Powers', () => {
             it('should add an assignment phase power', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].assignment = 'Ima power.';
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].assignment = 'Ima power.';
 
-                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
 
@@ -412,9 +419,9 @@ describe('Game', () => {
             });
 
             it('should add an explore phase power', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].explore = 'Ima power.';
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].explore = 'Ima power.';
 
-                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
 
@@ -422,9 +429,9 @@ describe('Game', () => {
             });
 
             it('should add a develop phase power', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].develop = 'Ima power.';
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].develop = 'Ima power.';
 
-                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
 
@@ -432,9 +439,9 @@ describe('Game', () => {
             });
 
             it('should add a settle phase power', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].settle = 'Ima power.';
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].settle = 'Ima power.';
 
-                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
 
@@ -442,9 +449,9 @@ describe('Game', () => {
             });
 
             it('should add a produce phase power', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].produce = 'Ima power.';
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].produce = 'Ima power.';
 
-                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
 
@@ -452,9 +459,9 @@ describe('Game', () => {
             });
 
             it('should add a ship phase power', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].ship = 'Ima power.';
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].ship = 'Ima power.';
 
-                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
 
@@ -462,9 +469,9 @@ describe('Game', () => {
             });
 
             it('should add an end game phase power', () => {
-                mockSinglePlayerStartingState.homeWorldTiles[0].tiles[0].endGame = 'Ima power.';
+                mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].endGame = 'Ima power.';
 
-                const { queryByText } = render(<Game initialGameState={{ ...mockSinglePlayerStartingState }} />);
+                const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
                 getButtons(queryByText);
                 fireEvent.click(playerOneButton);
 

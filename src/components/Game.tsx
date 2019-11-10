@@ -192,13 +192,13 @@ const createPlayers = (state: gameState, numberOfPlayers: number): gameState => 
     )
 };
 
-interface state {
+export interface state {
     game: gameState,
     visibility: boolean
 }
 
 interface gameProps {
-    initialGameState: gameState
+    initialState: state
 }
 
 class Game extends React.Component<gameProps, state> {
@@ -215,7 +215,7 @@ class Game extends React.Component<gameProps, state> {
 
     componentDidMount() {
         this.setState({
-            game: this.props.initialGameState
+            ...this.props.initialState
         });
     }
 
