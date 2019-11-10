@@ -45,7 +45,7 @@ class Tile extends React.Component<TileProps> {
             case tileTypes.YELLOW_WORLD:
                 return <YellowWorld data-testid='yellow-world' icon={faGlobe} size='2x'/>;
             default:
-                return (<></>);
+                return <p>{`Invalid tile type: ${tile.tileType} for tile: ${tile.name}`}</p>;
         }
     };
 

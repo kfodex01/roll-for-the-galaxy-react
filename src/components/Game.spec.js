@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Game from './Game';
-import { initialState, bonuses } from '../enums';
+import { initialState, bonuses, tileTypes } from '../enums';
 import Chance from 'chance';
 
 const chance = new Chance();
@@ -13,11 +13,27 @@ const generateRandomGenericTile = () => {
         tiles: [
             {
                 points: chance.integer({ min: 1, max: 100 }),
-                name: chance.word()
+                name: chance.word(),
+                tileType: chance.pickone([
+                    tileTypes.BLUE_WORLD,
+                    tileTypes.BROWN_WORLD,
+                    tileTypes.DEVELOPMENT,
+                    tileTypes.GRAY_WORLD,
+                    tileTypes.GREEN_WORLD,
+                    tileTypes.YELLOW_WORLD
+                ])
             },
             {
                 points: chance.integer({ min: 1, max: 100 }),
-                name: chance.word()
+                name: chance.word(),
+                tileType: chance.pickone([
+                    tileTypes.BLUE_WORLD,
+                    tileTypes.BROWN_WORLD,
+                    tileTypes.DEVELOPMENT,
+                    tileTypes.GRAY_WORLD,
+                    tileTypes.GREEN_WORLD,
+                    tileTypes.YELLOW_WORLD
+                ])
             }
         ]
     });
@@ -362,11 +378,27 @@ describe('Game', () => {
                         tiles: [
                             {
                                 points: 1,
-                                name: 'Low Dev'
+                                name: 'Low Dev',
+                                tileType: chance.pickone([
+                                    tileTypes.BLUE_WORLD,
+                                    tileTypes.BROWN_WORLD,
+                                    tileTypes.DEVELOPMENT,
+                                    tileTypes.GRAY_WORLD,
+                                    tileTypes.GREEN_WORLD,
+                                    tileTypes.YELLOW_WORLD
+                                ])
                             },
                             {
                                 points: 10,
-                                name: 'High Settle'
+                                name: 'High Settle',
+                                tileType: chance.pickone([
+                                    tileTypes.BLUE_WORLD,
+                                    tileTypes.BROWN_WORLD,
+                                    tileTypes.DEVELOPMENT,
+                                    tileTypes.GRAY_WORLD,
+                                    tileTypes.GREEN_WORLD,
+                                    tileTypes.YELLOW_WORLD
+                                ])
                             }
                         ]
                     },
@@ -375,11 +407,27 @@ describe('Game', () => {
                         tiles: [
                             {
                                 points: 10,
-                                name: 'High Dev'
+                                name: 'High Dev',
+                                tileType: chance.pickone([
+                                    tileTypes.BLUE_WORLD,
+                                    tileTypes.BROWN_WORLD,
+                                    tileTypes.DEVELOPMENT,
+                                    tileTypes.GRAY_WORLD,
+                                    tileTypes.GREEN_WORLD,
+                                    tileTypes.YELLOW_WORLD
+                                ])
                             },
                             {
                                 points: 1,
-                                name: 'Low Settle'
+                                name: 'Low Settle',
+                                tileType: chance.pickone([
+                                    tileTypes.BLUE_WORLD,
+                                    tileTypes.BROWN_WORLD,
+                                    tileTypes.DEVELOPMENT,
+                                    tileTypes.GRAY_WORLD,
+                                    tileTypes.GREEN_WORLD,
+                                    tileTypes.YELLOW_WORLD
+                                ])
                             }
                         ]
                     }

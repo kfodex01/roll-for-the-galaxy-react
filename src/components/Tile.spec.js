@@ -4,6 +4,7 @@ import '@testing-library/jest-dom/extend-expect';
 import Chance from 'chance';
 import Tile from './Tile';
 import { tileTypes } from '../enums';
+import {ErrorBoundary} from './ErrorBoundary';
 
 const chance = new Chance();
 
@@ -11,6 +12,14 @@ describe('Tile', () => {
     let expectedTileProps = {
         name: chance.word(),
         points: chance.integer({ min: 1, max: 100 }),
+        tileType: chance.pickone([
+            tileTypes.BLUE_WORLD,
+            tileTypes.BROWN_WORLD,
+            tileTypes.DEVELOPMENT,
+            tileTypes.GRAY_WORLD,
+            tileTypes.GREEN_WORLD,
+            tileTypes.YELLOW_WORLD
+        ])
     };
     afterEach(cleanup);
 
@@ -60,5 +69,14 @@ describe('Tile', () => {
         const {getByTestId} = render(<Tile {...expectedTileProps} />);
 
         expect(getByTestId('yellow-world')).toBeTruthy();
+    });
+
+    it('should render an error when the tile type is invalid', () => {
+        expectedTileProps.name = 'Broken Tile';
+        expectedTileProps.tileType = 'WAT';
+
+        const {getByText} = render(<Tile {...expectedTileProps} />);
+
+        expect(getByText('Invalid tile type: WAT for tile: Broken Tile')).toBeTruthy();
     });
 });
