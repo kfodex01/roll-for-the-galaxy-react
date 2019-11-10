@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Game from './Game';
-import { initialState, tileTypes, bonuses } from '../enums';
+import { initialState, bonuses } from '../enums';
 import Chance from 'chance';
 
 const chance = new Chance();
@@ -12,12 +12,10 @@ const generateRandomGenericTile = () => {
         tileId: chance.integer({ min: 1, max: 100 }),
         tiles: [
             {
-                tileType: chance.pickone(tileTypes),
                 points: chance.integer({ min: 1, max: 100 }),
                 name: chance.word()
             },
             {
-                tileType: chance.pickone(tileTypes),
                 points: chance.integer({ min: 1, max: 100 }),
                 name: chance.word()
             }
@@ -363,12 +361,10 @@ describe('Game', () => {
                         tileId: chance.integer({ min: 1, max: 100 }),
                         tiles: [
                             {
-                                tileType: chance.pickone(tileTypes),
                                 points: 1,
                                 name: 'Low Dev'
                             },
                             {
-                                tileType: chance.pickone(tileTypes),
                                 points: 10,
                                 name: 'High Settle'
                             }
@@ -378,12 +374,10 @@ describe('Game', () => {
                         tileId: chance.integer({ min: 1, max: 100 }),
                         tiles: [
                             {
-                                tileType: chance.pickone(tileTypes),
                                 points: 10,
                                 name: 'High Dev'
                             },
                             {
-                                tileType: chance.pickone(tileTypes),
                                 points: 1,
                                 name: 'Low Settle'
                             }

@@ -33,17 +33,17 @@ class Tile extends React.Component<TileProps> {
     getCorrectIcon = (tile: TileProps): JSX.Element => {
         switch (tile.tileType) {
             case tileTypes.BLUE_WORLD:
-                return <BlueWorld icon={faGlobe} size='2x'/>;
+                return <BlueWorld data-testid='blue-world' icon={faGlobe} size='2x'/>;
             case tileTypes.BROWN_WORLD:
-                return <BrownWorld icon={faGlobe} size='2x'/>;
+                return <BrownWorld data-testid='brown-world' icon={faGlobe} size='2x'/>;
             case tileTypes.DEVELOPMENT:
-                return <Development icon={faSatellite} size='2x'/>;
+                return <Development data-testid='development' icon={faSatellite} size='2x'/>;
             case tileTypes.GRAY_WORLD:
-                return <GrayWorld icon={faGlobe} size='2x'/>;
+                return <GrayWorld data-testid='gray-world' icon={faGlobe} size='2x'/>;
             case tileTypes.GREEN_WORLD:
-                return <GreenWorld icon={faGlobe} size='2x'/>;
+                return <GreenWorld data-testid='green-world' icon={faGlobe} size='2x'/>;
             case tileTypes.YELLOW_WORLD:
-                return <YellowWorld icon={faGlobe} size='2x'/>;
+                return <YellowWorld data-testid='yellow-world' icon={faGlobe} size='2x'/>;
             default:
                 return (<></>);
         }
