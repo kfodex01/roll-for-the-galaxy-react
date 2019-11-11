@@ -23,11 +23,23 @@ export const FlexMaxRowDiv = styled(FlexRowDiv)`
   justify-content: space-between;
 `;
 
+export const FlexDropBoxRowDiv = styled(FlexRowDiv)`
+  justify-content: space-around;
+  margin: 10px;
+`;
+
 export const BigText = styled.p`
   font-family: sans-serif;
   font-size: 20px;
   margin: 0;
   padding: 5px;
+`;
+
+export const DropBoxDiv = styled(BigText)`
+  padding-bottom: 200px;
+  background-color: #ededed;
+  min-width: 150px;
+  text-align: center;
 `;
 
 export const BlueWorld = styled(FontAwesomeIcon)`

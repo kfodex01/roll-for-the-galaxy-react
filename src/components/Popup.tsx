@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BigText, FlexMaxRowDiv } from '../styled-components';
+import { BigText, FlexMaxRowDiv, FlexDropBoxRowDiv, DropBoxDiv } from '../styled-components';
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -45,6 +45,13 @@ export class Popup extends React.Component<PopupProps> {
                             </div>
                         </button>
                     </FlexMaxRowDiv>
+                    <FlexDropBoxRowDiv>
+                        <DropBoxDiv data-testid='explore-drop-box'>Explore</DropBoxDiv>
+                        <DropBoxDiv data-testid='develop-drop-box'>Develop</DropBoxDiv>
+                        <DropBoxDiv data-testid='settle-drop-box'>Settle</DropBoxDiv>
+                        <DropBoxDiv data-testid='produce-drop-box'>Produce</DropBoxDiv>
+                        <DropBoxDiv data-testid='ship-drop-box'>Ship</DropBoxDiv>
+                    </FlexDropBoxRowDiv>
                 </PopupOnlyDiv>
             </PopupFullPageCoverDiv>
         );

@@ -486,16 +486,21 @@ describe('Game', () => {
         });
 
         it('should show the assignment popup', () => {
-            const { getByText } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const { getByText, queryByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
             const startRoundButton = getByText('Start Round');
 
             fireEvent.click(startRoundButton);
 
             expect(getByText('Assignment Phase')).toBeTruthy();
+            expect(queryByTestId('explore-drop-box')).toBeTruthy();
+            expect(queryByTestId('develop-drop-box')).toBeTruthy();
+            expect(queryByTestId('settle-drop-box')).toBeTruthy();
+            expect(queryByTestId('produce-drop-box')).toBeTruthy();
+            expect(queryByTestId('ship-drop-box')).toBeTruthy();
         });
 
         it('should hide the assignment popup', () => {
-            const { getByText, queryByText } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const { getByText, queryByText, queryByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
             const startRoundButton = getByText('Start Round');
 
             fireEvent.click(startRoundButton);
@@ -504,6 +509,11 @@ describe('Game', () => {
             fireEvent.click(closeAssignmentPopupButton);
 
             expect(queryByText('Assignment Phase')).toBeFalsy();
+            expect(queryByTestId('explore-drop-box')).toBeFalsy();
+            expect(queryByTestId('develop-drop-box')).toBeFalsy();
+            expect(queryByTestId('settle-drop-box')).toBeFalsy();
+            expect(queryByTestId('produce-drop-box')).toBeFalsy();
+            expect(queryByTestId('ship-drop-box')).toBeFalsy();
         });
     });
 });
