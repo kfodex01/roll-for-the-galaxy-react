@@ -1,8 +1,8 @@
 import React from "react";
-import {faEye, faSatellite, faGlobe, faIndustry, faRocket, faStarOfLife} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { faEye, faSatellite, faGlobe, faIndustry, faRocket, faStarOfLife } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from 'styled-components';
-import {dieColor, dieFace, gameColors} from "../enums";
+import { dieColor, dieFace, gameColors } from "../enums";
 
 const DieDiv = styled.div`
   display: flex;
@@ -51,19 +51,19 @@ class Die extends React.Component<DieProps> {
     getDieFace = (face: string): JSX.Element => {
         switch (face) {
             case dieFace.EXPLORE:
-                return (<FontAwesomeIcon data-testid='explore-face' icon={faEye}/>);
+                return (<FontAwesomeIcon data-testid='explore-face' icon={faEye} />);
             case dieFace.DEVELOP:
-                return (<FontAwesomeIcon data-testid='develop-face' icon={faSatellite}/>);
+                return (<FontAwesomeIcon data-testid='develop-face' icon={faSatellite} />);
             case dieFace.SETTLE:
-                return (<FontAwesomeIcon data-testid='settle-face' icon={faGlobe}/>);
+                return (<FontAwesomeIcon data-testid='settle-face' icon={faGlobe} />);
             case dieFace.PRODUCE:
-                return (<FontAwesomeIcon data-testid='produce-face' icon={faIndustry}/>);
+                return (<FontAwesomeIcon data-testid='produce-face' icon={faIndustry} />);
             case dieFace.SHIP:
-                return (<FontAwesomeIcon data-testid='ship-face' icon={faRocket}/>);
+                return (<FontAwesomeIcon data-testid='ship-face' icon={faRocket} />);
             case dieFace.WILD:
-                return (<FontAwesomeIcon data-testid='wild-face' icon={faStarOfLife}/>);
+                return (<FontAwesomeIcon data-testid='wild-face' icon={faStarOfLife} />);
             default:
-        return (<p>{`Invalid die face: ${face}`}</p>);
+                return (<p>{`Invalid die face: ${face}`}</p>);
         }
     };
 
@@ -112,7 +112,7 @@ class Die extends React.Component<DieProps> {
                     </YellowDie>
                 );
             default:
-        return (<p>{`Invalid die color: ${this.props.color}`}</p>);
+                return (<p>{`Invalid die color: ${this.props.color}`}</p>);
         }
     }
 }

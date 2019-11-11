@@ -1,5 +1,5 @@
 import React from 'react';
-import {render, fireEvent, cleanup} from '@testing-library/react';
+import { render, fireEvent, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import StartForm from "./StartForm";
 
@@ -41,7 +41,7 @@ describe('StartForm', () => {
     afterEach(cleanup);
 
     it('should render the start form correctly', () => {
-        const {queryByText, queryByTestId} = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
+        const { queryByText, queryByTestId } = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
         getFormElements(queryByText);
 
         expect(queryByTestId('start-form')).toBeTruthy();
@@ -54,7 +54,7 @@ describe('StartForm', () => {
     });
 
     it('should fire both events with the correct parameters when playerOneButton is clicked', () => {
-        const {queryByText} = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
+        const { queryByText } = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
         getFormElements(queryByText);
 
         fireEvent.click(playerOneButton);
@@ -65,7 +65,7 @@ describe('StartForm', () => {
     });
 
     it('should fire both events with the correct parameters when playerTwoButton is clicked', () => {
-        const {queryByText} = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
+        const { queryByText } = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
         getFormElements(queryByText);
 
         fireEvent.click(playerTwoButton);
@@ -76,7 +76,7 @@ describe('StartForm', () => {
     });
 
     it('should fire both events with the correct parameters when playerThreeButton is clicked', () => {
-        const {queryByText} = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
+        const { queryByText } = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
         getFormElements(queryByText);
 
         fireEvent.click(playerThreeButton);
@@ -87,7 +87,7 @@ describe('StartForm', () => {
     });
 
     it('should fire both events with the correct parameters when playerFourButton is clicked', () => {
-        const {queryByText} = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
+        const { queryByText } = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
         getFormElements(queryByText);
 
         fireEvent.click(playerFourButton);
@@ -98,7 +98,7 @@ describe('StartForm', () => {
     });
 
     it('should fire both events with the correct parameters when playerFiveButton is clicked', () => {
-        const {queryByText} = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
+        const { queryByText } = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
         getFormElements(queryByText);
 
         fireEvent.click(playerFiveButton);
@@ -109,7 +109,7 @@ describe('StartForm', () => {
     });
 
     it('should not fire events when no button is clicked', () => {
-        const {queryByText} = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
+        const { queryByText } = render(<StartForm hideBeginGameForm={mockVisibilityEvent} createPlayers={mockPlayerCreationEvent} />);
         getFormElements(queryByText);
 
         expect(hideBeginGameFormEventFired).toBe(false);

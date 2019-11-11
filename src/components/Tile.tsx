@@ -9,9 +9,9 @@ import {
     GreenWorld,
     YellowWorld
 } from "../styled-components";
-import {tileTypes} from "../enums";
-import {faGlobe, faSatellite} from "@fortawesome/free-solid-svg-icons";
-import DicePool, {DicePoolProps} from "./DicePool";
+import { tileTypes } from "../enums";
+import { faGlobe, faSatellite } from "@fortawesome/free-solid-svg-icons";
+import DicePool, { DicePoolProps } from "./DicePool";
 
 export interface TileProps {
     dicePool?: DicePoolProps;
@@ -33,17 +33,17 @@ class Tile extends React.Component<TileProps> {
     getCorrectIcon = (tile: TileProps): JSX.Element => {
         switch (tile.tileType) {
             case tileTypes.BLUE_WORLD:
-                return <BlueWorld data-testid='blue-world' icon={faGlobe} size='2x'/>;
+                return <BlueWorld data-testid='blue-world' icon={faGlobe} size='2x' />;
             case tileTypes.BROWN_WORLD:
-                return <BrownWorld data-testid='brown-world' icon={faGlobe} size='2x'/>;
+                return <BrownWorld data-testid='brown-world' icon={faGlobe} size='2x' />;
             case tileTypes.DEVELOPMENT:
-                return <Development data-testid='development' icon={faSatellite} size='2x'/>;
+                return <Development data-testid='development' icon={faSatellite} size='2x' />;
             case tileTypes.GRAY_WORLD:
-                return <GrayWorld data-testid='gray-world' icon={faGlobe} size='2x'/>;
+                return <GrayWorld data-testid='gray-world' icon={faGlobe} size='2x' />;
             case tileTypes.GREEN_WORLD:
-                return <GreenWorld data-testid='green-world' icon={faGlobe} size='2x'/>;
+                return <GreenWorld data-testid='green-world' icon={faGlobe} size='2x' />;
             case tileTypes.YELLOW_WORLD:
-                return <YellowWorld data-testid='yellow-world' icon={faGlobe} size='2x'/>;
+                return <YellowWorld data-testid='yellow-world' icon={faGlobe} size='2x' />;
             default:
                 return <p>{`Invalid tile type: ${tile.tileType} for tile: ${tile.name}`}</p>;
         }

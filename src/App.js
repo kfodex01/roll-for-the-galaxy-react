@@ -1,6 +1,6 @@
 import React from 'react';
 import Game from "./components/Game";
-import {initialState} from "./enums";
+import { initialState } from "./enums";
 
 class App extends React.Component {
     render() {
