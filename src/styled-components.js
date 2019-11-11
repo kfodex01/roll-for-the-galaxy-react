@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {gameColors} from "./enums";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { gameColors } from "./enums";
 
 export const FlexColumnDiv = styled.div`
   display: flex;
@@ -17,6 +17,10 @@ export const PlayerColumnDiv = styled.div`
 export const FlexRowDiv = styled.div`
   display: flex;
   flex-direction: row;
+`;
+
+export const FlexMaxRowDiv = styled(FlexRowDiv)`
+  justify-content: space-between;
 `;
 
 export const BigText = styled.p`

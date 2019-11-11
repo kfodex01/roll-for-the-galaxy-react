@@ -4,81 +4,51 @@ import '@testing-library/jest-dom/extend-expect';
 import Game from './Game';
 import { initialState, bonuses, tileTypes } from '../enums';
 import Chance from 'chance';
+import { getMockTile, getMockFullTile, getArrayOfRandomDice, getArrayOfRandomTiles } from './mock-object-generators';
 
 const chance = new Chance();
 
-const generateRandomGenericTile = () => {
-    return ({
-        tileId: chance.integer({ min: 1, max: 100 }),
-        tiles: [
-            {
-                points: chance.integer({ min: 1, max: 100 }),
-                name: chance.word(),
-                tileType: chance.pickone([
-                    tileTypes.BLUE_WORLD,
-                    tileTypes.BROWN_WORLD,
-                    tileTypes.DEVELOPMENT,
-                    tileTypes.GRAY_WORLD,
-                    tileTypes.GREEN_WORLD,
-                    tileTypes.YELLOW_WORLD
-                ])
-            },
-            {
-                points: chance.integer({ min: 1, max: 100 }),
-                name: chance.word(),
-                tileType: chance.pickone([
-                    tileTypes.BLUE_WORLD,
-                    tileTypes.BROWN_WORLD,
-                    tileTypes.DEVELOPMENT,
-                    tileTypes.GRAY_WORLD,
-                    tileTypes.GREEN_WORLD,
-                    tileTypes.YELLOW_WORLD
-                ])
-            }
-        ]
-    });
-}
-
 describe('Game', () => {
-    let playerOneButton,
-        playerTwoButton,
-        playerThreeButton,
-        playerFourButton,
-        playerFiveButton,
-        initialTestState,
-        mockSinglePlayerStartingState;
-
-    const getButtons = (queryByText) => {
-        playerOneButton = queryByText('1');
-        playerTwoButton = queryByText('2');
-        playerThreeButton = queryByText('3');
-        playerFourButton = queryByText('4');
-        playerFiveButton = queryByText('5');
-    };
-
-    beforeEach(() => {
-        initialTestState = JSON.parse(JSON.stringify(initialState));
-        mockSinglePlayerStartingState = {
-            game: {
-                factionTiles: [
-                    generateRandomGenericTile()
-                ],
-                homeWorldTiles: [
-                    generateRandomGenericTile()
-                ],
-                gameTiles: [
-                    generateRandomGenericTile(),
-                    generateRandomGenericTile()
-                ],
-                victoryPointPool: 0
-            },
-            visibility: true
-        }
-    });
-
     afterEach(cleanup);
 
     describe('Setup', () => {
+        let playerOneButton,
+            playerTwoButton,
+            playerThreeButton,
+            playerFourButton,
+            playerFiveButton,
+            initialTestState,
+            mockSinglePlayerStartingState;
+
+        const getButtons = (queryByText) => {
+            playerOneButton = queryByText('1');
+            playerTwoButton = queryByText('2');
+            playerThreeButton = queryByText('3');
+            playerFourButton = queryByText('4');
+            playerFiveButton = queryByText('5');
+        };
+
+        beforeEach(() => {
+            initialTestState = JSON.parse(JSON.stringify(initialState));
+            mockSinglePlayerStartingState = {
+                game: {
+                    factionTiles: [
+                        getMockFullTile()
+                    ],
+                    homeWorldTiles: [
+                        getMockFullTile()
+                    ],
+                    gameTiles: [
+                        getMockFullTile(),
+                        getMockFullTile()
+                    ],
+                    victoryPointPool: chance.integer({min: 1, max: 60})
+                },
+                startFormVisibility: true,
+                assignmentPopupVisibility: false
+            }
+        });
+
         describe('Player Creation', () => {
             it('should display the start form', () => {
                 const { getByTestId } = render(<Game initialState={initialTestState} />);
@@ -373,64 +343,8 @@ describe('Game', () => {
         describe('Picking build queue tiles', () => {
             it('should keep the build queue totals as low as possible', () => {
                 const customGameTiles = [
-                    {
-                        tileId: chance.integer({ min: 1, max: 100 }),
-                        tiles: [
-                            {
-                                points: 1,
-                                name: 'Low Dev',
-                                tileType: chance.pickone([
-                                    tileTypes.BLUE_WORLD,
-                                    tileTypes.BROWN_WORLD,
-                                    tileTypes.DEVELOPMENT,
-                                    tileTypes.GRAY_WORLD,
-                                    tileTypes.GREEN_WORLD,
-                                    tileTypes.YELLOW_WORLD
-                                ])
-                            },
-                            {
-                                points: 10,
-                                name: 'High Settle',
-                                tileType: chance.pickone([
-                                    tileTypes.BLUE_WORLD,
-                                    tileTypes.BROWN_WORLD,
-                                    tileTypes.DEVELOPMENT,
-                                    tileTypes.GRAY_WORLD,
-                                    tileTypes.GREEN_WORLD,
-                                    tileTypes.YELLOW_WORLD
-                                ])
-                            }
-                        ]
-                    },
-                    {
-                        tileId: chance.integer({ min: 1, max: 100 }),
-                        tiles: [
-                            {
-                                points: 10,
-                                name: 'High Dev',
-                                tileType: chance.pickone([
-                                    tileTypes.BLUE_WORLD,
-                                    tileTypes.BROWN_WORLD,
-                                    tileTypes.DEVELOPMENT,
-                                    tileTypes.GRAY_WORLD,
-                                    tileTypes.GREEN_WORLD,
-                                    tileTypes.YELLOW_WORLD
-                                ])
-                            },
-                            {
-                                points: 1,
-                                name: 'Low Settle',
-                                tileType: chance.pickone([
-                                    tileTypes.BLUE_WORLD,
-                                    tileTypes.BROWN_WORLD,
-                                    tileTypes.DEVELOPMENT,
-                                    tileTypes.GRAY_WORLD,
-                                    tileTypes.GREEN_WORLD,
-                                    tileTypes.YELLOW_WORLD
-                                ])
-                            }
-                        ]
-                    }
+                    getMockFullTile(['Low Dev', 'High Settle'], [1, 10]),
+                    getMockFullTile(['High Dev', 'Low Settle'], [10, 1])
                 ];
                 mockSinglePlayerStartingState.game.gameTiles = customGameTiles;
 
@@ -519,6 +433,77 @@ describe('Game', () => {
 
                 expect(queryByText('End Game: Ima power.')).toBeTruthy();
             });
+        });
+    });
+
+    describe('Assignment Phase', () => {
+        let mockSinglePlayerAssignmentState;
+
+        beforeEach(() => {
+            mockSinglePlayerAssignmentState = {
+                assignmentPopupVisibility: false,
+                startFormVisibility: false,
+                game: {
+                    factionTiles: [],
+                    homeWorldTiles: [],
+                    gameTiles: [],
+                    victoryPointPool: chance.integer({min: 1, max: 60}),
+                    players:[
+                        {
+                            citizenry: {
+                                dice: getArrayOfRandomDice()
+                            },
+                            cup: {
+                                dice: getArrayOfRandomDice()
+                            },
+                            developBuildQueue: getArrayOfRandomTiles(),
+                            id: 1,
+                            nextTileId: 4,
+                            phasePowers: {
+                                assignment: [],
+                                develop: [],
+                                endGame: [],
+                                explore: [],
+                                produce: [],
+                                settle: [],
+                                ship: []
+                            },
+                            points: chance.integer({min: 0, max: 100}),
+                            settleBuildQueue: getArrayOfRandomTiles(),
+                            tiles: [
+                                getMockTile(),
+                                getMockTile(),
+                                getMockTile()
+                            ]
+                        }
+                    ]
+                }
+            };
+
+            mockSinglePlayerAssignmentState.game.players[0].tiles[0].tileId = 1;
+            mockSinglePlayerAssignmentState.game.players[0].tiles[1].tileId = 2;
+            mockSinglePlayerAssignmentState.game.players[0].tiles[2].tileId = 3;
+        });
+
+        it('should show the assignment popup', () => {
+            const { getByText } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(getByText('Assignment Phase')).toBeTruthy();
+        });
+
+        it('should hide the assignment popup', () => {
+            const { getByText, queryByText } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+            const closeAssignmentPopupButton = getByText('Close');
+
+            fireEvent.click(closeAssignmentPopupButton);
+
+            expect(queryByText('Assignment Phase')).toBeFalsy();
         });
     });
 });

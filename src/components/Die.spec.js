@@ -1,35 +1,15 @@
 import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import Chance from 'chance';
 import Die from './Die';
 import { dieColor, dieFace } from '../enums';
-
-const chance = new Chance();
+import { getMockDie } from './mock-object-generators';
 
 describe('Die', () => {
     let expectedDieProps;
 
     beforeEach(() => {
-        expectedDieProps = {
-            color: chance.pickone([
-                dieColor.BLUE,
-                dieColor.BROWN,
-                dieColor.GREEN,
-                dieColor.PURPLE,
-                dieColor.RED,
-                dieColor.WHITE,
-                dieColor.YELLOW
-            ]),
-            face: chance.pickone([
-                dieFace.EXPLORE,
-                dieFace.DEVELOP,
-                dieFace.SETTLE,
-                dieFace.PRODUCE,
-                dieFace.SHIP,
-                dieFace.WILD
-            ])
-        }
+        expectedDieProps = getMockDie();
     });
 
     afterEach(cleanup);

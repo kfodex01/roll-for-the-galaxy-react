@@ -1,12 +1,13 @@
-import React from "react";
-import StartForm from "./StartForm";
-import { BigText, FlexColumnDiv } from "../styled-components";
-import PlayerBoard, { PhasePowersProps, PlayerBoardProps } from "./PlayerBoard";
-import { bonuses, dieColor, phases } from "../enums";
-import Chance from "chance";
-import { TileProps } from "./Tile";
-import { Tiles } from "./ConstructionZone";
-import { DicePoolProps } from "./DicePool";
+import React from 'react';
+import StartForm from './StartForm';
+import { BigText, FlexColumnDiv } from '../styled-components';
+import PlayerBoard, { PhasePowersProps, PlayerBoardProps } from './PlayerBoard';
+import { bonuses, dieColor, phases } from '../enums';
+import Chance from 'chance';
+import { TileProps } from './Tile';
+import { Tiles } from './ConstructionZone';
+import { DicePoolProps } from './DicePool';
+import { Popup } from './Popup';
 
 const chance = new Chance();
 
@@ -194,7 +195,8 @@ const createPlayers = (state: gameState, numberOfPlayers: number): gameState => 
 
 export interface state {
     game: gameState,
-    visibility: boolean
+    startFormVisibility: boolean,
+    assignmentPopupVisibility: boolean
 }
 
 interface gameProps {
@@ -210,7 +212,8 @@ class Game extends React.Component<gameProps, state> {
             victoryPointPool: 0,
             players: []
         },
-        visibility: true
+        startFormVisibility: true,
+        assignmentPopupVisibility: false
     };
 
     componentDidMount() {
@@ -221,7 +224,7 @@ class Game extends React.Component<gameProps, state> {
 
     hideBeginGameForm = (): void => {
         this.setState({
-            visibility: false
+            startFormVisibility: false
         });
     };
 
@@ -230,23 +233,35 @@ class Game extends React.Component<gameProps, state> {
         this.setState({ game });
     };
 
+    toggleAssignmentPopup = () => {
+        this.setState({ assignmentPopupVisibility: !this.state.assignmentPopupVisibility });
+    }
+
     render() {
         return (
             <>
-                {this.state.visibility === true ?
-                    (
-                        <StartForm hideBeginGameForm={this.hideBeginGameForm} createPlayers={this.createPlayers} />
-                    ) :
-                    <>
-                        <BigText>Victory Point Pool: {this.state.game.victoryPointPool}</BigText>
-                        <FlexColumnDiv data-testid='player-boards'>
-                            {this.state.game.players.map((player: PlayerBoardProps) => {
-                                return (
-                                    <PlayerBoard key={player.id} {...player} />
-                                );
-                            })}
-                        </FlexColumnDiv>
-                    </>
+                {
+                    this.state.startFormVisibility === true ?
+                        (
+                            <StartForm hideBeginGameForm={this.hideBeginGameForm} createPlayers={this.createPlayers} />
+                        ) :
+                        <>
+                            <BigText>Victory Point Pool: {this.state.game.victoryPointPool}</BigText>
+                            <button onClick={this.toggleAssignmentPopup} >Start Round</button>
+                            <FlexColumnDiv data-testid='player-boards'>
+                                {this.state.game.players.map((player: PlayerBoardProps) => {
+                                    return (
+                                        <PlayerBoard key={player.id} {...player} />
+                                    );
+                                })}
+                            </FlexColumnDiv>
+                        </>
+                }
+                {
+                    this.state.assignmentPopupVisibility === true ?
+                        (
+                            <Popup closePopup={this.toggleAssignmentPopup} />
+                        ) : null
                 }
             </>
         )

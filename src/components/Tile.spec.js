@@ -1,28 +1,15 @@
 import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import Chance from 'chance';
 import Tile from './Tile';
 import { tileTypes, dieColor, dieFace } from '../enums';
-
-const chance = new Chance();
+import { getMockTile } from './mock-object-generators';
 
 describe('Tile', () => {
     let expectedTileProps;
 
     beforeEach(() => {
-        expectedTileProps = {
-            name: chance.word(),
-            points: chance.integer({ min: 1, max: 100 }),
-            tileType: chance.pickone([
-                tileTypes.BLUE_WORLD,
-                tileTypes.BROWN_WORLD,
-                tileTypes.DEVELOPMENT,
-                tileTypes.GRAY_WORLD,
-                tileTypes.GREEN_WORLD,
-                tileTypes.YELLOW_WORLD
-            ])
-        };
+        expectedTileProps = getMockTile();
     });
 
     afterEach(cleanup);

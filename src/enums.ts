@@ -1377,6 +1377,7 @@ const initialGameState: gameState = {
 };
 
 export const initialState: state = {
-    game: {...initialGameState},
-    visibility: true
+    game: { ...initialGameState },
+    startFormVisibility: true,
+    assignmentPopupVisibility: false
 }
