@@ -194,6 +194,115 @@ const createPlayers = (state: gameState, numberOfPlayers: number): gameState => 
     )
 };
 
+const rollDice = (game: gameState): gameState => {
+    if (game.players && !game.players[0].phaseStripDice) {
+        const cupDice = game.players[0].cup.dice;
+        const phaseStripDice: DicePoolProps = {
+            dice: []
+        };
+        cupDice.forEach((die: DieProps) => {
+            switch (die.color) {
+                case dieColor.BLUE:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        face: chance.pickone([
+                            dieFace.EXPLORE,
+                            dieFace.PRODUCE,
+                            dieFace.PRODUCE,
+                            dieFace.SHIP,
+                            dieFace.SHIP,
+                            dieFace.WILD
+                        ])
+                    });
+                    break;
+                case dieColor.BROWN:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        face: chance.pickone([
+                            dieFace.EXPLORE,
+                            dieFace.DEVELOP,
+                            dieFace.DEVELOP,
+                            dieFace.PRODUCE,
+                            dieFace.SHIP,
+                            dieFace.WILD
+                        ])
+                    });
+                    break;
+                case dieColor.GREEN:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        face: chance.pickone([
+                            dieFace.EXPLORE,
+                            dieFace.SETTLE,
+                            dieFace.SETTLE,
+                            dieFace.PRODUCE,
+                            dieFace.WILD,
+                            dieFace.WILD
+                        ])
+                    });
+                    break;
+                case dieColor.PURPLE:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        face: chance.pickone([
+                            dieFace.EXPLORE,
+                            dieFace.DEVELOP,
+                            dieFace.SHIP,
+                            dieFace.SHIP,
+                            dieFace.SHIP,
+                            dieFace.WILD
+                        ])
+                    });
+                    break;
+                case dieColor.RED:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        face: chance.pickone([
+                            dieFace.EXPLORE,
+                            dieFace.DEVELOP,
+                            dieFace.DEVELOP,
+                            dieFace.SETTLE,
+                            dieFace.SETTLE,
+                            dieFace.WILD
+                        ])
+                    });
+                    break;
+                case dieColor.WHITE:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        face: chance.pickone([
+                            dieFace.EXPLORE,
+                            dieFace.EXPLORE,
+                            dieFace.DEVELOP,
+                            dieFace.SETTLE,
+                            dieFace.PRODUCE,
+                            dieFace.SHIP
+                        ])
+                    });
+                    break;
+                case dieColor.YELLOW:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        face: chance.pickone([
+                            dieFace.DEVELOP,
+                            dieFace.SETTLE,
+                            dieFace.PRODUCE,
+                            dieFace.WILD,
+                            dieFace.WILD,
+                            dieFace.WILD
+                        ])
+                    });
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        game.players[0].phaseStripDice = phaseStripDice;
+    };
+    return game;
+};
+
 export interface state {
     game: gameState,
     startFormVisibility: boolean,
@@ -234,120 +343,9 @@ class Game extends React.Component<gameProps, state> {
         this.setState({ game });
     };
 
-    rollDice = (): void => {
-        const game = this.state.game;
-        if (game.players) {
-            const cupDice = game.players[0].cup.dice;
-            const newCupDice: Array<DieProps> = [];
-            cupDice.forEach((die: DieProps) => {
-                switch (die.color) {
-                    case dieColor.BLUE:
-                        newCupDice.push({
-                            color: die.color,
-                            face: chance.pickone([
-                                dieFace.EXPLORE,
-                                dieFace.PRODUCE,
-                                dieFace.PRODUCE,
-                                dieFace.SHIP,
-                                dieFace.SHIP,
-                                dieFace.WILD
-                            ])
-                        });
-                        break;
-                    case dieColor.BROWN:
-                        newCupDice.push({
-                            color: die.color,
-                            face: chance.pickone([
-                                dieFace.EXPLORE,
-                                dieFace.DEVELOP,
-                                dieFace.DEVELOP,
-                                dieFace.PRODUCE,
-                                dieFace.SHIP,
-                                dieFace.WILD
-                            ])
-                        });
-                        break;
-                    case dieColor.GREEN:
-                        newCupDice.push({
-                            color: die.color,
-                            face: chance.pickone([
-                                dieFace.EXPLORE,
-                                dieFace.SETTLE,
-                                dieFace.SETTLE,
-                                dieFace.PRODUCE,
-                                dieFace.WILD,
-                                dieFace.WILD
-                            ])
-                        });
-                        break;
-                    case dieColor.PURPLE:
-                        newCupDice.push({
-                            color: die.color,
-                            face: chance.pickone([
-                                dieFace.EXPLORE,
-                                dieFace.DEVELOP,
-                                dieFace.SHIP,
-                                dieFace.SHIP,
-                                dieFace.SHIP,
-                                dieFace.WILD
-                            ])
-                        });
-                        break;
-                    case dieColor.RED:
-                        newCupDice.push({
-                            color: die.color,
-                            face: chance.pickone([
-                                dieFace.EXPLORE,
-                                dieFace.DEVELOP,
-                                dieFace.DEVELOP,
-                                dieFace.SETTLE,
-                                dieFace.SETTLE,
-                                dieFace.WILD
-                            ])
-                        });
-                        break;
-                    case dieColor.WHITE:
-                        newCupDice.push({
-                            color: die.color,
-                            face: chance.pickone([
-                                dieFace.EXPLORE,
-                                dieFace.EXPLORE,
-                                dieFace.DEVELOP,
-                                dieFace.SETTLE,
-                                dieFace.PRODUCE,
-                                dieFace.SHIP
-                            ])
-                        });
-                        break;
-                    case dieColor.YELLOW:
-                        newCupDice.push({
-                            color: die.color,
-                            face: chance.pickone([
-                                dieFace.DEVELOP,
-                                dieFace.SETTLE,
-                                dieFace.PRODUCE,
-                                dieFace.WILD,
-                                dieFace.WILD,
-                                dieFace.WILD
-                            ])
-                        });
-                        break;
-                    default:
-                        break;
-                }
-            });
-
-            game.players[0].cup.dice = newCupDice;
-
-            this.setState({
-                game
-            });
-        };
-    };
-
     toggleAssignmentPopup = () => {
-        this.rollDice();
-        this.setState({ assignmentPopupVisibility: !this.state.assignmentPopupVisibility });
+        const gameWithRolledDice = rollDice(this.state.game);
+        this.setState({ assignmentPopupVisibility: !this.state.assignmentPopupVisibility, game: gameWithRolledDice });
     }
 
     render() {
