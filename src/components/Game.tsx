@@ -2,12 +2,13 @@ import React from 'react';
 import StartForm from './StartForm';
 import { BigText, FlexColumnDiv } from '../styled-components';
 import PlayerBoard, { PhasePowersProps, PlayerBoardProps } from './PlayerBoard';
-import { bonuses, dieColor, phases } from '../enums';
+import { bonuses, dieColor, phases, dieFace } from '../enums';
 import Chance from 'chance';
 import { TileProps } from './Tile';
 import { Tiles } from './ConstructionZone';
 import { DicePoolProps } from './DicePool';
 import { Popup } from './Popup';
+import { DieProps } from './Die';
 
 const chance = new Chance();
 
@@ -204,7 +205,7 @@ interface gameProps {
 }
 
 class Game extends React.Component<gameProps, state> {
-    state = {
+    state: state = {
         game: {
             factionTiles: [],
             gameTiles: [],
@@ -233,7 +234,119 @@ class Game extends React.Component<gameProps, state> {
         this.setState({ game });
     };
 
+    rollDice = (): void => {
+        const game = this.state.game;
+        if (game.players) {
+            const cupDice = game.players[0].cup.dice;
+            const newCupDice: Array<DieProps> = [];
+            cupDice.forEach((die: DieProps) => {
+                switch (die.color) {
+                    case dieColor.BLUE:
+                        newCupDice.push({
+                            color: die.color,
+                            face: chance.pickone([
+                                dieFace.EXPLORE,
+                                dieFace.PRODUCE,
+                                dieFace.PRODUCE,
+                                dieFace.SHIP,
+                                dieFace.SHIP,
+                                dieFace.WILD
+                            ])
+                        });
+                        break;
+                    case dieColor.BROWN:
+                        newCupDice.push({
+                            color: die.color,
+                            face: chance.pickone([
+                                dieFace.EXPLORE,
+                                dieFace.DEVELOP,
+                                dieFace.DEVELOP,
+                                dieFace.PRODUCE,
+                                dieFace.SHIP,
+                                dieFace.WILD
+                            ])
+                        });
+                        break;
+                    case dieColor.GREEN:
+                        newCupDice.push({
+                            color: die.color,
+                            face: chance.pickone([
+                                dieFace.EXPLORE,
+                                dieFace.SETTLE,
+                                dieFace.SETTLE,
+                                dieFace.PRODUCE,
+                                dieFace.WILD,
+                                dieFace.WILD
+                            ])
+                        });
+                        break;
+                    case dieColor.PURPLE:
+                        newCupDice.push({
+                            color: die.color,
+                            face: chance.pickone([
+                                dieFace.EXPLORE,
+                                dieFace.DEVELOP,
+                                dieFace.SHIP,
+                                dieFace.SHIP,
+                                dieFace.SHIP,
+                                dieFace.WILD
+                            ])
+                        });
+                        break;
+                    case dieColor.RED:
+                        newCupDice.push({
+                            color: die.color,
+                            face: chance.pickone([
+                                dieFace.EXPLORE,
+                                dieFace.DEVELOP,
+                                dieFace.DEVELOP,
+                                dieFace.SETTLE,
+                                dieFace.SETTLE,
+                                dieFace.WILD
+                            ])
+                        });
+                        break;
+                    case dieColor.WHITE:
+                        newCupDice.push({
+                            color: die.color,
+                            face: chance.pickone([
+                                dieFace.EXPLORE,
+                                dieFace.EXPLORE,
+                                dieFace.DEVELOP,
+                                dieFace.SETTLE,
+                                dieFace.PRODUCE,
+                                dieFace.SHIP
+                            ])
+                        });
+                        break;
+                    case dieColor.YELLOW:
+                        newCupDice.push({
+                            color: die.color,
+                            face: chance.pickone([
+                                dieFace.DEVELOP,
+                                dieFace.SETTLE,
+                                dieFace.PRODUCE,
+                                dieFace.WILD,
+                                dieFace.WILD,
+                                dieFace.WILD
+                            ])
+                        });
+                        break;
+                    default:
+                        break;
+                }
+            });
+
+            game.players[0].cup.dice = newCupDice;
+
+            this.setState({
+                game
+            });
+        };
+    };
+
     toggleAssignmentPopup = () => {
+        this.rollDice();
         this.setState({ assignmentPopupVisibility: !this.state.assignmentPopupVisibility });
     }
 
@@ -249,11 +362,11 @@ class Game extends React.Component<gameProps, state> {
                             <BigText>Victory Point Pool: {this.state.game.victoryPointPool}</BigText>
                             <button onClick={this.toggleAssignmentPopup} >Start Round</button>
                             <FlexColumnDiv data-testid='player-boards'>
-                                {this.state.game.players.map((player: PlayerBoardProps) => {
+                                {this.state.game.players ? this.state.game.players.map((player: PlayerBoardProps) => {
                                     return (
                                         <PlayerBoard key={player.id} {...player} />
                                     );
-                                })}
+                                }) : null}
                             </FlexColumnDiv>
                         </>
                 }

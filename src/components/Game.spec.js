@@ -4,7 +4,7 @@ import '@testing-library/jest-dom/extend-expect';
 import Game from './Game';
 import { initialState, bonuses, tileTypes } from '../enums';
 import Chance from 'chance';
-import { getMockTile, getMockFullTile, getArrayOfRandomDice, getArrayOfRandomTiles } from './mock-object-generators';
+import { getMockTile, getMockFullTile, getArrayOfRandomDice, getArrayOfRandomTiles } from '../test-utilities/mock-object-generators';
 
 const chance = new Chance();
 

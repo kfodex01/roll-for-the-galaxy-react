@@ -3,7 +3,7 @@ import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Tile from './Tile';
 import { tileTypes, dieColor, dieFace } from '../enums';
-import { getMockTile } from './mock-object-generators';
+import { getMockTile } from '../test-utilities/mock-object-generators';
 
 describe('Tile', () => {
     let expectedTileProps;

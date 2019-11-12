@@ -1,8 +1,8 @@
 import Chance from 'chance';
-import { DieProps } from './Die';
+import { DieProps } from '../components/Die';
 import { dieColor, dieFace, tileTypes } from '../enums';
-import { TileProps } from './Tile';
-import { Tiles } from './ConstructionZone';
+import { TileProps } from '../components/Tile';
+import { Tiles } from '../components/ConstructionZone';
 
 const chance = new Chance();
 

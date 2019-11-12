@@ -3,7 +3,7 @@ import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Die from './Die';
 import { dieColor, dieFace } from '../enums';
-import { getMockDie } from './mock-object-generators';
+import { getMockDie } from '../test-utilities/mock-object-generators';
 
 describe('Die', () => {
     let expectedDieProps;
