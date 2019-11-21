@@ -1,8 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BigText, FlexMaxRowDiv, FlexDropBoxRowDiv, DropBoxDiv } from '../styled-components';
+import { BigText, FlexMaxRowDiv, FlexDropBoxRowDiv, DropBoxDiv, FlexRowDiv } from '../styled-components';
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { DicePoolProps } from './DicePool';
+import Die, { DieProps } from './Die';
+import { dieFace } from '../enums';
 
 const PopupFullPageCoverDiv = styled.div`
     position: fixed;
@@ -28,10 +31,20 @@ const PopupOnlyDiv = styled.div`
 `;
 
 interface PopupProps {
-    closePopup(): void;
+    closePopup(): void,
+    dice: DicePoolProps
 };
-
 export class Popup extends React.Component<PopupProps> {
+    getDiceOfOneFace = (dice: Array<DieProps>, dieFace: string): Array<JSX.Element> => {
+        let diceOfCorrectFace: Array<DieProps> = dice.filter((die: DieProps) => {
+            return die.face === dieFace;
+        });
+
+        return diceOfCorrectFace.map((die: DieProps, id: number) => {
+            return (<Die key={id} color={die.color} face={die.face} />);
+        })
+    }
+
     render() {
         return (
             <PopupFullPageCoverDiv>
@@ -46,11 +59,45 @@ export class Popup extends React.Component<PopupProps> {
                         </button>
                     </FlexMaxRowDiv>
                     <FlexDropBoxRowDiv>
-                        <DropBoxDiv data-testid='explore-drop-box'>Explore</DropBoxDiv>
-                        <DropBoxDiv data-testid='develop-drop-box'>Develop</DropBoxDiv>
-                        <DropBoxDiv data-testid='settle-drop-box'>Settle</DropBoxDiv>
-                        <DropBoxDiv data-testid='produce-drop-box'>Produce</DropBoxDiv>
-                        <DropBoxDiv data-testid='ship-drop-box'>Ship</DropBoxDiv>
+                        <DropBoxDiv data-testid='explore-drop-box'>
+                            {'Explore'}
+                            <FlexRowDiv>
+                                {this.getDiceOfOneFace(this.props.dice.dice, dieFace.EXPLORE)}
+                            </FlexRowDiv>
+                        </DropBoxDiv>
+                        <DropBoxDiv data-testid='develop-drop-box'>
+                            {'Develop'}
+                            <FlexRowDiv>
+                                {this.getDiceOfOneFace(this.props.dice.dice, dieFace.DEVELOP)}
+                            </FlexRowDiv>
+                        </DropBoxDiv>
+                        <DropBoxDiv data-testid='settle-drop-box'>
+                            {'Settle'}
+                            <FlexRowDiv>
+                                {this.getDiceOfOneFace(this.props.dice.dice, dieFace.SETTLE)}
+                            </FlexRowDiv>
+                        </DropBoxDiv>
+                        <DropBoxDiv data-testid='produce-drop-box'>
+                            {'Produce'}
+                            <FlexRowDiv>
+                                {this.getDiceOfOneFace(this.props.dice.dice, dieFace.PRODUCE)}
+                            </FlexRowDiv>
+                        </DropBoxDiv>
+                        <DropBoxDiv data-testid='ship-drop-box'>
+                            {'Ship'}
+                            <FlexRowDiv>
+                                {this.getDiceOfOneFace(this.props.dice.dice, dieFace.SHIP)}
+                            </FlexRowDiv>
+                        </DropBoxDiv>
+                    </FlexDropBoxRowDiv>
+                    <FlexDropBoxRowDiv>
+                        <DropBoxDiv>
+                            {'Wild'}
+                            <FlexRowDiv>
+                                {this.getDiceOfOneFace(this.props.dice.dice, dieFace.WILD)}
+                            </FlexRowDiv>
+                        </DropBoxDiv>
+                        <DropBoxDiv>Re-Assign</DropBoxDiv>
                     </FlexDropBoxRowDiv>
                 </PopupOnlyDiv>
             </PopupFullPageCoverDiv>

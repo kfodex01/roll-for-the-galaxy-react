@@ -84,7 +84,7 @@ export interface gameState {
     factionTiles: Array<Tiles>,
     gameTiles: Array<Tiles>,
     homeWorldTiles: Array<Tiles>,
-    players?: Array<PlayerBoardProps>,
+    players: Array<PlayerBoardProps>,
     victoryPointPool: number
 }
 
@@ -360,18 +360,18 @@ class Game extends React.Component<gameProps, state> {
                             <BigText>Victory Point Pool: {this.state.game.victoryPointPool}</BigText>
                             <button onClick={this.toggleAssignmentPopup} >Start Round</button>
                             <FlexColumnDiv data-testid='player-boards'>
-                                {this.state.game.players ? this.state.game.players.map((player: PlayerBoardProps) => {
+                                {this.state.game.players.map((player: PlayerBoardProps) => {
                                     return (
                                         <PlayerBoard key={player.id} {...player} />
                                     );
-                                }) : null}
+                                })}
                             </FlexColumnDiv>
                         </>
                 }
                 {
-                    this.state.assignmentPopupVisibility === true ?
+                    this.state.assignmentPopupVisibility === true && this.state.game.players[0].phaseStripDice ?
                         (
-                            <Popup closePopup={this.toggleAssignmentPopup} />
+                            <Popup closePopup={this.toggleAssignmentPopup} dice={this.state.game.players[0].phaseStripDice} />
                         ) : null
                 }
             </>

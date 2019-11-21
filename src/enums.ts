@@ -1373,6 +1373,7 @@ const initialGameState: gameState = {
     factionTiles,
     homeWorldTiles,
     gameTiles,
+    players: [],
     victoryPointPool: 0
 };
 

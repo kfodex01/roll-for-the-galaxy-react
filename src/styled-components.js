@@ -35,11 +35,15 @@ export const BigText = styled.p`
   padding: 5px;
 `;
 
-export const DropBoxDiv = styled(BigText)`
+export const DropBoxDiv = styled(FlexColumnDiv)`
+  padding: 5px;
   padding-bottom: 200px;
   background-color: #ededed;
   min-width: 150px;
   text-align: center;
+  font-family: sans-serif;
+  font-size: 20px;
+  margin: 0;
 `;
 
 export const BlueWorld = styled(FontAwesomeIcon)`
