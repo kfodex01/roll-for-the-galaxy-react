@@ -68,52 +68,44 @@ class Die extends React.Component<DieProps> {
     };
 
     render() {
-        switch (this.props.color) {
-            case dieColor.BLUE:
-                return (
-                    <BlueDie data-testid='BlueDie'>
-                        {this.getDieFace(this.props.face)}
-                    </BlueDie>
-                );
-            case dieColor.BROWN:
-                return (
-                    <BrownDie data-testid='BrownDie'>
-                        {this.getDieFace(this.props.face)}
-                    </BrownDie>
-                );
-            case dieColor.GREEN:
-                return (
-                    <GreenDie data-testid='GreenDie'>
-                        {this.getDieFace(this.props.face)}
-                    </GreenDie>
-                );
-            case dieColor.PURPLE:
-                return (
-                    <PurpleDie data-testid='PurpleDie'>
-                        {this.getDieFace(this.props.face)}
-                    </PurpleDie>
-                );
-            case dieColor.RED:
-                return (
-                    <RedDie data-testid='RedDie'>
-                        {this.getDieFace(this.props.face)}
-                    </RedDie>
-                );
-            case dieColor.WHITE:
-                return (
-                    <WhiteDie data-testid='WhiteDie'>
-                        {this.getDieFace(this.props.face)}
-                    </WhiteDie>
-                );
-            case dieColor.YELLOW:
-                return (
-                    <YellowDie data-testid='YellowDie'>
-                        {this.getDieFace(this.props.face)}
-                    </YellowDie>
-                );
-            default:
-                return (<p>{`Invalid die color: ${this.props.color}`}</p>);
-        }
+        const colorMap = {
+            [dieColor.BLUE]: {
+                Component: BlueDie,
+                name: "BlueDie"
+            },
+            [dieColor.BROWN]: {
+                Component: BrownDie,
+                name: "BrownDie"
+            },
+            [dieColor.GREEN]: {
+                Component: GreenDie,
+                name: "GreenDie"
+            },
+            [dieColor.PURPLE]: {
+                Component: PurpleDie,
+                name: "PurpleDie"
+            },
+            [dieColor.RED]: {
+                Component: RedDie,
+                name: "RedDie"
+            },
+            [dieColor.WHITE]: {
+                Component: WhiteDie,
+                name: "WhiteDie"
+            },
+            [dieColor.YELLOW]: {
+                Component: YellowDie,
+                name: "YellowDie"
+            }
+        };
+
+        const { Component, name } = colorMap[this.props.color];
+
+        return (
+            <Component data-testid={name}>
+                {this.getDieFace(this.props.face)}
+            </Component>
+        );
     }
 }
 

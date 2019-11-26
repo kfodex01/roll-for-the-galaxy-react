@@ -70,14 +70,6 @@ describe('Die', () => {
 
             expect(getByTestId('YellowDie')).toBeTruthy();
         });
-
-        it('should render an error when the color is invalid', () => {
-            expectedDieProps.color = 'WAT';
-
-            const { getByText } = render(<Die {...expectedDieProps} />);
-
-            expect(getByText('Invalid die color: WAT')).toBeTruthy();
-        });
     });
 
     describe('Die Faces', () => {
