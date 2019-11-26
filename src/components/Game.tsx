@@ -371,7 +371,7 @@ class Game extends React.Component<gameProps, state> {
                 {
                     this.state.assignmentPopupVisibility === true && this.state.game.players[0].phaseStripDice ?
                         (
-                            <Popup closePopup={this.toggleAssignmentPopup} dice={this.state.game.players[0].phaseStripDice} />
+                            <Popup closePopup={this.toggleAssignmentPopup} phaseStripDicePool={this.state.game.players[0].phaseStripDice} />
                         ) : null
                 }
             </>

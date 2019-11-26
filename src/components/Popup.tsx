@@ -32,11 +32,10 @@ const PopupOnlyDiv = styled.div`
 
 interface popupProps {
     closePopup(): void,
-    dice: DicePoolProps
+    phaseStripDicePool: DicePoolProps
 };
 
 interface state {
-    rolledDice: DicePoolProps,
     exploreDice: DicePoolProps,
     developDice: DicePoolProps,
     settleDice: DicePoolProps,
@@ -47,7 +46,6 @@ interface state {
 
 export class Popup extends React.Component<popupProps, state> {
     state: state = {
-        rolledDice: this.props.dice,
         exploreDice: {
             dice: []
         },
@@ -68,16 +66,6 @@ export class Popup extends React.Component<popupProps, state> {
         }
     }
 
-    // getDiceOfOneFace = (dice: Array<DieProps>, dieFace: string): Array<JSX.Element> => {
-    //     let diceOfCorrectFace: Array<DieProps> = dice.filter((die: DieProps) => {
-    //         return die.face === dieFace;
-    //     });
-
-        // return diceOfCorrectFace.map((die: DieProps, id: number) => {
-        //     return (<Die key={id} color={die.color} face={die.face} />);
-        // })
-    // }
-
     getDiceOfOneFace = (dice: Array<DieProps>, dieFace: string): Array<DieProps> => {
         return dice.filter((die: DieProps) => {
             return die.face === dieFace;
@@ -92,24 +80,23 @@ export class Popup extends React.Component<popupProps, state> {
 
     componentDidMount() {
         const newState: state = {
-            rolledDice: this.state.rolledDice,
             exploreDice: {
-                dice: this.getDiceOfOneFace(this.state.rolledDice.dice, dieFace.EXPLORE)
+                dice: this.getDiceOfOneFace(this.props.phaseStripDicePool.dice, dieFace.EXPLORE)
             },
             developDice: {
-                dice: this.getDiceOfOneFace(this.state.rolledDice.dice, dieFace.DEVELOP)
+                dice: this.getDiceOfOneFace(this.props.phaseStripDicePool.dice, dieFace.DEVELOP)
             },
             settleDice: {
-                dice: this.getDiceOfOneFace(this.state.rolledDice.dice, dieFace.SETTLE)
+                dice: this.getDiceOfOneFace(this.props.phaseStripDicePool.dice, dieFace.SETTLE)
             },
             produceDice: {
-                dice: this.getDiceOfOneFace(this.state.rolledDice.dice, dieFace.PRODUCE)
+                dice: this.getDiceOfOneFace(this.props.phaseStripDicePool.dice, dieFace.PRODUCE)
             },
             shipDice: {
-                dice: this.getDiceOfOneFace(this.state.rolledDice.dice, dieFace.SHIP)
+                dice: this.getDiceOfOneFace(this.props.phaseStripDicePool.dice, dieFace.SHIP)
             },
             wildDice: {
-                dice: this.getDiceOfOneFace(this.state.rolledDice.dice, dieFace.WILD)
+                dice: this.getDiceOfOneFace(this.props.phaseStripDicePool.dice, dieFace.WILD)
             }
         }
 
