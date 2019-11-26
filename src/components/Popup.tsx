@@ -30,19 +30,92 @@ const PopupOnlyDiv = styled.div`
     background: white;
 `;
 
-interface PopupProps {
+interface popupProps {
     closePopup(): void,
     dice: DicePoolProps
 };
-export class Popup extends React.Component<PopupProps> {
-    getDiceOfOneFace = (dice: Array<DieProps>, dieFace: string): Array<JSX.Element> => {
-        let diceOfCorrectFace: Array<DieProps> = dice.filter((die: DieProps) => {
+
+interface state {
+    rolledDice: DicePoolProps,
+    exploreDice: DicePoolProps,
+    developDice: DicePoolProps,
+    settleDice: DicePoolProps,
+    produceDice: DicePoolProps,
+    shipDice: DicePoolProps,
+    wildDice: DicePoolProps
+}
+
+export class Popup extends React.Component<popupProps, state> {
+    state: state = {
+        rolledDice: this.props.dice,
+        exploreDice: {
+            dice: []
+        },
+        developDice: {
+            dice: []
+        },
+        settleDice: {
+            dice: []
+        },
+        produceDice: {
+            dice: []
+        },
+        shipDice: {
+            dice: []
+        },
+        wildDice: {
+            dice: []
+        }
+    }
+
+    // getDiceOfOneFace = (dice: Array<DieProps>, dieFace: string): Array<JSX.Element> => {
+    //     let diceOfCorrectFace: Array<DieProps> = dice.filter((die: DieProps) => {
+    //         return die.face === dieFace;
+    //     });
+
+        // return diceOfCorrectFace.map((die: DieProps, id: number) => {
+        //     return (<Die key={id} color={die.color} face={die.face} />);
+        // })
+    // }
+
+    getDiceOfOneFace = (dice: Array<DieProps>, dieFace: string): Array<DieProps> => {
+        return dice.filter((die: DieProps) => {
             return die.face === dieFace;
         });
+    }
 
-        return diceOfCorrectFace.map((die: DieProps, id: number) => {
+    displayDice = (dicePool: DicePoolProps): Array<JSX.Element> => {
+        return dicePool.dice.map((die: DieProps, id: number) => {
             return (<Die key={id} color={die.color} face={die.face} />);
         })
+    }
+
+    componentDidMount() {
+        const newState: state = {
+            rolledDice: this.state.rolledDice,
+            exploreDice: {
+                dice: this.getDiceOfOneFace(this.state.rolledDice.dice, dieFace.EXPLORE)
+            },
+            developDice: {
+                dice: this.getDiceOfOneFace(this.state.rolledDice.dice, dieFace.DEVELOP)
+            },
+            settleDice: {
+                dice: this.getDiceOfOneFace(this.state.rolledDice.dice, dieFace.SETTLE)
+            },
+            produceDice: {
+                dice: this.getDiceOfOneFace(this.state.rolledDice.dice, dieFace.PRODUCE)
+            },
+            shipDice: {
+                dice: this.getDiceOfOneFace(this.state.rolledDice.dice, dieFace.SHIP)
+            },
+            wildDice: {
+                dice: this.getDiceOfOneFace(this.state.rolledDice.dice, dieFace.WILD)
+            }
+        }
+
+        this.setState({
+            ...newState
+        });
     }
 
     render() {
@@ -62,31 +135,31 @@ export class Popup extends React.Component<PopupProps> {
                         <DropBoxDiv data-testid='explore-drop-box'>
                             {'Explore'}
                             <FlexRowDiv>
-                                {this.getDiceOfOneFace(this.props.dice.dice, dieFace.EXPLORE)}
+                                {this.displayDice(this.state.exploreDice)}
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='develop-drop-box'>
                             {'Develop'}
                             <FlexRowDiv>
-                                {this.getDiceOfOneFace(this.props.dice.dice, dieFace.DEVELOP)}
+                                {this.displayDice(this.state.developDice)}
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='settle-drop-box'>
                             {'Settle'}
                             <FlexRowDiv>
-                                {this.getDiceOfOneFace(this.props.dice.dice, dieFace.SETTLE)}
+                                {this.displayDice(this.state.settleDice)}
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='produce-drop-box'>
                             {'Produce'}
                             <FlexRowDiv>
-                                {this.getDiceOfOneFace(this.props.dice.dice, dieFace.PRODUCE)}
+                                {this.displayDice(this.state.produceDice)}
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='ship-drop-box'>
                             {'Ship'}
                             <FlexRowDiv>
-                                {this.getDiceOfOneFace(this.props.dice.dice, dieFace.SHIP)}
+                                {this.displayDice(this.state.shipDice)}
                             </FlexRowDiv>
                         </DropBoxDiv>
                     </FlexDropBoxRowDiv>
@@ -94,7 +167,7 @@ export class Popup extends React.Component<PopupProps> {
                         <DropBoxDiv>
                             {'Wild'}
                             <FlexRowDiv>
-                                {this.getDiceOfOneFace(this.props.dice.dice, dieFace.WILD)}
+                                {this.displayDice(this.state.wildDice)}
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv>Re-Assign</DropBoxDiv>
