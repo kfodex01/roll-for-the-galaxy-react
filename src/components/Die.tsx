@@ -42,10 +42,42 @@ const YellowDie = styled(DieDiv)`
   background: ${gameColors.YELLOW};
 `;
 
+const colorMap = {
+    [dieColor.BLUE]: {
+        Die: BlueDie,
+        name: "BlueDie"
+    },
+    [dieColor.BROWN]: {
+        Die: BrownDie,
+        name: "BrownDie"
+    },
+    [dieColor.GREEN]: {
+        Die: GreenDie,
+        name: "GreenDie"
+    },
+    [dieColor.PURPLE]: {
+        Die: PurpleDie,
+        name: "PurpleDie"
+    },
+    [dieColor.RED]: {
+        Die: RedDie,
+        name: "RedDie"
+    },
+    [dieColor.WHITE]: {
+        Die: WhiteDie,
+        name: "WhiteDie"
+    },
+    [dieColor.YELLOW]: {
+        Die: YellowDie,
+        name: "YellowDie"
+    }
+};
+
 export interface DieProps {
     color: string;
     face: string;
     draggable?: boolean;
+    poolId?: number;
 }
 
 class Die extends React.Component<DieProps> {
@@ -69,50 +101,19 @@ class Die extends React.Component<DieProps> {
     };
 
     render() {
-        const colorMap = {
-            [dieColor.BLUE]: {
-                Component: BlueDie,
-                name: "BlueDie"
-            },
-            [dieColor.BROWN]: {
-                Component: BrownDie,
-                name: "BrownDie"
-            },
-            [dieColor.GREEN]: {
-                Component: GreenDie,
-                name: "GreenDie"
-            },
-            [dieColor.PURPLE]: {
-                Component: PurpleDie,
-                name: "PurpleDie"
-            },
-            [dieColor.RED]: {
-                Component: RedDie,
-                name: "RedDie"
-            },
-            [dieColor.WHITE]: {
-                Component: WhiteDie,
-                name: "WhiteDie"
-            },
-            [dieColor.YELLOW]: {
-                Component: YellowDie,
-                name: "YellowDie"
-            }
-        };
-
-        const { Component, name } = colorMap[this.props.color];
+        const { Die, name } = colorMap[this.props.color];
         if(this.props.draggable) {
             return (
-                <Component data-testid={name} draggable>
+                <Die data-testid={name} draggable>
                     {this.getDieFace(this.props.face)}
-                </Component>
+                </Die>
             );
         }
 
         return (
-            <Component data-testid={name}>
+            <Die data-testid={name}>
                 {this.getDieFace(this.props.face)}
-            </Component>
+            </Die>
         );
     }
 }
