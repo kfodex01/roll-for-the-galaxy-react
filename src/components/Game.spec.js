@@ -497,6 +497,8 @@ describe('Game', () => {
             expect(queryByTestId('settle-drop-box')).toBeTruthy();
             expect(queryByTestId('produce-drop-box')).toBeTruthy();
             expect(queryByTestId('ship-drop-box')).toBeTruthy();
+            expect(queryByTestId('wild-drop-box')).toBeTruthy();
+            expect(queryByTestId('reassign-drop-box')).toBeTruthy();
         });
 
         it('should hide the assignment popup', () => {
@@ -514,6 +516,8 @@ describe('Game', () => {
             expect(queryByTestId('settle-drop-box')).toBeFalsy();
             expect(queryByTestId('produce-drop-box')).toBeFalsy();
             expect(queryByTestId('ship-drop-box')).toBeFalsy();
+            expect(queryByTestId('wild-drop-box')).toBeFalsy();
+            expect(queryByTestId('reassign-drop-box')).toBeFalsy();
         });
     });
 });

@@ -7,7 +7,7 @@ import Chance from 'chance';
 import { TileProps } from './Tile';
 import { Tiles } from './ConstructionZone';
 import { DicePoolProps } from './DicePool';
-import { Popup } from './Popup';
+import Popup from './Popup';
 import { DieProps } from './Die';
 
 const chance = new Chance();

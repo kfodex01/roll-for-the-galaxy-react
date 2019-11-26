@@ -44,7 +44,7 @@ interface state {
     wildDice: DicePoolProps
 }
 
-export class Popup extends React.Component<popupProps, state> {
+class Popup extends React.Component<popupProps, state> {
     state: state = {
         exploreDice: {
             dice: []
@@ -151,16 +151,20 @@ export class Popup extends React.Component<popupProps, state> {
                         </DropBoxDiv>
                     </FlexDropBoxRowDiv>
                     <FlexDropBoxRowDiv>
-                        <DropBoxDiv>
+                        <DropBoxDiv data-testid='wild-drop-box'>
                             {'Wild'}
                             <FlexRowDiv>
                                 {this.displayDice(this.state.wildDice)}
                             </FlexRowDiv>
                         </DropBoxDiv>
-                        <DropBoxDiv>Re-Assign</DropBoxDiv>
+                        <DropBoxDiv data-testid='reassign-drop-box'>
+                            {'Re-Assign'}
+                        </DropBoxDiv>
                     </FlexDropBoxRowDiv>
                 </PopupOnlyDiv>
             </PopupFullPageCoverDiv>
         );
     }
 }
+
+export default Popup;
