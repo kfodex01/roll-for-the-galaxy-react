@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { BigText, FlexMaxRowDiv, FlexDropBoxRowDiv, DropBoxDiv, FlexRowDiv } from '../styled-components';
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { DicePoolProps } from './DicePool';
-import Die, { DieProps } from './Die';
+import DicePool, { DicePoolProps } from './DicePool';
+import { DieProps } from './Die';
 import { dieFace } from '../enums';
 
 const PopupFullPageCoverDiv = styled.div`
@@ -36,6 +36,7 @@ interface popupProps {
 };
 
 interface state {
+    draggedDice?: DieProps;
     exploreDice: DicePoolProps,
     developDice: DicePoolProps,
     settleDice: DicePoolProps,
@@ -72,12 +73,6 @@ class Popup extends React.Component<popupProps, state> {
         });
     }
 
-    displayDice = (dicePool: DicePoolProps): Array<JSX.Element> => {
-        return dicePool.dice.map((die: DieProps, id: number) => {
-            return (<Die key={id} color={die.color} face={die.face} draggable={true} />);
-        })
-    }
-
     componentDidMount() {
         const newState: state = {
             exploreDice: {
@@ -105,6 +100,10 @@ class Popup extends React.Component<popupProps, state> {
         });
     }
 
+    dropInContainer = (ev: React.DragEvent<HTMLDivElement>) => {
+        ev.preventDefault();
+    };
+
     render() {
         return (
             <PopupFullPageCoverDiv>
@@ -119,34 +118,36 @@ class Popup extends React.Component<popupProps, state> {
                         </button>
                     </FlexMaxRowDiv>
                     <FlexDropBoxRowDiv>
-                        <DropBoxDiv data-testid='explore-drop-box'>
+                        <DropBoxDiv
+                            data-testid='explore-drop-box'
+                            onDrop={(e: React.DragEvent<HTMLDivElement>) => this.dropInContainer(e)}>
                             {'Explore'}
                             <FlexRowDiv>
-                                {this.displayDice(this.state.exploreDice)}
+                                <DicePool {...this.state.exploreDice} draggable={true} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='develop-drop-box'>
                             {'Develop'}
                             <FlexRowDiv>
-                                {this.displayDice(this.state.developDice)}
+                                <DicePool {...this.state.developDice} draggable={true} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='settle-drop-box'>
                             {'Settle'}
                             <FlexRowDiv>
-                                {this.displayDice(this.state.settleDice)}
+                                <DicePool {...this.state.settleDice} draggable={true} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='produce-drop-box'>
                             {'Produce'}
                             <FlexRowDiv>
-                                {this.displayDice(this.state.produceDice)}
+                                <DicePool {...this.state.produceDice} draggable={true} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='ship-drop-box'>
                             {'Ship'}
                             <FlexRowDiv>
-                                {this.displayDice(this.state.shipDice)}
+                                <DicePool {...this.state.shipDice} draggable={true} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                     </FlexDropBoxRowDiv>
@@ -154,7 +155,7 @@ class Popup extends React.Component<popupProps, state> {
                         <DropBoxDiv data-testid='wild-drop-box'>
                             {'Wild'}
                             <FlexRowDiv>
-                                {this.displayDice(this.state.wildDice)}
+                                <DicePool {...this.state.wildDice} draggable={true} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='reassign-drop-box'>
