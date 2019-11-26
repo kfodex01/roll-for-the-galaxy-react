@@ -45,6 +45,7 @@ const YellowDie = styled(DieDiv)`
 export interface DieProps {
     color: string;
     face: string;
+    draggable?: boolean;
 }
 
 class Die extends React.Component<DieProps> {
@@ -100,6 +101,13 @@ class Die extends React.Component<DieProps> {
         };
 
         const { Component, name } = colorMap[this.props.color];
+        if(this.props.draggable) {
+            return (
+                <Component data-testid={name} draggable>
+                    {this.getDieFace(this.props.face)}
+                </Component>
+            );
+        }
 
         return (
             <Component data-testid={name}>

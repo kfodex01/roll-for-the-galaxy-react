@@ -74,7 +74,7 @@ class Popup extends React.Component<popupProps, state> {
 
     displayDice = (dicePool: DicePoolProps): Array<JSX.Element> => {
         return dicePool.dice.map((die: DieProps, id: number) => {
-            return (<Die key={id} color={die.color} face={die.face} />);
+            return (<Die key={id} color={die.color} face={die.face} draggable={true} />);
         })
     }
 
