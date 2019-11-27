@@ -28,70 +28,91 @@ describe('Popup', () => {
             };
         });
 
-        it('should render a die of the correct color in the explore field', () => {
+        it('should only render a die in the explore field', () => {
             mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
-
-            console.log('closePopup', mockClosePopupEvent);
-            console.log('mockPhaseStripDicePool', mockPhaseStripDicePool);
 
             const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
             
             expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(1);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0); 
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
         });
 
-        it('should render a die of the correct color in the develop field', () => {
+        it('should only render a die in the develop field', () => {
             mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
 
-            console.log('closePopup', mockClosePopupEvent);
-            console.log('mockPhaseStripDicePool', mockPhaseStripDicePool);
-
             const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
             
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
             expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(1);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0); 
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
         });
 
-        it('should render a die of the correct color in the settle field', () => {
+        it('should only render a die in the settle field', () => {
             mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
 
-            console.log('closePopup', mockClosePopupEvent);
-            console.log('mockPhaseStripDicePool', mockPhaseStripDicePool);
-
             const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
             
-            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(1);
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(1); 
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
         });
 
-        it('should render a die of the correct color in the produce field', () => {
+        it('should only render a die in the produce field', () => {
             mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
 
-            console.log('closePopup', mockClosePopupEvent);
-            console.log('mockPhaseStripDicePool', mockPhaseStripDicePool);
-
             const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
             
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0); 
             expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(1);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
         });
 
-        it('should render a die of the correct color in the ship field', () => {
+        it('should only render a die in the ship field', () => {
             mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
 
-            console.log('closePopup', mockClosePopupEvent);
-            console.log('mockPhaseStripDicePool', mockPhaseStripDicePool);
-
-            const { queryByTestId, queryAllByTestId } = render(<Popup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
+            const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
             
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0); 
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
             expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(1);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
         });
 
-        it('should render a die of the correct color in the wild field', () => {
+        it('should only render a die of in the wild field', () => {
             mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
-
-            console.log('closePopup', mockClosePopupEvent);
-            console.log('mockPhaseStripDicePool', mockPhaseStripDicePool);
 
             const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
             
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0); 
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
             expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(1);
+        });
+
+        it('should fire a close event when the close button is clicked', () => {
+            const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
+
+            expect(closePopupEventFired).toBe(false);
+            fireEvent.click(getByText('Close'));
+
+            expect(closePopupEventFired).toBe(true);
         });
     });
 });
