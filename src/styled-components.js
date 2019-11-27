@@ -17,6 +17,8 @@ export const PlayerColumnDiv = styled.div`
 export const FlexRowDiv = styled.div`
   display: flex;
   flex-direction: row;
+  padding: 1px;
+  flex-wrap: wrap;
 `;
 
 export const FlexMaxRowDiv = styled(FlexRowDiv)`
@@ -37,9 +39,10 @@ export const BigText = styled.p`
 
 export const DropBoxDiv = styled(FlexColumnDiv)`
   padding: 5px;
-  padding-bottom: 200px;
   background-color: #ededed;
-  min-width: 150px;
+  min-width: 100px;
+  max-width: 110px;
+  min-height: 50px;
   text-align: center;
   font-family: sans-serif;
   font-size: 20px;

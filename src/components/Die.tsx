@@ -12,6 +12,7 @@ const DieDiv = styled.div`
   width: 25px;
   border-radius: 5px;
   border: 1px #000000 solid;
+  margin: 0px 2px;
 `;
 
 const BlueDie = styled(DieDiv)`

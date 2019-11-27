@@ -79,6 +79,7 @@ class PlayerBoard extends React.Component<PlayerBoardProps> {
                     </FlexRowDiv>
                 </FlexRowDiv>
                 <FlexRowDiv>
+                    <BigText>Tableau: </BigText>
                     {this.props.tiles.map((tile) => {
                         return (
                             <Tile key={tile.tileId} {...tile} />
