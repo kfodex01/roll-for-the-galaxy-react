@@ -44,7 +44,7 @@ interface state {
     wildDice: DicePoolProps
 }
 
-class Popup extends React.Component<popupProps, state> {
+class AssignmentPopup extends React.Component<popupProps, state> {
     state: state = {
         exploreDice: {
             dice: []
@@ -217,4 +217,4 @@ class Popup extends React.Component<popupProps, state> {
     }
 }
 
-export default Popup;
+export default AssignmentPopup;

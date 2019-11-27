@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import Popup from './AssignmentPopup';
+import AssignmentPopup from './AssignmentPopup';
 import { getMockDie } from '../test-utilities/mock-object-generators'
 import { dieFace } from '../enums';
 
@@ -34,7 +34,7 @@ describe('Popup', () => {
             console.log('closePopup', mockClosePopupEvent);
             console.log('mockPhaseStripDicePool', mockPhaseStripDicePool);
 
-            const { queryByTestId, queryAllByTestId } = render(<Popup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
+            const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
             
             expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(1);
         });
@@ -45,7 +45,7 @@ describe('Popup', () => {
             console.log('closePopup', mockClosePopupEvent);
             console.log('mockPhaseStripDicePool', mockPhaseStripDicePool);
 
-            const { queryByTestId, queryAllByTestId } = render(<Popup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
+            const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
             
             expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(1);
         });
@@ -56,7 +56,7 @@ describe('Popup', () => {
             console.log('closePopup', mockClosePopupEvent);
             console.log('mockPhaseStripDicePool', mockPhaseStripDicePool);
 
-            const { queryByTestId, queryAllByTestId } = render(<Popup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
+            const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
             
             expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(1);
         });
@@ -67,7 +67,7 @@ describe('Popup', () => {
             console.log('closePopup', mockClosePopupEvent);
             console.log('mockPhaseStripDicePool', mockPhaseStripDicePool);
 
-            const { queryByTestId, queryAllByTestId } = render(<Popup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
+            const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
             
             expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(1);
         });
@@ -89,7 +89,7 @@ describe('Popup', () => {
             console.log('closePopup', mockClosePopupEvent);
             console.log('mockPhaseStripDicePool', mockPhaseStripDicePool);
 
-            const { queryByTestId, queryAllByTestId } = render(<Popup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
+            const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
             
             expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(1);
         });
