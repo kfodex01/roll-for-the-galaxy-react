@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import Popup from './Popup';
+import Popup from './AssignmentPopup';
 import { getMockDie } from '../test-utilities/mock-object-generators'
 import { dieFace } from '../enums';
 
