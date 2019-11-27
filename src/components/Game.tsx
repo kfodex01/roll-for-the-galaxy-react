@@ -200,11 +200,12 @@ const rollDice = (game: gameState): gameState => {
         const phaseStripDice: DicePoolProps = {
             dice: []
         };
-        cupDice.forEach((die: DieProps) => {
+        cupDice.forEach((die: DieProps, id: number) => {
             switch (die.color) {
                 case dieColor.BLUE:
                     phaseStripDice.dice.push({
                         color: die.color,
+                        id: id.toString(),
                         face: chance.pickone([
                             dieFace.EXPLORE,
                             dieFace.PRODUCE,
@@ -218,6 +219,7 @@ const rollDice = (game: gameState): gameState => {
                 case dieColor.BROWN:
                     phaseStripDice.dice.push({
                         color: die.color,
+                        id: id.toString(),
                         face: chance.pickone([
                             dieFace.EXPLORE,
                             dieFace.DEVELOP,
@@ -231,6 +233,7 @@ const rollDice = (game: gameState): gameState => {
                 case dieColor.GREEN:
                     phaseStripDice.dice.push({
                         color: die.color,
+                        id: id.toString(),
                         face: chance.pickone([
                             dieFace.EXPLORE,
                             dieFace.SETTLE,
@@ -244,6 +247,7 @@ const rollDice = (game: gameState): gameState => {
                 case dieColor.PURPLE:
                     phaseStripDice.dice.push({
                         color: die.color,
+                        id: id.toString(),
                         face: chance.pickone([
                             dieFace.EXPLORE,
                             dieFace.DEVELOP,
@@ -257,6 +261,7 @@ const rollDice = (game: gameState): gameState => {
                 case dieColor.RED:
                     phaseStripDice.dice.push({
                         color: die.color,
+                        id: id.toString(),
                         face: chance.pickone([
                             dieFace.EXPLORE,
                             dieFace.DEVELOP,
@@ -270,6 +275,7 @@ const rollDice = (game: gameState): gameState => {
                 case dieColor.WHITE:
                     phaseStripDice.dice.push({
                         color: die.color,
+                        id: id.toString(),
                         face: chance.pickone([
                             dieFace.EXPLORE,
                             dieFace.EXPLORE,
@@ -283,6 +289,7 @@ const rollDice = (game: gameState): gameState => {
                 case dieColor.YELLOW:
                     phaseStripDice.dice.push({
                         color: die.color,
+                        id: id.toString(),
                         face: chance.pickone([
                             dieFace.DEVELOP,
                             dieFace.SETTLE,

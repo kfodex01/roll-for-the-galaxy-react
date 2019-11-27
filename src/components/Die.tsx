@@ -44,31 +44,31 @@ const YellowDie = styled(DieDiv)`
 
 const colorMap = {
     [dieColor.BLUE]: {
-        Die: BlueDie,
+        ColoredDie: BlueDie,
         name: "BlueDie"
     },
     [dieColor.BROWN]: {
-        Die: BrownDie,
+        ColoredDie: BrownDie,
         name: "BrownDie"
     },
     [dieColor.GREEN]: {
-        Die: GreenDie,
+        ColoredDie: GreenDie,
         name: "GreenDie"
     },
     [dieColor.PURPLE]: {
-        Die: PurpleDie,
+        ColoredDie: PurpleDie,
         name: "PurpleDie"
     },
     [dieColor.RED]: {
-        Die: RedDie,
+        ColoredDie: RedDie,
         name: "RedDie"
     },
     [dieColor.WHITE]: {
-        Die: WhiteDie,
+        ColoredDie: WhiteDie,
         name: "WhiteDie"
     },
     [dieColor.YELLOW]: {
-        Die: YellowDie,
+        ColoredDie: YellowDie,
         name: "YellowDie"
     }
 };
@@ -77,7 +77,8 @@ export interface DieProps {
     color: string;
     face: string;
     draggable?: boolean;
-    poolId?: number;
+    id?: string;
+    onDragStart?(event: React.DragEvent<HTMLDivElement>, id: string): void;
 }
 
 class Die extends React.Component<DieProps> {
@@ -100,20 +101,26 @@ class Die extends React.Component<DieProps> {
         }
     };
 
+    handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        if(this.props.id && this.props.onDragStart) {
+            this.props.onDragStart(event, this.props.id);
+        }
+    }
+
     render() {
-        const { Die, name } = colorMap[this.props.color];
+        const { ColoredDie, name } = colorMap[this.props.color];
         if(this.props.draggable) {
             return (
-                <Die data-testid={name} draggable>
+                <ColoredDie data-testid={name} onDragStart={this.handleDragStart} draggable>
                     {this.getDieFace(this.props.face)}
-                </Die>
+                </ColoredDie>
             );
         }
 
         return (
-            <Die data-testid={name}>
+            <ColoredDie data-testid={name}>
                 {this.getDieFace(this.props.face)}
-            </Die>
+            </ColoredDie>
         );
     }
 }
