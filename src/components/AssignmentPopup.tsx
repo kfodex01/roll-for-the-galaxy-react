@@ -30,12 +30,13 @@ const PopupOnlyDiv = styled.div`
     background: white;
 `;
 
-interface popupProps {
+interface PopupProps {
     closePopup(): void,
+    assignDice(pickedPhase: string, assignmentState: AssignmentState): void,
     phaseStripDicePool: DicePoolProps
 };
 
-interface state {
+export interface AssignmentState {
     exploreDice: DicePoolProps,
     developDice: DicePoolProps,
     settleDice: DicePoolProps,
@@ -45,8 +46,8 @@ interface state {
     selectorDice: DicePoolProps
 }
 
-class AssignmentPopup extends React.Component<popupProps, state> {
-    state: state = {
+class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
+    state: AssignmentState = {
         exploreDice: {
             dice: []
         },
@@ -77,7 +78,7 @@ class AssignmentPopup extends React.Component<popupProps, state> {
     }
 
     componentDidMount() {
-        const newState: state = {
+        const newState: AssignmentState = {
             exploreDice: {
                 dice: this.getDiceOfOneFace(this.props.phaseStripDicePool.dice, dieFace.EXPLORE)
             },
@@ -114,7 +115,7 @@ class AssignmentPopup extends React.Component<popupProps, state> {
         event.preventDefault();
     };
 
-    pushDieBackToDefaultPool = (state: state, die: DieProps) => {
+    pushDieBackToDefaultPool = (state: AssignmentState, die: DieProps) => {
         switch (die.face) {
             case dieFace.EXPLORE:
                 state.exploreDice.dice.push(die);
@@ -142,7 +143,7 @@ class AssignmentPopup extends React.Component<popupProps, state> {
     dropInContainer = (event: React.DragEvent<HTMLDivElement>, containerToDropIn: string): void => {
         let id: string = event.dataTransfer.getData('id');
         let die: DieProps = this.props.phaseStripDicePool.dice.filter(die => die.id === id)[0];
-        let state: state = { ...this.state };
+        let state: AssignmentState = { ...this.state };
         state.exploreDice.dice = state.exploreDice.dice.filter(die => die.id !== id);
         state.developDice.dice = state.developDice.dice.filter(die => die.id !== id);
         state.settleDice.dice = state.settleDice.dice.filter(die => die.id !== id);
@@ -205,6 +206,14 @@ class AssignmentPopup extends React.Component<popupProps, state> {
         };
         this.setState(state);
     };
+
+    submitPhaseStrip = (pickedPhase: string): void => {
+        if (this.state.wildDice.dice.length > 0 || this.state.selectorDice.dice.length !== 1) {
+            return;
+        }
+        this.props.assignDice(pickedPhase, this.state);
+        this.props.closePopup();
+    }
 
     render() {
         return (
@@ -282,6 +291,13 @@ class AssignmentPopup extends React.Component<popupProps, state> {
                             {'Re-Assign'}
                         </DropBoxDiv>
                     </FlexDropBoxRowDiv>
+                    <div>
+                        <button onClick={() => this.submitPhaseStrip(dieFace.EXPLORE)}>{dieFace.EXPLORE}</button>
+                        <button onClick={() => this.submitPhaseStrip(dieFace.DEVELOP)}>{dieFace.DEVELOP}</button>
+                        <button onClick={() => this.submitPhaseStrip(dieFace.SETTLE)}>{dieFace.SETTLE}</button>
+                        <button onClick={() => this.submitPhaseStrip(dieFace.PRODUCE)}>{dieFace.PRODUCE}</button>
+                        <button onClick={() => this.submitPhaseStrip(dieFace.SHIP)}>{dieFace.SHIP}</button>
+                    </div>
                 </PopupOnlyDiv>
             </PopupFullPageCoverDiv>
         );

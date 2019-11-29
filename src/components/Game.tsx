@@ -7,7 +7,7 @@ import Chance from 'chance';
 import { TileProps } from './Tile';
 import { Tiles } from './ConstructionZone';
 import { DicePoolProps } from './DicePool';
-import AssignmentPopup from './AssignmentPopup';
+import AssignmentPopup, { AssignmentState } from './AssignmentPopup';
 import { DieProps } from './Die';
 
 const chance = new Chance();
@@ -355,6 +355,10 @@ class Game extends React.Component<gameProps, state> {
         this.setState({ assignmentPopupVisibility: !this.state.assignmentPopupVisibility, game: gameWithRolledDice });
     }
 
+    assignDice = (pickedDice: string, assignmentState: AssignmentState) => {
+
+    }
+
     render() {
         return (
             <>
@@ -378,7 +382,7 @@ class Game extends React.Component<gameProps, state> {
                 {
                     this.state.assignmentPopupVisibility === true && this.state.game.players[0].phaseStripDice ?
                         (
-                            <AssignmentPopup closePopup={this.toggleAssignmentPopup} phaseStripDicePool={this.state.game.players[0].phaseStripDice} />
+                            <AssignmentPopup closePopup={this.toggleAssignmentPopup} assignDice={this.assignDice} phaseStripDicePool={this.state.game.players[0].phaseStripDice} />
                         ) : null
                 }
             </>
