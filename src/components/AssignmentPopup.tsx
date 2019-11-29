@@ -41,7 +41,8 @@ interface state {
     settleDice: DicePoolProps,
     produceDice: DicePoolProps,
     shipDice: DicePoolProps,
-    wildDice: DicePoolProps
+    wildDice: DicePoolProps,
+    selectorDice: DicePoolProps
 }
 
 class AssignmentPopup extends React.Component<popupProps, state> {
@@ -62,6 +63,9 @@ class AssignmentPopup extends React.Component<popupProps, state> {
             dice: []
         },
         wildDice: {
+            dice: []
+        },
+        selectorDice: {
             dice: []
         }
     }
@@ -91,6 +95,9 @@ class AssignmentPopup extends React.Component<popupProps, state> {
             },
             wildDice: {
                 dice: this.getDiceOfOneFace(this.props.phaseStripDicePool.dice, dieFace.WILD)
+            },
+            selectorDice: {
+                dice: []
             }
         }
 
@@ -99,25 +106,16 @@ class AssignmentPopup extends React.Component<popupProps, state> {
         });
     }
 
-    onDragStart = (event: React.DragEvent<HTMLDivElement>, id: string) => {
+    onDragStart = (event: React.DragEvent<HTMLDivElement>, id: string): void => {
         event.dataTransfer.setData('id', id);
     }
 
-    dragOverContainer = (event: React.DragEvent<HTMLDivElement>) => {
+    dragOverContainer = (event: React.DragEvent<HTMLDivElement>): void => {
         event.preventDefault();
     };
 
-    dropInContainer = (event: React.DragEvent<HTMLDivElement>, containerToDropIn: string) => {
-        let id: string = event.dataTransfer.getData('id');
-        let die: DieProps = this.props.phaseStripDicePool.dice.filter(die => die.id === id)[0];
-        let state = { ...this.state };
-        state.exploreDice.dice = state.exploreDice.dice.filter(die => die.id !== id);
-        state.developDice.dice = state.developDice.dice.filter(die => die.id !== id);
-        state.settleDice.dice = state.settleDice.dice.filter(die => die.id !== id);
-        state.produceDice.dice = state.produceDice.dice.filter(die => die.id !== id);
-        state.shipDice.dice = state.shipDice.dice.filter(die => die.id !== id);
-        state.wildDice.dice = state.wildDice.dice.filter(die => die.id !== id);
-        switch (containerToDropIn) {
+    pushDieBackToDefaultPool = (state: state, die: DieProps) => {
+        switch (die.face) {
             case dieFace.EXPLORE:
                 state.exploreDice.dice.push(die);
                 break;
@@ -135,6 +133,72 @@ class AssignmentPopup extends React.Component<popupProps, state> {
                 break;
             case dieFace.WILD:
                 state.wildDice.dice.push(die);
+                break;
+            default:
+                break;
+        }
+    }
+
+    dropInContainer = (event: React.DragEvent<HTMLDivElement>, containerToDropIn: string): void => {
+        let id: string = event.dataTransfer.getData('id');
+        let die: DieProps = this.props.phaseStripDicePool.dice.filter(die => die.id === id)[0];
+        let state: state = { ...this.state };
+        state.exploreDice.dice = state.exploreDice.dice.filter(die => die.id !== id);
+        state.developDice.dice = state.developDice.dice.filter(die => die.id !== id);
+        state.settleDice.dice = state.settleDice.dice.filter(die => die.id !== id);
+        state.produceDice.dice = state.produceDice.dice.filter(die => die.id !== id);
+        state.shipDice.dice = state.shipDice.dice.filter(die => die.id !== id);
+        state.wildDice.dice = state.wildDice.dice.filter(die => die.id !== id);
+        state.selectorDice.dice = state.selectorDice.dice.filter(die => die.id !== id);
+        switch (containerToDropIn) {
+            case dieFace.EXPLORE:
+                if (die.face === dieFace.EXPLORE || die.face === dieFace.WILD) {
+                    state.exploreDice.dice.push(die);
+                } else {
+                    this.pushDieBackToDefaultPool(state, die);
+                }
+                break;
+            case dieFace.DEVELOP:
+                if (die.face === dieFace.DEVELOP || die.face === dieFace.WILD) {
+                    state.developDice.dice.push(die);
+                } else {
+                    this.pushDieBackToDefaultPool(state, die);
+                }
+                break;
+            case dieFace.SETTLE:
+                if (die.face === dieFace.SETTLE || die.face === dieFace.WILD) {
+                    state.settleDice.dice.push(die);
+                } else {
+                    this.pushDieBackToDefaultPool(state, die);
+                }
+                break;
+            case dieFace.PRODUCE:
+                if (die.face === dieFace.PRODUCE || die.face === dieFace.WILD) {
+                    state.produceDice.dice.push(die);
+                } else {
+                    this.pushDieBackToDefaultPool(state, die);
+                }
+                break;
+            case dieFace.SHIP:
+                if (die.face === dieFace.SHIP || die.face === dieFace.WILD) {
+                    state.shipDice.dice.push(die);
+                } else {
+                    this.pushDieBackToDefaultPool(state, die);
+                }
+                break;
+            case dieFace.WILD:
+                if (die.face === dieFace.WILD) {
+                    state.wildDice.dice.push(die);
+                } else {
+                    this.pushDieBackToDefaultPool(state, die);
+                }
+                break;
+            case "Selector":
+                if (state.selectorDice.dice.length === 0) {
+                    state.selectorDice.dice.push(die);
+                } else {
+                    this.pushDieBackToDefaultPool(state, die);
+                }
                 break;
             default:
                 break;
@@ -156,6 +220,15 @@ class AssignmentPopup extends React.Component<popupProps, state> {
                         </button>
                     </FlexMaxRowDiv>
                     <FlexDropBoxRowDiv>
+                        <DropBoxDiv
+                            data-testid='phase-picker-box'
+                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => this.dragOverContainer(event)}
+                            onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, "Selector")}>
+                            {'Selector'}
+                            <FlexRowDiv>
+                                <DicePool {...this.state.selectorDice} draggable={true} onDragStart={this.onDragStart} />
+                            </FlexRowDiv>
+                        </DropBoxDiv>
                         <DropBoxDiv
                             data-testid='explore-drop-box'
                             onDragOver={(event: React.DragEvent<HTMLDivElement>) => this.dragOverContainer(event)}
@@ -197,8 +270,6 @@ class AssignmentPopup extends React.Component<popupProps, state> {
                                 <DicePool {...this.state.shipDice} draggable={true} onDragStart={this.onDragStart} />
                             </FlexRowDiv>
                         </DropBoxDiv>
-                    </FlexDropBoxRowDiv>
-                    <FlexDropBoxRowDiv>
                         <DropBoxDiv data-testid='wild-drop-box'
                             onDragOver={(event: React.DragEvent<HTMLDivElement>) => this.dragOverContainer(event)}
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, dieFace.WILD)}>
