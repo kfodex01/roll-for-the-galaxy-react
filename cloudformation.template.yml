@@ -1,0 +1,72 @@
+Description: Roll for the Galaxy
+Parameters:
+  BaseDomain:
+    Type: String
+  Subdomain:
+    Type: String
+  CloudFrontHostedZoneId:
+    Type: String
+    Default: Z2FDTNDATAQYW2
+    Description: The default HostedZoneId for CloudFront. This is set by AWS.
+Resources:
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${Subdomain}.${BaseDomain}"
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: Origin access identity for RFTG
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        PriceClass: PriceClass_100
+        Origins:
+          - DomainName: !GetAtt SiteBucket.DomainName
+            Id: S3Origin
+            S3OriginConfig:
+                OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+        DefaultRootObject: index.html
+        CacheBehaviors:
+          - AllowedMethods: ["GET", "HEAD", "OPTIONS"]
+            PathPattern: "*.html"
+            DefaultTTL: 0
+            ForwardedValues:
+              QueryString: true
+            TargetOriginId: S3Origin
+            ViewerProtocolPolicy: redirect-to-https
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DependsOn: CloudFrontDistribution
+    Properties:
+        Bucket: !Ref SiteBucket
+        PolicyDocument:
+            Statement:
+              - Sid: CloudFrontRead
+                Effect: Allow
+                Principal:
+                  CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
+                Action:
+                  - s3:ListBucket
+                  - s3:GetObject
+                Resource:
+                  - !Sub arn:aws:s3:::${SiteBucket}
+                  - !Sub arn:aws:s3:::${SiteBucket}/*
+  RecordSetGroup:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: !Ref BaseDomain
+      RecordSets:
+        - Name: !Sub "${Subdomain}.${BaseDomain}"
+          Type: A
+          AliasTarget:
+            DNSName: !GetAtt [ CloudFrontDistribution, DomainName ]
+            HostedZoneId: !Ref CloudFrontHostedZoneId
+        - Name: !Sub "${Subdomain}.${BaseDomain}"
+          Type: AAAA
+          AliasTarget:
+            DNSName: !GetAtt [ CloudFrontDistribution, DomainName ]
+            HostedZoneId: !Ref CloudFrontHostedZoneId
