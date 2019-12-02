@@ -91,6 +91,7 @@ Resources:
         - Name: Deploy_DEV
           Actions:
           - Name: Deploy
+            RunOrder: 2
             RoleArn: !GetAtt PipelineRole.Arn
             ActionTypeId:
               Category: Deploy
@@ -110,6 +111,7 @@ Resources:
               RoleArn: !GetAtt PipelineRole.Arn
               Capabilities: CAPABILITY_IAM
           - Name: DeploySite
+            RunOrder: 2
             RoleArn: !GetAtt PipelineRole.Arn
             ActionTypeId:
               Category: Deploy

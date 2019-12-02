@@ -10,6 +10,7 @@ phases:
       - npm install yarn
   build:
     commands:
+      - yarn
       - yarn test
       - yarn build
 artifacts:
