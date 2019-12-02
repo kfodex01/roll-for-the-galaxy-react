@@ -29,20 +29,6 @@ Resources:
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess"
         - "arn:aws:iam::aws:policy/AdministratorAccess"
-  DockerRepo:
-    Type: "AWS::ECR::Repository"
-    Properties:
-      RepositoryPolicyText:
-        Version: "2012-10-17"
-        Statement:
-          - Sid: AllowPushPull
-            Effect: Allow
-            Action:
-              - "ecr:*"
-            Principal:
-              AWS:
-                - !GetAtt PipelineRole.Arn
-  # This resource sets up the build. In general, all it does is run arbitrary shell commands inside of a docker 
   # container
   BuildProject:
     Type: AWS::CodeBuild::Project
@@ -53,15 +39,9 @@ Resources:
         #Where our sourcecode will come from (This special keyword says that CodePipeline will provide it)
         Type: CODEPIPELINE
       Environment:
-        #This specifies what docker image and how much resources to give it to run the build.
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/docker:1.12.1
-        EnvironmentVariables:
-          #We can put anything we want here and these will be set as environment variables when the build runs. 
-          #We're leveraging this to point to the Docker image repository we created earlier.
-          - Name: DOCKER_IMAGE_URL
-            Value: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${DockerRepo}"
+        Image: aws/codebuild/standard:2.0
       Artifacts:
         #Send any output back to code pipeline
         Type: CODEPIPELINE
@@ -129,6 +109,19 @@ Resources:
               TemplateConfiguration: buildResults::dev.params.json
               RoleArn: !GetAtt PipelineRole.Arn
               Capabilities: CAPABILITY_IAM
+          - Name: DeploySite
+            RoleArn: !GetAtt PipelineRole.Arn
+            ActionTypeId:
+              Category: Deploy
+              Owner: AWS
+              Provider: S3
+              Version: 1
+            InputArtifacts:
+              - Name: buildResults
+            Configuration:
+              BucketName: rftg.dev.austincreations.net
+              Extract: true
+              ObjectKey: 'build/**/*'
           #This is the same as the stage above except the StackName, ActionMode and TemplateConfiguration are different
         - Name: Deploy_PROD
           Actions:
