@@ -18,4 +18,10 @@ artifacts:
   files:
     - "cloudformation.template.yml"
     - "parameters/*"
-    - "build/**/*"
+    # - "build/**/*"
+  secondaryArtifacts:
+    artifact1:
+      files: 
+        - '**/*'
+      base-directory: 'build'
+      name: build-artifact
