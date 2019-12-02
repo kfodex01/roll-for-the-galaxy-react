@@ -38,6 +38,13 @@ Resources:
               QueryString: true
             TargetOriginId: S3Origin
             ViewerProtocolPolicy: redirect-to-https
+        DefaultCacheBehavior:
+          AllowedMethods: ["GET", "HEAD", "OPTIONS"]
+          DefaultTTL: 300
+          ForwardedValues:
+            QueryString: true
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: allow-all
   SiteBucketPolicy:
     Type: AWS::S3::BucketPolicy
     DependsOn: CloudFrontDistribution
