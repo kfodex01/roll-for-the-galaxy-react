@@ -1,8 +1,8 @@
 Description: Roll for the Galaxy
 Parameters:
-  BaseDomain:
+  DomainName:
     Type: String
-  Subdomain:
+  HostedZone:
     Type: String
   CloudFrontHostedZoneId:
     Type: String
@@ -12,7 +12,7 @@ Resources:
   SiteBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "${Subdomain}.${BaseDomain}"
+      BucketName: !Ref DomainName
   CloudFrontOriginAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
@@ -65,14 +65,14 @@ Resources:
   RecordSetGroup:
     Type: AWS::Route53::RecordSetGroup
     Properties:
-      HostedZoneName: !Ref BaseDomain
+      HostedZoneName: !Ref HostedZone
       RecordSets:
-        - Name: !Sub "${Subdomain}.${BaseDomain}"
+        - Name: !Ref DomainName
           Type: A
           AliasTarget:
             DNSName: !GetAtt [ CloudFrontDistribution, DomainName ]
             HostedZoneId: !Ref CloudFrontHostedZoneId
-        - Name: !Sub "${Subdomain}.${BaseDomain}"
+        - Name: !Ref DomainName
           Type: AAAA
           AliasTarget:
             DNSName: !GetAtt [ CloudFrontDistribution, DomainName ]

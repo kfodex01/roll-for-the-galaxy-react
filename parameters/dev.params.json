@@ -1,6 +1,6 @@
 {
     "Parameters": {
-        "Subdomain": "rftg",
-        "BaseDomain": "dev.austincreations.net"
+        "DomainName": "rftg.dev.austincreations.net",
+        "HostedZone": "dev.austincreations.net."
     }
 }
