@@ -88,7 +88,6 @@ Resources:
               ProjectName: !Ref BuildProject
             OutputArtifacts:
               - Name: buildResults
-              - Name: build_artifact
         - Name: Deploy_DEV
           Actions:
           - Name: Deploy
@@ -100,7 +99,7 @@ Resources:
               Provider: CloudFormation
               Version: '1'
             InputArtifacts:
-              - Name: build_artifact
+              - Name: buildResults
             Configuration:
               #this is the name of the stack
               StackName: RollForTheGalaxy-DEV 
