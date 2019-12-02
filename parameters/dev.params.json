@@ -1,0 +1,9 @@
+{
+    "Parameters": {
+        "VpcId": "vpc-44ecba3e",
+        "SubnetIds": "subnet-04ade43a,subnet-a3cccaff,subnet-e3d4d4cd,subnet-40ea154e,subnet-dc4d48bb,subnet-a9e431e4",
+        "Subdomain": "rftg",
+        "BaseDomain": "dev.austincreations.net",
+        "Image": "RELEASE_IMAGE_URL"
+    }
+}
