@@ -123,7 +123,6 @@ Resources:
             Configuration:
               BucketName: rftg.dev.austincreations.net
               Extract: true
-              ObjectKey: 'build/**/*'
           #This is the same as the stage above except the StackName, ActionMode and TemplateConfiguration are different
         - Name: Deploy_PROD
           Actions:
