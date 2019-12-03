@@ -37,7 +37,7 @@ Resources:
             ForwardedValues:
               QueryString: true
             TargetOriginId: S3Origin
-            ViewerProtocolPolicy: redirect-to-https
+            ViewerProtocolPolicy: allow-all
         DefaultCacheBehavior:
           AllowedMethods: ["GET", "HEAD", "OPTIONS"]
           DefaultTTL: 300
