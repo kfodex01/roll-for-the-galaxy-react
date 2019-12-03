@@ -24,6 +24,8 @@ Resources:
       DistributionConfig:
         Enabled: true
         PriceClass: PriceClass_100
+        Aliases:
+          - !Ref DomainName
         Origins:
           - DomainName: !GetAtt SiteBucket.DomainName
             Id: S3Origin
