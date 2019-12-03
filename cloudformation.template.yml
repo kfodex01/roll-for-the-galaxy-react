@@ -20,6 +20,8 @@ Resources:
         Comment: Origin access identity for RFTG
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
+    DependsOn:
+      - IssuedCertificate
     Properties:
       DistributionConfig:
         Enabled: true
