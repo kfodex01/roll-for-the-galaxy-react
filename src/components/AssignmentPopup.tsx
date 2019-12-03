@@ -30,6 +30,10 @@ const PopupOnlyDiv = styled.div`
     background: white;
 `;
 
+export const dragOverContainer = (event: React.DragEvent<HTMLDivElement>): void => {
+    event.preventDefault();
+};
+
 interface PopupProps {
     closePopup(): void,
     assignDice(pickedPhase: string, assignmentState: AssignmentState): void,
@@ -110,10 +114,6 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
     onDragStart = (event: React.DragEvent<HTMLDivElement>, id: string): void => {
         event.dataTransfer.setData('id', id);
     }
-
-    dragOverContainer = (event: React.DragEvent<HTMLDivElement>): void => {
-        event.preventDefault();
-    };
 
     pushDieBackToDefaultPool = (state: AssignmentState, die: DieProps) => {
         switch (die.face) {
@@ -231,7 +231,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                     <FlexDropBoxRowDiv>
                         <DropBoxDiv
                             data-testid='phase-picker-box'
-                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => this.dragOverContainer(event)}
+                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => dragOverContainer(event)}
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, "Selector")}>
                             {'Selector'}
                             <FlexRowDiv>
@@ -240,7 +240,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                         </DropBoxDiv>
                         <DropBoxDiv
                             data-testid='explore-drop-box'
-                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => this.dragOverContainer(event)}
+                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => dragOverContainer(event)}
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, dieFace.EXPLORE)}>
                             {'Explore'}
                             <FlexRowDiv>
@@ -248,7 +248,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='develop-drop-box'
-                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => this.dragOverContainer(event)}
+                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => dragOverContainer(event)}
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, dieFace.DEVELOP)}>
                             {'Develop'}
                             <FlexRowDiv>
@@ -256,7 +256,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='settle-drop-box'
-                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => this.dragOverContainer(event)}
+                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => dragOverContainer(event)}
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, dieFace.SETTLE)}>
                             {'Settle'}
                             <FlexRowDiv>
@@ -264,7 +264,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='produce-drop-box'
-                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => this.dragOverContainer(event)}
+                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => dragOverContainer(event)}
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, dieFace.PRODUCE)}>
                             {'Produce'}
                             <FlexRowDiv>
@@ -272,7 +272,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='ship-drop-box'
-                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => this.dragOverContainer(event)}
+                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => dragOverContainer(event)}
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, dieFace.SHIP)}>
                             {'Ship'}
                             <FlexRowDiv>
@@ -280,7 +280,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='wild-drop-box'
-                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => this.dragOverContainer(event)}
+                            onDragOver={(event: React.DragEvent<HTMLDivElement>) => dragOverContainer(event)}
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, dieFace.WILD)}>
                             {'Wild'}
                             <FlexRowDiv>

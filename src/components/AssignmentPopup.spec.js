@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import AssignmentPopup from './AssignmentPopup';
+import AssignmentPopup, { dragOverContainer } from './AssignmentPopup';
 import { getMockDie } from '../test-utilities/mock-object-generators'
 import { dieFace } from '../enums';
 
@@ -113,6 +113,23 @@ describe('Popup', () => {
             fireEvent.click(getByText('Close'));
 
             expect(closePopupEventFired).toBe(true);
+        });
+    });
+
+    describe('Drag methods', () => {
+        describe('dragOverContainer', () => {
+            it('should prevent default on event', () => {
+                let eventFired = false;
+                const mockDragOverEvent = {
+                    preventDefault: () => {
+                        eventFired = true;
+                    }
+                }
+
+                dragOverContainer(mockDragOverEvent);
+
+                expect(eventFired).toBe(true);
+            });
         });
     });
 });
