@@ -79,3 +79,32 @@ Resources:
           AliasTarget:
             DNSName: !GetAtt [ CloudFrontDistribution, DomainName ]
             HostedZoneId: !Ref CloudFrontHostedZoneId
+  SSLCertificate:
+    Type: Custom::Certificate
+    Properties:
+      DomainName: !Sub "${Subdomain}.${BaseDomain}"
+      ValidationMethod: DNS
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:binxio-cfn-certificate-provider
+  IssuedCertificate:
+    Type: Custom::IssuedCertificate
+    Properties:
+      CertificateArn: !Ref SSLCertificate
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:binxio-cfn-certificate-provider
+  DomainDNSRecord:
+    Type: Custom::CertificateDNSRecord
+    Properties:
+      CertificateArn: !Ref SSLCertificate
+      DomainName: !Sub "${Subdomain}.${BaseDomain}"
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:binxio-cfn-certificate-provider
+  DomainValidationRecord:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref HostedZone
+      RecordSets:
+        - Name: !GetAtt DomainDNSRecord.Name
+          Type: !GetAtt DomainDNSRecord.Type
+          TTL: 60
+          Weight: 1
+          SetIdentifier: !Ref SSLCertificate
+          ResourceRecords:
+            - !GetAtt DomainDNSRecord.Value
