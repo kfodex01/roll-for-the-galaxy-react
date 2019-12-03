@@ -92,7 +92,7 @@ Resources:
         - Name: Deploy_DEV
           Actions:
           - Name: Deploy
-            RunOrder: 2
+            RunOrder: 1
             RoleArn: !GetAtt PipelineRole.Arn
             ActionTypeId:
               Category: Deploy
