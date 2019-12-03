@@ -1,0 +1,115 @@
+Description: Roll for the Galaxy
+Parameters:
+  DomainName:
+    Type: String
+  HostedZone:
+    Type: String
+  CloudFrontHostedZoneId:
+    Type: String
+    Default: Z2FDTNDATAQYW2
+    Description: The default HostedZoneId for CloudFront. This is set by AWS.
+Resources:
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref DomainName
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: Origin access identity for RFTG
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    DependsOn:
+      - IssuedCertificate
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        PriceClass: PriceClass_100
+        Aliases:
+          - !Ref DomainName
+        Origins:
+          - DomainName: !GetAtt SiteBucket.DomainName
+            Id: S3Origin
+            S3OriginConfig:
+                OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+        DefaultRootObject: index.html
+        CacheBehaviors:
+          - AllowedMethods: ["GET", "HEAD", "OPTIONS"]
+            PathPattern: "*.html"
+            DefaultTTL: 0
+            ForwardedValues:
+              QueryString: true
+            TargetOriginId: S3Origin
+            ViewerProtocolPolicy: allow-all
+        DefaultCacheBehavior:
+          AllowedMethods: ["GET", "HEAD", "OPTIONS"]
+          DefaultTTL: 300
+          ForwardedValues:
+            QueryString: true
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: allow-all
+        ViewerCertificate:
+          AcmCertificateArn: !Ref SSLCertificate
+          SslSupportMethod: sni-only
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DependsOn: CloudFrontDistribution
+    Properties:
+        Bucket: !Ref SiteBucket
+        PolicyDocument:
+            Statement:
+              - Sid: CloudFrontRead
+                Effect: Allow
+                Principal:
+                  CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
+                Action:
+                  - s3:ListBucket
+                  - s3:GetObject
+                Resource:
+                  - !Sub arn:aws:s3:::${SiteBucket}
+                  - !Sub arn:aws:s3:::${SiteBucket}/*
+  RecordSetGroup:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: !Ref HostedZone
+      RecordSets:
+        - Name: !Ref DomainName
+          Type: A
+          AliasTarget:
+            DNSName: !GetAtt [ CloudFrontDistribution, DomainName ]
+            HostedZoneId: !Ref CloudFrontHostedZoneId
+        - Name: !Ref DomainName
+          Type: AAAA
+          AliasTarget:
+            DNSName: !GetAtt [ CloudFrontDistribution, DomainName ]
+            HostedZoneId: !Ref CloudFrontHostedZoneId
+  SSLCertificate:
+    Type: Custom::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      ValidationMethod: DNS
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:binxio-cfn-certificate-provider
+  IssuedCertificate:
+    Type: Custom::IssuedCertificate
+    Properties:
+      CertificateArn: !Ref SSLCertificate
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:binxio-cfn-certificate-provider
+  DomainDNSRecord:
+    Type: Custom::CertificateDNSRecord
+    Properties:
+      CertificateArn: !Ref SSLCertificate
+      DomainName: !Ref DomainName
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:binxio-cfn-certificate-provider
+  DomainValidationRecord:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: !Ref HostedZone
+      RecordSets:
+        - Name: !GetAtt DomainDNSRecord.Name
+          Type: !GetAtt DomainDNSRecord.Type
+          TTL: 60
+          Weight: 1
+          SetIdentifier: !Ref SSLCertificate
+          ResourceRecords:
+            - !GetAtt DomainDNSRecord.Value

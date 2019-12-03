@@ -1,0 +1,25 @@
+version: 0.2
+env:
+  variables:
+    CI: "true"
+phases:
+  install:
+    runtime-versions:
+      nodejs: 10
+    commands:
+      - npm install yarn
+  build:
+    commands:
+      - yarn
+      - yarn test
+      - yarn build
+artifacts:
+  secondary-artifacts:
+    templates:
+      discard-paths: yes
+      files:
+        - "cloudformation.template.yml"
+        - "parameters/*"
+    build:
+      base-directory: "build"
+      files: "**/*"
