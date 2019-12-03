@@ -101,7 +101,7 @@ Resources:
   DomainValidationRecord:
     Type: AWS::Route53::RecordSetGroup
     Properties:
-      HostedZoneId: !Ref HostedZone
+      HostedZoneName: !Ref HostedZone
       RecordSets:
         - Name: !GetAtt DomainDNSRecord.Name
           Type: !GetAtt DomainDNSRecord.Type
