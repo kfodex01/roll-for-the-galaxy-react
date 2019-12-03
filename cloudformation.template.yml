@@ -51,6 +51,7 @@ Resources:
           ViewerProtocolPolicy: allow-all
         ViewerCertificate:
           AcmCertificateArn: !Ref SSLCertificate
+          SslSupportMethod: sni-only
   SiteBucketPolicy:
     Type: AWS::S3::BucketPolicy
     DependsOn: CloudFrontDistribution
