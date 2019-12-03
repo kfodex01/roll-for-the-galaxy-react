@@ -71,7 +71,7 @@ Resources:
             Configuration:
               Owner: "kfodex01" #Update this with your github username
               Repo: "roll-for-the-galaxy-react" #The repository to checkout
-              Branch: deployment
+              Branch: master
               OAuthToken: !Ref RepoToken
           #Step two is to build the project using our configured CodeBuild project above.
         - Name: Build
