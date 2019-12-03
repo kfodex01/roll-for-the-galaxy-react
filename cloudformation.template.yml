@@ -49,6 +49,8 @@ Resources:
             QueryString: true
           TargetOriginId: S3Origin
           ViewerProtocolPolicy: allow-all
+        ViewerCertificate:
+          AcmCertificateArn: !Ref SSLCertificate
   SiteBucketPolicy:
     Type: AWS::S3::BucketPolicy
     DependsOn: CloudFrontDistribution
