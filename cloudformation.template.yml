@@ -82,7 +82,7 @@ Resources:
   SSLCertificate:
     Type: Custom::Certificate
     Properties:
-      DomainName: !Sub "${Subdomain}.${BaseDomain}"
+      DomainName: !Ref DomainName
       ValidationMethod: DNS
       ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:binxio-cfn-certificate-provider
   IssuedCertificate:
@@ -94,7 +94,7 @@ Resources:
     Type: Custom::CertificateDNSRecord
     Properties:
       CertificateArn: !Ref SSLCertificate
-      DomainName: !Sub "${Subdomain}.${BaseDomain}"
+      DomainName: !Ref DomainName
       ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:binxio-cfn-certificate-provider
   DomainValidationRecord:
     Type: AWS::Route53::RecordSetGroup
