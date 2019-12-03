@@ -14,9 +14,12 @@ phases:
       - yarn test
       - yarn build
 artifacts:
-  discard-paths: yes
-  files:
-    - "cloudformation.template.yml"
-    - "parameters/*"
-    - "build/**/*"
-    
+  secondary-artifacts:
+    templates:
+      discard-paths: yes
+      files:
+        - "cloudformation.template.yml"
+        - "parameters/*"
+    build:
+      base-directory: "build"
+      files: "**/*"
