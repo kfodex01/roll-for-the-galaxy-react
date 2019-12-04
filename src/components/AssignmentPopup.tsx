@@ -30,6 +30,10 @@ const PopupOnlyDiv = styled.div`
     background: white;
 `;
 
+export const onDragStart = (event: React.DragEvent<HTMLDivElement>, id: string): void => {
+    event.dataTransfer.setData('id', id);
+}
+
 export const dragOverContainer = (event: React.DragEvent<HTMLDivElement>): void => {
     event.preventDefault();
 };
@@ -109,10 +113,6 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
         this.setState({
             ...newState
         });
-    }
-
-    onDragStart = (event: React.DragEvent<HTMLDivElement>, id: string): void => {
-        event.dataTransfer.setData('id', id);
     }
 
     pushDieBackToDefaultPool = (state: AssignmentState, die: DieProps) => {
@@ -235,7 +235,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, "Selector")}>
                             {'Selector'}
                             <FlexRowDiv>
-                                <DicePool {...this.state.selectorDice} draggable={true} onDragStart={this.onDragStart} />
+                                <DicePool {...this.state.selectorDice} draggable={true} onDragStart={onDragStart} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv
@@ -244,7 +244,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, dieFace.EXPLORE)}>
                             {'Explore'}
                             <FlexRowDiv>
-                                <DicePool {...this.state.exploreDice} draggable={true} onDragStart={this.onDragStart} />
+                                <DicePool {...this.state.exploreDice} draggable={true} onDragStart={onDragStart} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='develop-drop-box'
@@ -252,7 +252,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, dieFace.DEVELOP)}>
                             {'Develop'}
                             <FlexRowDiv>
-                                <DicePool {...this.state.developDice} draggable={true} onDragStart={this.onDragStart} />
+                                <DicePool {...this.state.developDice} draggable={true} onDragStart={onDragStart} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='settle-drop-box'
@@ -260,7 +260,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, dieFace.SETTLE)}>
                             {'Settle'}
                             <FlexRowDiv>
-                                <DicePool {...this.state.settleDice} draggable={true} onDragStart={this.onDragStart} />
+                                <DicePool {...this.state.settleDice} draggable={true} onDragStart={onDragStart} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='produce-drop-box'
@@ -268,7 +268,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, dieFace.PRODUCE)}>
                             {'Produce'}
                             <FlexRowDiv>
-                                <DicePool {...this.state.produceDice} draggable={true} onDragStart={this.onDragStart} />
+                                <DicePool {...this.state.produceDice} draggable={true} onDragStart={onDragStart} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='ship-drop-box'
@@ -276,7 +276,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, dieFace.SHIP)}>
                             {'Ship'}
                             <FlexRowDiv>
-                                <DicePool {...this.state.shipDice} draggable={true} onDragStart={this.onDragStart} />
+                                <DicePool {...this.state.shipDice} draggable={true} onDragStart={onDragStart} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='wild-drop-box'
@@ -284,7 +284,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, dieFace.WILD)}>
                             {'Wild'}
                             <FlexRowDiv>
-                                <DicePool {...this.state.wildDice} draggable={true} onDragStart={this.onDragStart} />
+                                <DicePool {...this.state.wildDice} draggable={true} onDragStart={onDragStart} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv data-testid='reassign-drop-box'>

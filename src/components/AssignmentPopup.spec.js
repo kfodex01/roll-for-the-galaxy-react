@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import AssignmentPopup, { dragOverContainer } from './AssignmentPopup';
+import AssignmentPopup, { dragOverContainer, onDragStart } from './AssignmentPopup';
 import { getMockDie } from '../test-utilities/mock-object-generators'
 import { dieFace } from '../enums';
 
@@ -117,6 +117,26 @@ describe('Popup', () => {
     });
 
     describe('Drag methods', () => {
+        describe('onDragStart', () => {
+            it('should store the id in the dataTransfer of the event', () => {
+                let mockData = {};
+                const id = '7';
+                const mockOnDragStartEvent = {
+                    dataTransfer: {
+                        setData: (key, value) => {
+                            mockData = {
+                                [key]: value
+                            }
+                        }
+                    }
+                }
+
+                onDragStart(mockOnDragStartEvent, id);
+
+                expect(mockData.id).toEqual(id);
+            });
+        });
+
         describe('dragOverContainer', () => {
             it('should prevent default on event', () => {
                 let eventFired = false;
@@ -124,7 +144,7 @@ describe('Popup', () => {
                     preventDefault: () => {
                         eventFired = true;
                     }
-                }
+                };
 
                 dragOverContainer(mockDragOverEvent);
 
