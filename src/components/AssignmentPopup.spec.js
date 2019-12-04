@@ -230,6 +230,7 @@ describe('Popup', () => {
                     dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE, mockAssignmentPopup);
 
                     expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
+                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
                 });
             });
 
@@ -290,6 +291,7 @@ describe('Popup', () => {
                     dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP, mockAssignmentPopup);
 
                     expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
+                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
                 });
             });
 
@@ -350,6 +352,7 @@ describe('Popup', () => {
                     dropInContainer(mockDropInContainerEvent, dieFace.SETTLE, mockAssignmentPopup);
 
                     expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
+                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
                 });
             });
 
@@ -410,6 +413,7 @@ describe('Popup', () => {
                     dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE, mockAssignmentPopup);
 
                     expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
+                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
                 });
             });
 
@@ -470,6 +474,7 @@ describe('Popup', () => {
                     dropInContainer(mockDropInContainerEvent, dieFace.SHIP, mockAssignmentPopup);
 
                     expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
+                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
                 });
             });
 
