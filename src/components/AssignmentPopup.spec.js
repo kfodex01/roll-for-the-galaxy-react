@@ -6,15 +6,33 @@ import { getMockDie } from '../test-utilities/mock-object-generators'
 import { dieFace } from '../enums';
 
 describe('Popup', () => {
-    let mockPhaseStripDicePool, closePopupEventFired = false;
+    let mockPhaseDice, closePopupEventFired = false;
 
     beforeEach(() => {
-        mockPhaseStripDicePool = {
-            dice: [
-                getMockDie()
-            ]
+        mockPhaseDice = {
+            exploreDice: {
+                dice: []
+            },
+            developDice: {
+                dice: []
+            },
+            settleDice: {
+                dice: []
+            },
+            produceDice: {
+                dice: []
+            },
+            shipDice: {
+                dice: []
+            },
+            wildDice: {
+                dice: []
+            },
+            selectorDice: {
+                dice: [getMockDie()]
+            }
         };
-        mockPhaseStripDicePool.dice[0].id = '0';
+        mockPhaseDice.selectorDice.dice[0].id = '0';
     });
 
     afterEach(() => {
@@ -27,86 +45,8 @@ describe('Popup', () => {
     };
 
     describe('Setup', () => {
-        it('should only render a die in the explore field', () => {
-            mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
-
-            const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
-
-            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(1);
-            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
-            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
-            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
-            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
-            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
-        });
-
-        it('should only render a die in the develop field', () => {
-            mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
-
-            const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
-
-            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
-            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(1);
-            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
-            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
-            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
-            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
-        });
-
-        it('should only render a die in the settle field', () => {
-            mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
-
-            const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
-
-            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
-            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
-            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(1);
-            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
-            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
-            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
-        });
-
-        it('should only render a die in the produce field', () => {
-            mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
-
-            const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
-
-            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
-            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
-            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
-            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(1);
-            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
-            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
-        });
-
-        it('should only render a die in the ship field', () => {
-            mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
-
-            const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
-
-            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
-            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
-            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
-            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
-            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(1);
-            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
-        });
-
-        it('should only render a die of in the wild field', () => {
-            mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
-
-            const { queryByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
-
-            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
-            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
-            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
-            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
-            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
-            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(1);
-        });
-
         it('should fire a close event when the close button is clicked', () => {
-            const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseStripDicePool} />);
+            const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseDice} />);
 
             expect(closePopupEventFired).toBe(false);
             fireEvent.click(getByText('Close'));
@@ -118,15 +58,15 @@ describe('Popup', () => {
     describe('Drag methods', () => {
         let mockAssignmentPopup, idOfDiceToDrop = '0';
 
-        const instantiateMockAssignmentPopup = (phaseStripDicePool) => {
+        const instantiateMockAssignmentPopup = (initialState) => {
             mockAssignmentPopup = new AssignmentPopup({
-                phaseStripDicePool,
+                initialState,
                 closePopup: mockClosePopupEvent
             });
             mockAssignmentPopup.setStateOnThis = (state) => {
                 mockAssignmentPopup.state = { ...state };
             };
-            mockAssignmentPopup.sortDiceByFaceInState();
+            mockAssignmentPopup.setStateOnThis(initialState);
         };
 
         const mockDropInContainerEvent = {
@@ -150,7 +90,7 @@ describe('Popup', () => {
                         }
                     }
                 }
-                instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                instantiateMockAssignmentPopup(mockPhaseDice);
 
                 mockAssignmentPopup.onDragStart(mockOnDragStartEvent, id);
 
@@ -166,7 +106,7 @@ describe('Popup', () => {
                         eventFired = true;
                     }
                 };
-                instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                instantiateMockAssignmentPopup(mockPhaseDice);
 
                 mockAssignmentPopup.dragOverContainer(mockDragOverEvent);
 
@@ -177,8 +117,9 @@ describe('Popup', () => {
         describe('dropInContainer', () => {
             describe('Explore Box', () => {
                 it('should allow an explore die to be moved to the explore box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
 
@@ -186,8 +127,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a develop die to be moved to the explore box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
 
@@ -196,8 +137,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a settle die to be moved to the explore box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
 
@@ -206,8 +147,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a produce die to be moved to the explore box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
 
@@ -216,8 +157,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a ship die to be moved to the explore box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
 
@@ -226,8 +167,8 @@ describe('Popup', () => {
                 });
 
                 it('should allow a wild die to be moved to the explore box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
 
@@ -238,8 +179,8 @@ describe('Popup', () => {
 
             describe('Develop Box', () => {
                 it('should not allow an explore die to be moved to the develop box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
 
@@ -248,8 +189,8 @@ describe('Popup', () => {
                 });
 
                 it('should allow a develop die to be moved to the develop box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
 
@@ -257,8 +198,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a settle die to be moved to the develop box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
 
@@ -267,8 +208,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a produce die to be moved to the develop box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
 
@@ -277,8 +218,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a ship die to be moved to the develop box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
 
@@ -287,8 +228,8 @@ describe('Popup', () => {
                 });
 
                 it('should allow a wild die to be moved to the develop box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
 
@@ -299,8 +240,8 @@ describe('Popup', () => {
 
             describe('Settle Box', () => {
                 it('should not allow an explore die to be moved to the settle box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
 
@@ -309,8 +250,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a develop die to be moved to the settle box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
 
@@ -319,8 +260,8 @@ describe('Popup', () => {
                 });
 
                 it('should allow a settle die to be moved to the settle box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
 
@@ -328,8 +269,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a produce die to be moved to the settle box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
 
@@ -338,8 +279,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a ship die to be moved to the settle box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
 
@@ -348,8 +289,8 @@ describe('Popup', () => {
                 });
 
                 it('should allow a wild die to be moved to the settle box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
 
@@ -360,8 +301,8 @@ describe('Popup', () => {
 
             describe('Produce Box', () => {
                 it('should not allow an explore die to be moved to the produce box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
 
@@ -370,8 +311,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a develop die to be moved to the produce box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
 
@@ -380,8 +321,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a settle die to be moved to the produce box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
 
@@ -390,8 +331,8 @@ describe('Popup', () => {
                 });
 
                 it('should allow a produce die to be moved to the produce box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
 
@@ -399,8 +340,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a ship die to be moved to the produce box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
 
@@ -409,8 +350,8 @@ describe('Popup', () => {
                 });
 
                 it('should allow a wild die to be moved to the produce box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
 
@@ -421,8 +362,8 @@ describe('Popup', () => {
 
             describe('Ship Box', () => {
                 it('should not allow an explore die to be moved to the ship box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
 
@@ -431,8 +372,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a develop die to be moved to the ship box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
 
@@ -441,8 +382,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a settle die to be moved to the ship box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
 
@@ -451,8 +392,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a produce die to be moved to the ship box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
 
@@ -461,8 +402,8 @@ describe('Popup', () => {
                 });
 
                 it('should allow a ship die to be moved to the ship box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
 
@@ -470,8 +411,8 @@ describe('Popup', () => {
                 });
 
                 it('should allow a wild die to be moved to the ship box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
 
@@ -482,8 +423,8 @@ describe('Popup', () => {
 
             describe('Wild Box', () => {
                 it('should not allow an explore die to be moved to the wild box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
 
@@ -492,8 +433,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a develop die to be moved to the wild box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
 
@@ -502,8 +443,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a settle die to be moved to the wild box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
 
@@ -512,8 +453,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a produce die to be moved to the wild box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
 
@@ -522,8 +463,8 @@ describe('Popup', () => {
                 });
 
                 it('should not allow a ship die to be moved to the wild box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
 
@@ -532,8 +473,8 @@ describe('Popup', () => {
                 });
 
                 it('should allow a wild die to be moved to the wild box', () => {
-                    mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
 
@@ -543,7 +484,7 @@ describe('Popup', () => {
 
             describe('Selector Box', () => {
                 it('should take die of any face when the selector box is empty', () => {
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, 'Selector');
 
@@ -557,10 +498,10 @@ describe('Popup', () => {
                 });
 
                 it('should reject die if the selector box contains a die', () => {
-                    mockPhaseStripDicePool.dice.push(getMockDie());
-                    mockPhaseStripDicePool.dice[1].face = dieFace.WILD;
-                    mockPhaseStripDicePool.dice[1].id = '1';
-                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+                    mockPhaseDice.wildDice.dice.push(getMockDie());
+                    mockPhaseDice.wildDice.dice[0].face = dieFace.WILD;
+                    mockPhaseDice.wildDice.dice[0].id = '1';
+                    instantiateMockAssignmentPopup(mockPhaseDice);
 
                     idOfDiceToDrop = '0';
                     mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, 'Selector');

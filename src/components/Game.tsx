@@ -194,8 +194,42 @@ const createPlayers = (state: gameState, numberOfPlayers: number): gameState => 
     )
 };
 
+const getDiceOfOneFace = (dice: Array<DieProps>, dieFace: string): Array<DieProps> => {
+    return dice.filter((die: DieProps) => {
+        return die.face === dieFace;
+    });
+}
+
+const sortDiceByFaceInAssignmentState = (phaseStripDicePool: DicePoolProps): AssignmentState => {
+    const newState: AssignmentState = {
+        exploreDice: {
+            dice: getDiceOfOneFace(phaseStripDicePool.dice, dieFace.EXPLORE)
+        },
+        developDice: {
+            dice: getDiceOfOneFace(phaseStripDicePool.dice, dieFace.DEVELOP)
+        },
+        settleDice: {
+            dice: getDiceOfOneFace(phaseStripDicePool.dice, dieFace.SETTLE)
+        },
+        produceDice: {
+            dice: getDiceOfOneFace(phaseStripDicePool.dice, dieFace.PRODUCE)
+        },
+        shipDice: {
+            dice: getDiceOfOneFace(phaseStripDicePool.dice, dieFace.SHIP)
+        },
+        wildDice: {
+            dice: getDiceOfOneFace(phaseStripDicePool.dice, dieFace.WILD)
+        },
+        selectorDice: {
+            dice: []
+        }
+    }
+
+    return newState;
+}
+
 const rollDice = (game: gameState): gameState => {
-    if (game.players && !game.players[0].phaseStripDice) {
+    if (game.players && !game.players[0].phaseDice) {
         const cupDice = game.players[0].cup.dice;
         const phaseStripDice: DicePoolProps = {
             dice: []
@@ -305,7 +339,7 @@ const rollDice = (game: gameState): gameState => {
             }
         });
 
-        game.players[0].phaseStripDice = phaseStripDice;
+        game.players[0].phaseDice = sortDiceByFaceInAssignmentState(phaseStripDice);
     };
     return game;
 };
@@ -380,9 +414,9 @@ class Game extends React.Component<gameProps, state> {
                         </>
                 }
                 {
-                    this.state.assignmentPopupVisibility === true && this.state.game.players[0].phaseStripDice ?
+                    this.state.assignmentPopupVisibility === true && this.state.game.players[0].phaseDice ?
                         (
-                            <AssignmentPopup closePopup={this.toggleAssignmentPopup} assignDice={this.assignDice} phaseStripDicePool={this.state.game.players[0].phaseStripDice} />
+                            <AssignmentPopup closePopup={this.toggleAssignmentPopup} assignDice={this.assignDice} initialState={this.state.game.players[0].phaseDice} />
                         ) : null
                 }
             </>

@@ -4,7 +4,7 @@ import '@testing-library/jest-dom/extend-expect';
 import Game from './Game';
 import { initialState, bonuses, tileTypes, dieColor, dieFace } from '../enums';
 import Chance from 'chance';
-import { getMockTile, getMockFullTile, getArrayOfRandomDice, getArrayOfRandomTiles } from '../test-utilities/mock-object-generators';
+import { getMockTile, getMockFullTile, getArrayOfRandomDice, getArrayOfRandomTiles, getMockDie } from '../test-utilities/mock-object-generators';
 
 const chance = new Chance();
 
@@ -474,7 +474,30 @@ describe('Game', () => {
                                 getMockTile(),
                                 getMockTile(),
                                 getMockTile()
-                            ]
+                            ],
+                            phaseDice: {
+                                exploreDice: {
+                                    dice: []
+                                },
+                                developDice: {
+                                    dice: []
+                                },
+                                settleDice: {
+                                    dice: []
+                                },
+                                produceDice: {
+                                    dice: []
+                                },
+                                shipDice: {
+                                    dice: []
+                                },
+                                wildDice: {
+                                    dice: []
+                                },
+                                selectorDice: {
+                                    dice: []
+                                }
+                            }
                         }
                     ]
                 }
@@ -535,7 +558,7 @@ describe('Game', () => {
                     face: dieFace.WILD
                 }
             ];
-            mockSinglePlayerAssignmentState.game.players[0].phaseStripDice = undefined;
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice = undefined;
 
             const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
             const startRoundButton = getByText('Start Round');
@@ -551,7 +574,7 @@ describe('Game', () => {
         });
 
         it('should not roll the dice from the cup when the dice have been rolled', () => {
-            mockSinglePlayerAssignmentState.game.players[0].phaseStripDice = {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.wildDice = {
                 dice: [
                     {
                         color: dieColor.WHITE,
@@ -580,8 +603,116 @@ describe('Game', () => {
 
             expect(whiteDice.length).toBe(3);
             whiteDice.forEach(die => {
-                expect(within(die).queryByTestId('wild-face')).toBeTruthy();;
+                expect(within(die).queryByTestId('wild-face')).toBeTruthy();
             });
+        });
+
+        it('should only render a die in the explore field', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.exploreDice.dice = [getMockDie()];
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.exploreDice.dice[0].face = dieFace.EXPLORE;
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.exploreDice.dice[0].id = '0';
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(1);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
+        });
+
+        it('should only render a die in the develop field', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.developDice.dice = [getMockDie()];
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.developDice.dice[0].face = dieFace.DEVELOP;
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.developDice.dice[0].id = '0';
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(1);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
+        });
+
+        it('should only render a die in the settle field', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.settleDice.dice = [getMockDie()];
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.settleDice.dice[0].face = dieFace.SETTLE;
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.settleDice.dice[0].id = '0';
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(1);
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
+        });
+
+        it('should only render a die in the produce field', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.produceDice.dice = [getMockDie()];
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.produceDice.dice[0].face = dieFace.PRODUCE;
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.produceDice.dice[0].id = '0';
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(1);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
+        });
+
+        it('should only render a die in the ship field', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.shipDice.dice = [getMockDie()];
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.shipDice.dice[0].face = dieFace.SHIP;
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.shipDice.dice[0].id = '0';
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(1);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
+        });
+
+        it('should only render a die in the wild field', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.wildDice.dice = [getMockDie()];
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.wildDice.dice[0].face = dieFace.WILD;
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.wildDice.dice[0].id = '0';
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(1);
         });
     });
 });

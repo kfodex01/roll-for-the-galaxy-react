@@ -5,6 +5,7 @@ import { faMoneyCheckAlt, faStar } from "@fortawesome/free-solid-svg-icons";
 import Tile, { TileProps } from "./Tile";
 import DicePool, { DicePoolProps } from "./DicePool";
 import ConstructionZone, { Tiles } from "./ConstructionZone";
+import { AssignmentState } from "./AssignmentPopup";
 
 export interface PhasePowersProps {
     assignment: Array<string>;
@@ -24,7 +25,7 @@ export interface PlayerBoardProps {
     id: number;
     nextTileId: number;
     phasePowers: PhasePowersProps;
-    phaseStripDice?: DicePoolProps;
+    phaseDice?: AssignmentState;
     points: number;
     settleBuildQueue: Array<Tiles>;
     tiles: Array<TileProps>;
