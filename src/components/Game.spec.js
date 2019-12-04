@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Game from './Game';
-import { initialState, bonuses, tileTypes } from '../enums';
+import { initialState, bonuses, tileTypes, dieColor, dieFace } from '../enums';
 import Chance from 'chance';
 import { getMockTile, getMockFullTile, getArrayOfRandomDice, getArrayOfRandomTiles } from '../test-utilities/mock-object-generators';
 
@@ -42,7 +42,7 @@ describe('Game', () => {
                         getMockFullTile(),
                         getMockFullTile()
                     ],
-                    victoryPointPool: chance.integer({min: 1, max: 60})
+                    victoryPointPool: chance.integer({ min: 1, max: 60 })
                 },
                 startFormVisibility: true,
                 assignmentPopupVisibility: false
@@ -447,8 +447,8 @@ describe('Game', () => {
                     factionTiles: [],
                     homeWorldTiles: [],
                     gameTiles: [],
-                    victoryPointPool: chance.integer({min: 1, max: 60}),
-                    players:[
+                    victoryPointPool: chance.integer({ min: 1, max: 60 }),
+                    players: [
                         {
                             citizenry: {
                                 dice: getArrayOfRandomDice()
@@ -468,7 +468,7 @@ describe('Game', () => {
                                 settle: [],
                                 ship: []
                             },
-                            points: chance.integer({min: 0, max: 100}),
+                            points: chance.integer({ min: 0, max: 100 }),
                             settleBuildQueue: getArrayOfRandomTiles(),
                             tiles: [
                                 getMockTile(),
@@ -518,6 +518,70 @@ describe('Game', () => {
             expect(queryByTestId('ship-drop-box')).toBeFalsy();
             expect(queryByTestId('wild-drop-box')).toBeFalsy();
             expect(queryByTestId('reassign-drop-box')).toBeFalsy();
+        });
+
+        it('should roll the dice from the cup when the dice have not been rolled yet', () => {
+            mockSinglePlayerAssignmentState.game.players[0].cup.dice = [
+                {
+                    color: dieColor.WHITE,
+                    face: dieFace.WILD
+                },
+                {
+                    color: dieColor.WHITE,
+                    face: dieFace.WILD
+                },
+                {
+                    color: dieColor.WHITE,
+                    face: dieFace.WILD
+                }
+            ];
+            mockSinglePlayerAssignmentState.game.players[0].phaseStripDice = undefined;
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+            const assignmentPopup = queryByTestId('assignment-popup');
+            const whiteDice = within(assignmentPopup).queryAllByTestId('WhiteDie');
+
+            expect(whiteDice.length).toBe(3);
+            whiteDice.forEach(die => {
+                expect(within(die).queryByTestId('wild-face')).toBeFalsy();;
+            });
+        });
+
+        it('should not roll the dice from the cup when the dice have been rolled', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseStripDice = {
+                dice: [
+                    {
+                        color: dieColor.WHITE,
+                        face: dieFace.WILD,
+                        id: '0'
+                    },
+                    {
+                        color: dieColor.WHITE,
+                        face: dieFace.WILD,
+                        id: '1'
+                    },
+                    {
+                        color: dieColor.WHITE,
+                        face: dieFace.WILD,
+                        id: '2'
+                    }
+                ]
+            };
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+            const assignmentPopup = queryByTestId('assignment-popup');
+            const whiteDice = within(assignmentPopup).queryAllByTestId('WhiteDie');
+
+            expect(whiteDice.length).toBe(3);
+            whiteDice.forEach(die => {
+                expect(within(die).queryByTestId('wild-face')).toBeTruthy();;
+            });
         });
     });
 });

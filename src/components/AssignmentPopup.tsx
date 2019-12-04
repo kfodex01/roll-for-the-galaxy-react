@@ -218,7 +218,7 @@ class AssignmentPopup extends React.Component<PopupProps, AssignmentState> {
     render() {
         return (
             <PopupFullPageCoverDiv>
-                <PopupOnlyDiv>
+                <PopupOnlyDiv data-testid='assignment-popup'>
                     <FlexMaxRowDiv>
                         <BigText>Assignment Phase</BigText>
                         <button onClick={this.props.closePopup}>
