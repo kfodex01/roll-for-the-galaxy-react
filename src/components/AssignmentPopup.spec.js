@@ -152,7 +152,7 @@ describe('Popup', () => {
         });
 
         describe('dropInContainer', () => {
-            let mockAssignmentPopup, id = '0';
+            let mockAssignmentPopup, idOfDiceToDrop = '0';
 
             const instantiateMockAssignmentPopup = (phaseStripDicePool) => {
                 mockAssignmentPopup = new AssignmentPopup({
@@ -168,7 +168,7 @@ describe('Popup', () => {
             const mockDropInContainerEvent = {
                 dataTransfer: {
                     getData: () => {
-                        return id;
+                        return idOfDiceToDrop;
                     }
                 }
             }
@@ -536,6 +536,39 @@ describe('Popup', () => {
                     dropInContainer(mockDropInContainerEvent, dieFace.WILD, mockAssignmentPopup);
 
                     expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(1);
+                });
+            });
+
+            describe('Selector Box', () => {
+                it('should take die of any face when the selector box is empty', () => {
+                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+
+                    dropInContainer(mockDropInContainerEvent, 'Selector', mockAssignmentPopup);
+
+                    expect(mockAssignmentPopup.state.selectorDice.dice.length).toBe(1);
+                    expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(0);
+                    expect(mockAssignmentPopup.state.developDice.dice.length).toBe(0);
+                    expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(0);
+                    expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(0);
+                    expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(0);
+                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
+                });
+
+                it('should reject die if the selector box contains a die', () => {
+                    mockPhaseStripDicePool.dice.push(getMockDie());
+                    mockPhaseStripDicePool.dice[1].face = dieFace.WILD;
+                    mockPhaseStripDicePool.dice[1].id = '1';
+                    instantiateMockAssignmentPopup(mockPhaseStripDicePool);
+
+                    idOfDiceToDrop = '0';
+                    dropInContainer(mockDropInContainerEvent, 'Selector', mockAssignmentPopup);
+                    idOfDiceToDrop = '1';
+                    dropInContainer(mockDropInContainerEvent, 'Selector', mockAssignmentPopup);
+
+                    expect(mockAssignmentPopup.state.selectorDice.dice.length).toBe(1);
+                    expect(mockAssignmentPopup.state.selectorDice.dice[0].id).toBe('0');
+                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(1);
+                    expect(mockAssignmentPopup.state.wildDice.dice[0].id).toBe('1');
                 });
             });
         });
