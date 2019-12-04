@@ -26,6 +26,7 @@
     "build": "react-scripts build",
     "test": "jest",
     "coverage": "jest --coverage",
+    "watch": "jest --watch",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
