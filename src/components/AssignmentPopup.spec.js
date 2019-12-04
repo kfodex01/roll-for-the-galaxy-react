@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import AssignmentPopup, { dragOverContainer, onDragStart, dropInContainer } from './AssignmentPopup';
+import AssignmentPopup from './AssignmentPopup';
 import { getMockDie } from '../test-utilities/mock-object-generators'
 import { dieFace } from '../enums';
 
@@ -116,6 +116,27 @@ describe('Popup', () => {
     });
 
     describe('Drag methods', () => {
+        let mockAssignmentPopup, idOfDiceToDrop = '0';
+
+        const instantiateMockAssignmentPopup = (phaseStripDicePool) => {
+            mockAssignmentPopup = new AssignmentPopup({
+                phaseStripDicePool,
+                closePopup: mockClosePopupEvent
+            });
+            mockAssignmentPopup.setStateOnThis = (state) => {
+                mockAssignmentPopup.state = { ...state };
+            };
+            mockAssignmentPopup.sortDiceByFaceInState();
+        };
+
+        const mockDropInContainerEvent = {
+            dataTransfer: {
+                getData: () => {
+                    return idOfDiceToDrop;
+                }
+            }
+        }
+
         describe('onDragStart', () => {
             it('should store the id in the dataTransfer of the event', () => {
                 let mockData = {};
@@ -129,8 +150,9 @@ describe('Popup', () => {
                         }
                     }
                 }
+                instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                onDragStart(mockOnDragStartEvent, id);
+                mockAssignmentPopup.onDragStart(mockOnDragStartEvent, id);
 
                 expect(mockData.id).toEqual(id);
             });
@@ -144,41 +166,21 @@ describe('Popup', () => {
                         eventFired = true;
                     }
                 };
+                instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                dragOverContainer(mockDragOverEvent);
+                mockAssignmentPopup.dragOverContainer(mockDragOverEvent);
 
                 expect(eventFired).toBe(true);
             });
         });
 
         describe('dropInContainer', () => {
-            let mockAssignmentPopup, idOfDiceToDrop = '0';
-
-            const instantiateMockAssignmentPopup = (phaseStripDicePool) => {
-                mockAssignmentPopup = new AssignmentPopup({
-                    phaseStripDicePool,
-                    closePopup: mockClosePopupEvent
-                });
-                mockAssignmentPopup.setStateOnThis = (state) => {
-                    mockAssignmentPopup.state = {...state};
-                };
-                mockAssignmentPopup.sortDiceByFaceInState();
-            };
-
-            const mockDropInContainerEvent = {
-                dataTransfer: {
-                    getData: () => {
-                        return idOfDiceToDrop;
-                    }
-                }
-            }
-
             describe('Explore Box', () => {
                 it('should allow an explore die to be moved to the explore box', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
 
                     expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
                 });
@@ -187,7 +189,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
 
                     expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
@@ -197,7 +199,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
 
                     expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
@@ -207,7 +209,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
 
                     expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
@@ -217,7 +219,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
 
                     expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
@@ -227,7 +229,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
 
                     expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
                     expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
@@ -239,7 +241,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
 
                     expect(mockAssignmentPopup.state.developDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
@@ -249,7 +251,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
 
                     expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
                 });
@@ -258,7 +260,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
 
                     expect(mockAssignmentPopup.state.developDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
@@ -268,7 +270,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
 
                     expect(mockAssignmentPopup.state.developDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
@@ -278,7 +280,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
 
                     expect(mockAssignmentPopup.state.developDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
@@ -288,7 +290,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
 
                     expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
                     expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
@@ -300,7 +302,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.SETTLE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
 
                     expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
@@ -310,7 +312,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.SETTLE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
 
                     expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
@@ -320,7 +322,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.SETTLE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
 
                     expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
                 });
@@ -329,7 +331,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.SETTLE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
 
                     expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
@@ -339,7 +341,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.SETTLE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
 
                     expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
@@ -349,7 +351,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.SETTLE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
 
                     expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
                     expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
@@ -361,7 +363,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
 
                     expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
@@ -371,7 +373,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
 
                     expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
@@ -381,7 +383,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
 
                     expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
@@ -391,7 +393,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
 
                     expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
                 });
@@ -400,7 +402,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
 
                     expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
@@ -410,7 +412,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
 
                     expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
                     expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
@@ -422,7 +424,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.SHIP, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
 
                     expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
@@ -432,7 +434,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.SHIP, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
 
                     expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
@@ -442,7 +444,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.SHIP, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
 
                     expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
@@ -452,7 +454,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.SHIP, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
 
                     expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
@@ -462,7 +464,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.SHIP, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
 
                     expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
                 });
@@ -471,7 +473,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.SHIP, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
 
                     expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
                     expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
@@ -483,7 +485,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.EXPLORE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.WILD, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
 
                     expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
@@ -493,7 +495,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.DEVELOP;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.WILD, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
 
                     expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
@@ -503,7 +505,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.SETTLE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.WILD, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
 
                     expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
@@ -513,7 +515,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.PRODUCE;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.WILD, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
 
                     expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
@@ -523,7 +525,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.SHIP;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.WILD, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
 
                     expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
                     expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
@@ -533,7 +535,7 @@ describe('Popup', () => {
                     mockPhaseStripDicePool.dice[0].face = dieFace.WILD;
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, dieFace.WILD, mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
 
                     expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(1);
                 });
@@ -543,7 +545,7 @@ describe('Popup', () => {
                 it('should take die of any face when the selector box is empty', () => {
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
-                    dropInContainer(mockDropInContainerEvent, 'Selector', mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, 'Selector');
 
                     expect(mockAssignmentPopup.state.selectorDice.dice.length).toBe(1);
                     expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(0);
@@ -561,9 +563,9 @@ describe('Popup', () => {
                     instantiateMockAssignmentPopup(mockPhaseStripDicePool);
 
                     idOfDiceToDrop = '0';
-                    dropInContainer(mockDropInContainerEvent, 'Selector', mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, 'Selector');
                     idOfDiceToDrop = '1';
-                    dropInContainer(mockDropInContainerEvent, 'Selector', mockAssignmentPopup);
+                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, 'Selector');
 
                     expect(mockAssignmentPopup.state.selectorDice.dice.length).toBe(1);
                     expect(mockAssignmentPopup.state.selectorDice.dice[0].id).toBe('0');
