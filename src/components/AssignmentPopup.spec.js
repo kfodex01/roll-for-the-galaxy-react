@@ -46,7 +46,7 @@ describe('Popup', () => {
 
     describe('Setup', () => {
         it('should fire a close event when the close button is clicked', () => {
-            const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseStripDicePool={mockPhaseDice} />);
+            const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
 
             expect(closePopupEventFired).toBe(false);
             fireEvent.click(getByText('Close'));
@@ -55,7 +55,7 @@ describe('Popup', () => {
         });
     });
 
-    describe('Drag methods', () => {
+    describe('Drag Methods', () => {
         let mockAssignmentPopup, idOfDiceToDrop = '0';
 
         const instantiateMockAssignmentPopup = (initialState) => {
@@ -513,6 +513,260 @@ describe('Popup', () => {
                     expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(1);
                     expect(mockAssignmentPopup.state.wildDice.dice[0].id).toBe('1');
                 });
+            });
+        });
+    });
+
+    describe('Submit Buttons', () => {
+        let assignDiceCalled,
+            phasePicked,
+            finalState,
+            exploreButton,
+            developButton,
+            settleButton,
+            produceButton,
+            shipButton;
+
+        beforeEach(() => {
+            assignDiceCalled = false;
+        });
+
+        const mockAssignDice = (pickedPhase, assignmentState) => {
+            assignDiceCalled = true;
+            phasePicked = pickedPhase;
+            finalState = assignmentState;
+        };
+
+        const getSubmitButtons = (getByText) => {
+            exploreButton = getByText('Pick Explore');
+            developButton = getByText('Pick Develop');
+            settleButton = getByText('Pick Settle');
+            produceButton = getByText('Pick Produce');
+            shipButton = getByText('Pick Ship');
+        };
+
+        describe('Explore Button', () => {
+            it('should submit with explore picked and selector die in explore pool when explore button is clicked', () => {
+                mockPhaseDice.selectorDice.dice[0].id = '7';
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(exploreButton);
+
+                expect(assignDiceCalled).toBe(true);
+                expect(phasePicked).toBe(dieFace.EXPLORE);
+                expect(finalState.selectorDice.dice.length).toBe(0);
+                expect(finalState.exploreDice.dice.length).toBe(1);
+                expect(finalState.exploreDice.dice[0].id).toBe('7');
+                expect(closePopupEventFired).toBe(true);
+            });
+
+            it('should not submit with dice in wild pool when explore button is clicked', () => {
+                mockPhaseDice.wildDice.dice.push(getMockDie());
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(exploreButton);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+            });
+
+            it('should not submit with no selector dice when explore button is clicked', () => {
+                mockPhaseDice.selectorDice.dice = [];
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(exploreButton);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+            });
+        });
+
+        describe('Develop Button', () => {
+            it('should submit with develop picked and selector die in develop pool when develop button is clicked', () => {
+                mockPhaseDice.selectorDice.dice[0].id = '7';
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(developButton);
+
+                expect(assignDiceCalled).toBe(true);
+                expect(phasePicked).toBe(dieFace.DEVELOP);
+                expect(finalState.selectorDice.dice.length).toBe(0);
+                expect(finalState.developDice.dice.length).toBe(1);
+                expect(finalState.developDice.dice[0].id).toBe('7');
+                expect(closePopupEventFired).toBe(true);
+            });
+
+            it('should not submit with dice in wild pool when develop button is clicked', () => {
+                mockPhaseDice.wildDice.dice.push(getMockDie());
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(developButton);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+            });
+
+            it('should not submit with no selector dice when develop button is clicked', () => {
+                mockPhaseDice.selectorDice.dice = [];
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(developButton);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+            });
+        });
+
+        describe('Settle Button', () => {
+            it('should submit with settle picked and selector die in settle pool when settle button is clicked', () => {
+                mockPhaseDice.selectorDice.dice[0].id = '7';
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(settleButton);
+
+                expect(assignDiceCalled).toBe(true);
+                expect(phasePicked).toBe(dieFace.SETTLE);
+                expect(finalState.selectorDice.dice.length).toBe(0);
+                expect(finalState.settleDice.dice.length).toBe(1);
+                expect(finalState.settleDice.dice[0].id).toBe('7');
+                expect(closePopupEventFired).toBe(true);
+            });
+
+            it('should not submit with dice in wild pool when settle button is clicked', () => {
+                mockPhaseDice.wildDice.dice.push(getMockDie());
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(settleButton);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+            });
+
+            it('should not submit with no selector dice when settle button is clicked', () => {
+                mockPhaseDice.selectorDice.dice = [];
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(settleButton);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+            });
+        });
+
+        describe('Produce Button', () => {
+            it('should submit with produce picked and selector die in produce pool when produce button is clicked', () => {
+                mockPhaseDice.selectorDice.dice[0].id = '7';
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(produceButton);
+
+                expect(assignDiceCalled).toBe(true);
+                expect(phasePicked).toBe(dieFace.PRODUCE);
+                expect(finalState.selectorDice.dice.length).toBe(0);
+                expect(finalState.produceDice.dice.length).toBe(1);
+                expect(finalState.produceDice.dice[0].id).toBe('7');
+                expect(closePopupEventFired).toBe(true);
+            });
+
+            it('should not submit with dice in wild pool when produce button is clicked', () => {
+                mockPhaseDice.wildDice.dice.push(getMockDie());
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(settleButton);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+            });
+
+            it('should not submit with no selector dice when produce button is clicked', () => {
+                mockPhaseDice.selectorDice.dice = [];
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(produceButton);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+            });
+        });
+
+        describe('Ship Button', () => {
+            it('should submit with ship picked and selector die in ship pool when ship button is clicked', () => {
+                mockPhaseDice.selectorDice.dice[0].id = '7';
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(shipButton);
+
+                expect(assignDiceCalled).toBe(true);
+                expect(phasePicked).toBe(dieFace.SHIP);
+                expect(finalState.selectorDice.dice.length).toBe(0);
+                expect(finalState.shipDice.dice.length).toBe(1);
+                expect(finalState.shipDice.dice[0].id).toBe('7');
+                expect(closePopupEventFired).toBe(true);
+            });
+
+            it('should not submit with dice in wild pool when ship button is clicked', () => {
+                mockPhaseDice.wildDice.dice.push(getMockDie());
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(shipButton);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+            });
+
+            it('should not submit with no selector dice when ship button is clicked', () => {
+                mockPhaseDice.selectorDice.dice = [];
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
+                getSubmitButtons(getByText);
+                fireEvent.click(shipButton);
+
+                expect(assignDiceCalled).toBe(false);
+                expect(closePopupEventFired).toBe(false);
             });
         });
     });

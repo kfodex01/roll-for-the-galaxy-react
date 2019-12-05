@@ -152,8 +152,6 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
                     this.pushDieBackToDefaultPool(state, die);
                 }
                 break;
-            default:
-                break;
         };
         this.setStateOnThis(state);
     };
@@ -182,8 +180,6 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
             case dieFace.WILD:
                 state.wildDice.dice.push(die);
                 break;
-            default:
-                break;
         }
     }
 
@@ -191,7 +187,28 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
         if (this.state.wildDice.dice.length > 0 || this.state.selectorDice.dice.length !== 1) {
             return;
         }
-        this.props.assignDice(pickedPhase, this.state);
+        let state: AssignmentState = this.state;
+        let selectorDie: DieProps | undefined = state.selectorDice.dice.pop();
+        if (selectorDie) {
+            switch (pickedPhase) {
+                case dieFace.EXPLORE:
+                    state.exploreDice.dice.push(selectorDie);
+                    break;
+                case dieFace.DEVELOP:
+                    state.developDice.dice.push(selectorDie);
+                    break;
+                case dieFace.SETTLE:
+                    state.settleDice.dice.push(selectorDie);
+                    break;
+                case dieFace.PRODUCE:
+                    state.produceDice.dice.push(selectorDie);
+                    break;
+                case dieFace.SHIP:
+                    state.shipDice.dice.push(selectorDie);
+                    break;
+            }
+        }
+        this.props.assignDice(pickedPhase, state);
         this.props.closePopup();
     }
 
@@ -278,11 +295,11 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
                         </DropBoxDiv>
                     </FlexDropBoxRowDiv>
                     <div>
-                        <button onClick={() => this.submitPhaseStrip(dieFace.EXPLORE)}>{dieFace.EXPLORE}</button>
-                        <button onClick={() => this.submitPhaseStrip(dieFace.DEVELOP)}>{dieFace.DEVELOP}</button>
-                        <button onClick={() => this.submitPhaseStrip(dieFace.SETTLE)}>{dieFace.SETTLE}</button>
-                        <button onClick={() => this.submitPhaseStrip(dieFace.PRODUCE)}>{dieFace.PRODUCE}</button>
-                        <button onClick={() => this.submitPhaseStrip(dieFace.SHIP)}>{dieFace.SHIP}</button>
+                        <button onClick={() => this.submitPhaseStrip(dieFace.EXPLORE)}>{'Pick Explore'}</button>
+                        <button onClick={() => this.submitPhaseStrip(dieFace.DEVELOP)}>{'Pick Develop'}</button>
+                        <button onClick={() => this.submitPhaseStrip(dieFace.SETTLE)}>{'Pick Settle'}</button>
+                        <button onClick={() => this.submitPhaseStrip(dieFace.PRODUCE)}>{'Pick Produce'}</button>
+                        <button onClick={() => this.submitPhaseStrip(dieFace.SHIP)}>{'Pick Ship'}</button>
                     </div>
                 </PopupOnlyDiv>
             </PopupFullPageCoverDiv>

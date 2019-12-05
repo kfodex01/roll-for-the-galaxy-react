@@ -334,8 +334,6 @@ const rollDice = (game: gameState): gameState => {
                         ])
                     });
                     break;
-                default:
-                    break;
             }
         });
 
