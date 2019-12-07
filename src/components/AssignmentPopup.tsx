@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DicePool, { DicePoolProps } from './DicePool';
 import { DieProps } from './Die';
 import { dieFace } from '../enums';
+import { getDragEvent } from './utils/drag-event-utility';
 
 const PopupFullPageCoverDiv = styled.div`
     position: fixed;
@@ -72,11 +73,13 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
     }
 
     onDragStart = (event: React.DragEvent<HTMLDivElement>, id: string): void => {
-        event.dataTransfer.setData('id', id);
+        let dragEvent: React.DragEvent<HTMLDivElement> = getDragEvent(event);
+        dragEvent.dataTransfer.setData('id', id);
     }
 
     dragOverContainer = (event: React.DragEvent<HTMLDivElement>): void => {
-        event.preventDefault();
+        let dragEvent: React.DragEvent<HTMLDivElement> = getDragEvent(event);
+        dragEvent.preventDefault();
     };
 
     findDie = (state: AssignmentState, id: string): DieProps => {
@@ -91,8 +94,9 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
         return die.filter(die => die)[0];
     };
 
-    dropInContainer = (event: React.DragEvent<HTMLDivElement>, containerToDropIn: string, ): void => {
-        let id: string = event.dataTransfer.getData('id');
+    dropInContainer = (event: React.DragEvent<HTMLDivElement>, containerToDropIn: string): void => {
+        let dragEvent: React.DragEvent<HTMLDivElement> = getDragEvent(event);
+        let id: string = dragEvent.dataTransfer.getData('id');
         let state: AssignmentState = { ...this.state };
         let die: DieProps = this.findDie(state, id);
         state.exploreDice.dice = state.exploreDice.dice.filter(die => die.id !== id);
@@ -145,7 +149,7 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
                     this.pushDieBackToDefaultPool(state, die);
                 }
                 break;
-            case "Selector":
+            default:
                 if (state.selectorDice.dice.length === 0) {
                     state.selectorDice.dice.push(die);
                 } else {
@@ -160,7 +164,7 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
         this.setStateOnThis(this.props.initialState);
     }
 
-    pushDieBackToDefaultPool = (state: AssignmentState, die: DieProps) => {
+    pushDieBackToDefaultPool = (state: AssignmentState, die: DieProps): void => {
         switch (die.face) {
             case dieFace.EXPLORE:
                 state.exploreDice.dice.push(die);
@@ -184,7 +188,7 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
     }
 
     submitPhaseStrip = (pickedPhase: string): void => {
-        if (this.state.wildDice.dice.length > 0 || this.state.selectorDice.dice.length !== 1) {
+        if (this.state.wildDice.dice.length > 0) {
             return;
         }
         let state: AssignmentState = this.state;
@@ -207,7 +211,10 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
                     state.shipDice.dice.push(selectorDie);
                     break;
             }
+        } else {
+            return;
         }
+
         this.props.assignDice(pickedPhase, state);
         this.props.closePopup();
     }

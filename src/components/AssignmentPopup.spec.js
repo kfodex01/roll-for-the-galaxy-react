@@ -1,9 +1,12 @@
 import React from 'react';
-import { render, fireEvent, cleanup, within } from '@testing-library/react';
+import { render, fireEvent, cleanup, within, getByTestId } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import AssignmentPopup from './AssignmentPopup';
 import { getMockDie } from '../test-utilities/mock-object-generators'
-import { dieFace } from '../enums';
+import { dieFace, dieColor } from '../enums';
+import { getDragEvent } from './utils/drag-event-utility';
+
+jest.mock('./utils/drag-event-utility');
 
 describe('Popup', () => {
     let mockPhaseDice, closePopupEventFired = false;
@@ -55,465 +58,750 @@ describe('Popup', () => {
         });
     });
 
-    describe('Drag Methods', () => {
-        let mockAssignmentPopup, idOfDiceToDrop = '0';
+    describe('Drag and Drop', () => {
+        let mockDataTransferData,
+        exploreBox,
+        developBox,
+        settleBox,
+        produceBox,
+        shipBox,
+        wildBox,
+        phasePickerBox;
 
-        const instantiateMockAssignmentPopup = (initialState) => {
-            mockAssignmentPopup = new AssignmentPopup({
-                initialState,
-                closePopup: mockClosePopupEvent
-            });
-            mockAssignmentPopup.setStateOnThis = (state) => {
-                mockAssignmentPopup.state = { ...state };
-            };
-            mockAssignmentPopup.setStateOnThis(initialState);
+        const mockDragEvent = {
+            dataTransfer: {
+                getData: (key) => mockDataTransferData[key],
+                setData: (key, value) => {
+                    mockDataTransferData = {
+                        ...mockDataTransferData,
+                        [key]: value
+                    }
+                }
+            },
+            preventDefault: jest.fn()
         };
 
-        const mockDropInContainerEvent = {
-            dataTransfer: {
-                getData: () => {
-                    return idOfDiceToDrop;
-                }
-            }
+        const getDropBoxes = (getByTestId) => {
+            exploreBox = getByTestId('explore-drop-box');
+            developBox = getByTestId('develop-drop-box');
+            settleBox = getByTestId('settle-drop-box');
+            produceBox = getByTestId('produce-drop-box');
+            shipBox = getByTestId('ship-drop-box');
+            wildBox = getByTestId('wild-drop-box');
+            phasePickerBox = getByTestId('phase-picker-box');
         }
 
-        describe('onDragStart', () => {
-            it('should store the id in the dataTransfer of the event', () => {
-                let mockData = {};
-                const id = '7';
-                const mockOnDragStartEvent = {
-                    dataTransfer: {
-                        setData: (key, value) => {
-                            mockData = {
-                                [key]: value
-                            }
-                        }
-                    }
-                }
-                instantiateMockAssignmentPopup(mockPhaseDice);
+        beforeEach(() => {
+            getDragEvent.mockReturnValue(mockDragEvent);
+            mockDataTransferData = {};
+        });
 
-                mockAssignmentPopup.onDragStart(mockOnDragStartEvent, id);
+        describe('Explore Box', () => {
+            it('should allow an explore die to be moved to the explore box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                expect(mockData.id).toEqual(id);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(exploreBox);
+                fireEvent.drop(exploreBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a develop die to be moved to the explore box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(exploreBox);
+                fireEvent.drop(exploreBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a settle die to be moved to the explore box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(exploreBox);
+                fireEvent.drop(exploreBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a produce die to be moved to the explore box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(exploreBox);
+                fireEvent.drop(exploreBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a ship die to be moved to the explore box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(exploreBox);
+                fireEvent.drop(exploreBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should allow a wild die to be moved to the explore box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(exploreBox);
+                fireEvent.drop(exploreBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
             });
         });
 
-        describe('dragOverContainer', () => {
-            it('should prevent default on event', () => {
-                let eventFired = false;
-                const mockDragOverEvent = {
-                    preventDefault: () => {
-                        eventFired = true;
-                    }
-                };
-                instantiateMockAssignmentPopup(mockPhaseDice);
+        describe('Develop Box', () => {
+            it('should not allow an explore die to be moved to the develop box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                mockAssignmentPopup.dragOverContainer(mockDragOverEvent);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
 
-                expect(eventFired).toBe(true);
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(developBox);
+                fireEvent.drop(developBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should allow a develop die to be moved to the develop box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(developBox);
+                fireEvent.drop(developBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a settle die to be moved to the develop box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(developBox);
+                fireEvent.drop(developBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a produce die to be moved to the develop box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(developBox);
+                fireEvent.drop(developBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a ship die to be moved to the develop box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(developBox);
+                fireEvent.drop(developBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should allow a wild die to be moved to the develop box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(developBox);
+                fireEvent.drop(developBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
             });
         });
 
-        describe('dropInContainer', () => {
-            describe('Explore Box', () => {
-                it('should allow an explore die to be moved to the explore box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+        describe('Settle Box', () => {
+            it('should not allow an explore die to be moved to the settle box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                    instantiateMockAssignmentPopup(mockPhaseDice);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
 
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(settleBox);
+                fireEvent.drop(settleBox);
 
-                    expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a develop die to be moved to the explore box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
-
-                    expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a settle die to be moved to the explore box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
-
-                    expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a produce die to be moved to the explore box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
-
-                    expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a ship die to be moved to the explore box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
-
-                    expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
-                });
-
-                it('should allow a wild die to be moved to the explore box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.EXPLORE);
-
-                    expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
-                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
-                });
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
             });
 
-            describe('Develop Box', () => {
-                it('should not allow an explore die to be moved to the develop box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
+            it('should not allow a develop die to be moved to the settle box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
 
-                    expect(mockAssignmentPopup.state.developDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
-                });
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(settleBox);
+                fireEvent.drop(settleBox);
 
-                it('should allow a develop die to be moved to the develop box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
-
-                    expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a settle die to be moved to the develop box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
-
-                    expect(mockAssignmentPopup.state.developDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a produce die to be moved to the develop box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
-
-                    expect(mockAssignmentPopup.state.developDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a ship die to be moved to the develop box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
-
-                    expect(mockAssignmentPopup.state.developDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
-                });
-
-                it('should allow a wild die to be moved to the develop box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.DEVELOP);
-
-                    expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
-                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
-                });
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
             });
 
-            describe('Settle Box', () => {
-                it('should not allow an explore die to be moved to the settle box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
+            it('should allow a settle die to be moved to the settle box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
 
-                    expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
-                });
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(settleBox);
+                fireEvent.drop(settleBox);
 
-                it('should not allow a develop die to be moved to the settle box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
-
-                    expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
-                });
-
-                it('should allow a settle die to be moved to the settle box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
-
-                    expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a produce die to be moved to the settle box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
-
-                    expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a ship die to be moved to the settle box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
-
-                    expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
-                });
-
-                it('should allow a wild die to be moved to the settle box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SETTLE);
-
-                    expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
-                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
-                });
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
             });
 
-            describe('Produce Box', () => {
-                it('should not allow an explore die to be moved to the produce box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
+            it('should not allow a produce die to be moved to the settle box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
 
-                    expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
-                });
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(settleBox);
+                fireEvent.drop(settleBox);
 
-                it('should not allow a develop die to be moved to the produce box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
-
-                    expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a settle die to be moved to the produce box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
-
-                    expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
-                });
-
-                it('should allow a produce die to be moved to the produce box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
-
-                    expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a ship die to be moved to the produce box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
-
-                    expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
-                });
-
-                it('should allow a wild die to be moved to the produce box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.PRODUCE);
-
-                    expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
-                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
-                });
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
             });
 
-            describe('Ship Box', () => {
-                it('should not allow an explore die to be moved to the ship box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
+            it('should not allow a ship die to be moved to the settle box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
 
-                    expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
-                });
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(settleBox);
+                fireEvent.drop(settleBox);
 
-                it('should not allow a develop die to be moved to the ship box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
-
-                    expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a settle die to be moved to the ship box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
-
-                    expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a produce die to be moved to the ship box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
-
-                    expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
-                });
-
-                it('should allow a ship die to be moved to the ship box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
-
-                    expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
-                });
-
-                it('should allow a wild die to be moved to the ship box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.SHIP);
-
-                    expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
-                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
-                });
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
             });
 
-            describe('Wild Box', () => {
-                it('should not allow an explore die to be moved to the wild box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
+            it('should allow a wild die to be moved to the settle box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
 
-                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(1);
-                });
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(settleBox);
+                fireEvent.drop(settleBox);
 
-                it('should not allow a develop die to be moved to the wild box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
+            });
+        });
 
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
+        describe('Produce Box', () => {
+            it('should not allow an explore die to be moved to the produce box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.developDice.dice.length).toBe(1);
-                });
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
 
-                it('should not allow a settle die to be moved to the wild box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(produceBox);
+                fireEvent.drop(produceBox);
 
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
-
-                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a produce die to be moved to the wild box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
-
-                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(1);
-                });
-
-                it('should not allow a ship die to be moved to the wild box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
-
-                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(1);
-                });
-
-                it('should allow a wild die to be moved to the wild box', () => {
-                    mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, dieFace.WILD);
-
-                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(1);
-                });
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
             });
 
-            describe('Selector Box', () => {
-                it('should take die of any face when the selector box is empty', () => {
-                    instantiateMockAssignmentPopup(mockPhaseDice);
+            it('should not allow a develop die to be moved to the produce box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, 'Selector');
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
 
-                    expect(mockAssignmentPopup.state.selectorDice.dice.length).toBe(1);
-                    expect(mockAssignmentPopup.state.exploreDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.developDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.settleDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.produceDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.shipDice.dice.length).toBe(0);
-                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(0);
-                });
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(produceBox);
+                fireEvent.drop(produceBox);
 
-                it('should reject die if the selector box contains a die', () => {
-                    mockPhaseDice.wildDice.dice.push(getMockDie());
-                    mockPhaseDice.wildDice.dice[0].face = dieFace.WILD;
-                    mockPhaseDice.wildDice.dice[0].id = '1';
-                    instantiateMockAssignmentPopup(mockPhaseDice);
-
-                    idOfDiceToDrop = '0';
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, 'Selector');
-                    idOfDiceToDrop = '1';
-                    mockAssignmentPopup.dropInContainer(mockDropInContainerEvent, 'Selector');
-
-                    expect(mockAssignmentPopup.state.selectorDice.dice.length).toBe(1);
-                    expect(mockAssignmentPopup.state.selectorDice.dice[0].id).toBe('0');
-                    expect(mockAssignmentPopup.state.wildDice.dice.length).toBe(1);
-                    expect(mockAssignmentPopup.state.wildDice.dice[0].id).toBe('1');
-                });
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
             });
+
+            it('should not allow a settle die to be moved to the produce box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(produceBox);
+                fireEvent.drop(produceBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should allow a produce die to be moved to the produce box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(produceBox);
+                fireEvent.drop(produceBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a ship die to be moved to the produce box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(produceBox);
+                fireEvent.drop(produceBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should allow a wild die to be moved to the produce box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(produceBox);
+                fireEvent.drop(produceBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
+            });
+        });
+
+        describe('Ship Box', () => {
+            it('should not allow an explore die to be moved to the ship box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(shipBox);
+                fireEvent.drop(shipBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a develop die to be moved to the ship box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(shipBox);
+                fireEvent.drop(shipBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a settle die to be moved to the ship box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(shipBox);
+                fireEvent.drop(shipBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a produce die to be moved to the ship box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(shipBox);
+                fireEvent.drop(shipBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should allow a ship die to be moved to the ship box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(shipBox);
+                fireEvent.drop(shipBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should allow a wild die to be moved to the ship box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(shipBox);
+                fireEvent.drop(shipBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
+            });
+        });
+
+        describe('Wild Box', () => {
+            it('should not allow an explore die to be moved to the wild box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(wildBox);
+                fireEvent.drop(wildBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a develop die to be moved to the wild box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(wildBox);
+                fireEvent.drop(wildBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a settle die to be moved to the wild box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(wildBox);
+                fireEvent.drop(wildBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a produce die to be moved to the wild box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(wildBox);
+                fireEvent.drop(wildBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should not allow a ship die to be moved to the wild box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(wildBox);
+                fireEvent.drop(wildBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should allow a wild die to be moved to the wild box', () => {
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(wildBox);
+                fireEvent.drop(wildBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+        });
+
+        describe('Selector Box', () => {
+            it('should take die of any face when the selector box is empty', () => {
+                const die = mockPhaseDice.selectorDice.dice.pop();
+                die.color = dieColor.WHITE;
+                mockPhaseDice.wildDice.dice.push(die);
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('WhiteDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(phasePickerBox);
+                fireEvent.drop(phasePickerBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(phasePickerBox).queryAllByTestId('WhiteDie').length).toBe(1);
+            });
+
+            it('should reject die if the selector box contains a die', () => {
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+                mockPhaseDice.wildDice.dice.push({
+                    color: dieColor.RED,
+                    face: dieFace.WILD,
+                    id: '1'
+                });
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                const dieToDrag = getByTestId('RedDie');
+                getDropBoxes(getByTestId);
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(phasePickerBox);
+                fireEvent.drop(phasePickerBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(phasePickerBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(within(phasePickerBox).queryAllByTestId('RedDie').length).toBe(0);
+                expect(within(wildBox).queryAllByTestId('RedDie').length).toBe(1);
+            });
+        });
+
+        describe('Dice Finder', () => {
+            it('should move the right dice when there are many dice', () => {
+                mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
+                mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
+                mockPhaseDice.exploreDice.dice.push({
+                    color: dieColor.WHITE,
+                    face: dieFace.EXPLORE,
+                    id: '1'
+                });
+                mockPhaseDice.developDice.dice.push({
+                    color: dieColor.WHITE,
+                    face: dieFace.DEVELOP,
+                    id: '2'
+                });
+                mockPhaseDice.settleDice.dice.push({
+                    color: dieColor.WHITE,
+                    face: dieFace.SETTLE,
+                    id: '3'
+                });
+                mockPhaseDice.produceDice.dice.push({
+                    color: dieColor.WHITE,
+                    face: dieFace.PRODUCE,
+                    id: '4'
+                });
+                mockPhaseDice.shipDice.dice.push({
+                    color: dieColor.WHITE,
+                    face: dieFace.SHIP,
+                    id: '5'
+                });
+                mockPhaseDice.wildDice.dice.push({
+                    color: dieColor.WHITE,
+                    face: dieFace.WILD,
+                    id: '6'
+                });
+
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+
+                getDropBoxes(getByTestId);
+                const dieToDrag = within(phasePickerBox).getByTestId('WhiteDie');
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(exploreBox);
+                fireEvent.drop(exploreBox);
+
+                expect(mockDragEvent.preventDefault).toBeCalled();
+                expect(within(phasePickerBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(2);
+            })
         });
     });
 
