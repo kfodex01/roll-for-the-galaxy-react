@@ -345,7 +345,8 @@ const rollDice = (game: gameState): gameState => {
 export interface state {
     game: gameState,
     startFormVisibility: boolean,
-    assignmentPopupVisibility: boolean
+    assignmentPopupVisibility: boolean,
+    startRoundVisibility: boolean
 }
 
 interface gameProps {
@@ -362,7 +363,8 @@ class Game extends React.Component<gameProps, state> {
             players: []
         },
         startFormVisibility: true,
-        assignmentPopupVisibility: false
+        assignmentPopupVisibility: false,
+        startRoundVisibility: true
     };
 
     componentDidMount() {
@@ -388,7 +390,10 @@ class Game extends React.Component<gameProps, state> {
     }
 
     assignDice = (pickedDice: string, assignmentState: AssignmentState) => {
-
+        this.setState({
+            ...this.state,
+            startRoundVisibility: false
+        })
     }
 
     render() {
@@ -401,7 +406,13 @@ class Game extends React.Component<gameProps, state> {
                         ) :
                         <>
                             <BigText>Victory Point Pool: {this.state.game.victoryPointPool}</BigText>
-                            <button onClick={this.toggleAssignmentPopup} >Start Round</button>
+                            {
+                                this.state.startRoundVisibility === true ?
+                                (
+                                    <button onClick={this.toggleAssignmentPopup} >Start Round</button>
+                                ) : null
+                            }
+                            
                             <FlexColumnDiv data-testid='player-boards'>
                                 {this.state.game.players.map((player: PlayerBoardProps) => {
                                     return (
