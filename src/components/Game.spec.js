@@ -2,83 +2,56 @@ import React from 'react';
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Game from './Game';
-import { initialState, bonuses, tileTypes } from '../enums';
+import { initialState, bonuses, tileTypes, dieColor, dieFace } from '../enums';
 import Chance from 'chance';
+import { getMockTile, getMockFullTile, getArrayOfRandomDice, getArrayOfRandomTiles, getMockDie } from '../test-utilities/mock-object-generators';
+import { getDragEvent } from './utils/drag-event-utility';
+
+jest.mock('./utils/drag-event-utility');
 
 const chance = new Chance();
 
-const generateRandomGenericTile = () => {
-    return ({
-        tileId: chance.integer({ min: 1, max: 100 }),
-        tiles: [
-            {
-                points: chance.integer({ min: 1, max: 100 }),
-                name: chance.word(),
-                tileType: chance.pickone([
-                    tileTypes.BLUE_WORLD,
-                    tileTypes.BROWN_WORLD,
-                    tileTypes.DEVELOPMENT,
-                    tileTypes.GRAY_WORLD,
-                    tileTypes.GREEN_WORLD,
-                    tileTypes.YELLOW_WORLD
-                ])
-            },
-            {
-                points: chance.integer({ min: 1, max: 100 }),
-                name: chance.word(),
-                tileType: chance.pickone([
-                    tileTypes.BLUE_WORLD,
-                    tileTypes.BROWN_WORLD,
-                    tileTypes.DEVELOPMENT,
-                    tileTypes.GRAY_WORLD,
-                    tileTypes.GREEN_WORLD,
-                    tileTypes.YELLOW_WORLD
-                ])
-            }
-        ]
-    });
-}
-
 describe('Game', () => {
-    let playerOneButton,
-        playerTwoButton,
-        playerThreeButton,
-        playerFourButton,
-        playerFiveButton,
-        initialTestState,
-        mockSinglePlayerStartingState;
-
-    const getButtons = (queryByText) => {
-        playerOneButton = queryByText('1');
-        playerTwoButton = queryByText('2');
-        playerThreeButton = queryByText('3');
-        playerFourButton = queryByText('4');
-        playerFiveButton = queryByText('5');
-    };
-
-    beforeEach(() => {
-        initialTestState = JSON.parse(JSON.stringify(initialState));
-        mockSinglePlayerStartingState = {
-            game: {
-                factionTiles: [
-                    generateRandomGenericTile()
-                ],
-                homeWorldTiles: [
-                    generateRandomGenericTile()
-                ],
-                gameTiles: [
-                    generateRandomGenericTile(),
-                    generateRandomGenericTile()
-                ],
-                victoryPointPool: 0
-            },
-            visibility: true
-        }
-    });
-
     afterEach(cleanup);
 
     describe('Setup', () => {
+        let playerOneButton,
+            playerTwoButton,
+            playerThreeButton,
+            playerFourButton,
+            playerFiveButton,
+            initialTestState,
+            mockSinglePlayerStartingState;
+
+        const getButtons = (queryByText) => {
+            playerOneButton = queryByText('1');
+            playerTwoButton = queryByText('2');
+            playerThreeButton = queryByText('3');
+            playerFourButton = queryByText('4');
+            playerFiveButton = queryByText('5');
+        };
+
+        beforeEach(() => {
+            initialTestState = JSON.parse(JSON.stringify(initialState));
+            mockSinglePlayerStartingState = {
+                game: {
+                    factionTiles: [
+                        getMockFullTile()
+                    ],
+                    homeWorldTiles: [
+                        getMockFullTile()
+                    ],
+                    gameTiles: [
+                        getMockFullTile(),
+                        getMockFullTile()
+                    ],
+                    victoryPointPool: chance.integer({ min: 1, max: 60 })
+                },
+                startFormVisibility: true,
+                assignmentPopupVisibility: false
+            }
+        });
+
         describe('Player Creation', () => {
             it('should display the start form', () => {
                 const { getByTestId } = render(<Game initialState={initialTestState} />);
@@ -373,64 +346,8 @@ describe('Game', () => {
         describe('Picking build queue tiles', () => {
             it('should keep the build queue totals as low as possible', () => {
                 const customGameTiles = [
-                    {
-                        tileId: chance.integer({ min: 1, max: 100 }),
-                        tiles: [
-                            {
-                                points: 1,
-                                name: 'Low Dev',
-                                tileType: chance.pickone([
-                                    tileTypes.BLUE_WORLD,
-                                    tileTypes.BROWN_WORLD,
-                                    tileTypes.DEVELOPMENT,
-                                    tileTypes.GRAY_WORLD,
-                                    tileTypes.GREEN_WORLD,
-                                    tileTypes.YELLOW_WORLD
-                                ])
-                            },
-                            {
-                                points: 10,
-                                name: 'High Settle',
-                                tileType: chance.pickone([
-                                    tileTypes.BLUE_WORLD,
-                                    tileTypes.BROWN_WORLD,
-                                    tileTypes.DEVELOPMENT,
-                                    tileTypes.GRAY_WORLD,
-                                    tileTypes.GREEN_WORLD,
-                                    tileTypes.YELLOW_WORLD
-                                ])
-                            }
-                        ]
-                    },
-                    {
-                        tileId: chance.integer({ min: 1, max: 100 }),
-                        tiles: [
-                            {
-                                points: 10,
-                                name: 'High Dev',
-                                tileType: chance.pickone([
-                                    tileTypes.BLUE_WORLD,
-                                    tileTypes.BROWN_WORLD,
-                                    tileTypes.DEVELOPMENT,
-                                    tileTypes.GRAY_WORLD,
-                                    tileTypes.GREEN_WORLD,
-                                    tileTypes.YELLOW_WORLD
-                                ])
-                            },
-                            {
-                                points: 1,
-                                name: 'Low Settle',
-                                tileType: chance.pickone([
-                                    tileTypes.BLUE_WORLD,
-                                    tileTypes.BROWN_WORLD,
-                                    tileTypes.DEVELOPMENT,
-                                    tileTypes.GRAY_WORLD,
-                                    tileTypes.GREEN_WORLD,
-                                    tileTypes.YELLOW_WORLD
-                                ])
-                            }
-                        ]
-                    }
+                    getMockFullTile(['Low Dev', 'High Settle'], [1, 10]),
+                    getMockFullTile(['High Dev', 'Low Settle'], [10, 1])
                 ];
                 mockSinglePlayerStartingState.game.gameTiles = customGameTiles;
 
@@ -518,6 +435,455 @@ describe('Game', () => {
                 fireEvent.click(playerOneButton);
 
                 expect(queryByText('End Game: Ima power.')).toBeTruthy();
+            });
+        });
+    });
+
+    describe('Assignment Phase', () => {
+        let mockSinglePlayerAssignmentState;
+
+        beforeEach(() => {
+            mockSinglePlayerAssignmentState = {
+                assignmentPopupVisibility: false,
+                startFormVisibility: false,
+                game: {
+                    factionTiles: [],
+                    homeWorldTiles: [],
+                    gameTiles: [],
+                    victoryPointPool: chance.integer({ min: 1, max: 60 }),
+                    players: [
+                        {
+                            citizenry: {
+                                dice: getArrayOfRandomDice()
+                            },
+                            cup: {
+                                dice: getArrayOfRandomDice()
+                            },
+                            developBuildQueue: getArrayOfRandomTiles(),
+                            id: 1,
+                            nextTileId: 4,
+                            phasePowers: {
+                                assignment: [],
+                                develop: [],
+                                endGame: [],
+                                explore: [],
+                                produce: [],
+                                settle: [],
+                                ship: []
+                            },
+                            points: chance.integer({ min: 0, max: 100 }),
+                            settleBuildQueue: getArrayOfRandomTiles(),
+                            tiles: [
+                                getMockTile(),
+                                getMockTile(),
+                                getMockTile()
+                            ],
+                            phaseDice: {
+                                exploreDice: {
+                                    dice: []
+                                },
+                                developDice: {
+                                    dice: []
+                                },
+                                settleDice: {
+                                    dice: []
+                                },
+                                produceDice: {
+                                    dice: []
+                                },
+                                shipDice: {
+                                    dice: []
+                                },
+                                wildDice: {
+                                    dice: []
+                                },
+                                selectorDice: {
+                                    dice: []
+                                }
+                            }
+                        }
+                    ]
+                }
+            };
+
+            mockSinglePlayerAssignmentState.game.players[0].tiles[0].tileId = 1;
+            mockSinglePlayerAssignmentState.game.players[0].tiles[1].tileId = 2;
+            mockSinglePlayerAssignmentState.game.players[0].tiles[2].tileId = 3;
+        });
+
+        it('should show the assignment popup', () => {
+            const { getByText, queryByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(getByText('Assignment Phase')).toBeTruthy();
+            expect(queryByTestId('explore-drop-box')).toBeTruthy();
+            expect(queryByTestId('develop-drop-box')).toBeTruthy();
+            expect(queryByTestId('settle-drop-box')).toBeTruthy();
+            expect(queryByTestId('produce-drop-box')).toBeTruthy();
+            expect(queryByTestId('ship-drop-box')).toBeTruthy();
+            expect(queryByTestId('wild-drop-box')).toBeTruthy();
+            expect(queryByTestId('reassign-drop-box')).toBeTruthy();
+        });
+
+        it('should hide the assignment popup', () => {
+            const { getByText, queryByText, queryByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+            const closeAssignmentPopupButton = getByText('Close');
+
+            fireEvent.click(closeAssignmentPopupButton);
+
+            expect(queryByText('Assignment Phase')).toBeFalsy();
+            expect(queryByTestId('explore-drop-box')).toBeFalsy();
+            expect(queryByTestId('develop-drop-box')).toBeFalsy();
+            expect(queryByTestId('settle-drop-box')).toBeFalsy();
+            expect(queryByTestId('produce-drop-box')).toBeFalsy();
+            expect(queryByTestId('ship-drop-box')).toBeFalsy();
+            expect(queryByTestId('wild-drop-box')).toBeFalsy();
+            expect(queryByTestId('reassign-drop-box')).toBeFalsy();
+        });
+
+        it('should roll the dice from the cup when the dice have not been rolled yet', () => {
+            mockSinglePlayerAssignmentState.game.players[0].cup.dice = [
+                {
+                    color: dieColor.WHITE,
+                    face: dieFace.WILD
+                },
+                {
+                    color: dieColor.WHITE,
+                    face: dieFace.WILD
+                },
+                {
+                    color: dieColor.WHITE,
+                    face: dieFace.WILD
+                }
+            ];
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice = undefined;
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+            const assignmentPopup = queryByTestId('assignment-popup');
+            const whiteDice = within(assignmentPopup).queryAllByTestId('WhiteDie');
+
+            expect(whiteDice.length).toBe(3);
+            whiteDice.forEach(die => {
+                expect(within(die).queryByTestId('wild-face')).toBeFalsy();;
+            });
+        });
+
+        it('should not roll the dice from the cup when the dice have been rolled', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.wildDice = {
+                dice: [
+                    {
+                        color: dieColor.WHITE,
+                        face: dieFace.WILD,
+                        id: '0'
+                    },
+                    {
+                        color: dieColor.WHITE,
+                        face: dieFace.WILD,
+                        id: '1'
+                    },
+                    {
+                        color: dieColor.WHITE,
+                        face: dieFace.WILD,
+                        id: '2'
+                    }
+                ]
+            };
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+            const assignmentPopup = queryByTestId('assignment-popup');
+            const whiteDice = within(assignmentPopup).queryAllByTestId('WhiteDie');
+
+            expect(whiteDice.length).toBe(3);
+            whiteDice.forEach(die => {
+                expect(within(die).queryByTestId('wild-face')).toBeTruthy();
+            });
+        });
+
+        it('should only render a die in the explore field', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.exploreDice.dice = [getMockDie()];
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.exploreDice.dice[0].face = dieFace.EXPLORE;
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.exploreDice.dice[0].id = '0';
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(1);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
+        });
+
+        it('should only render a die in the develop field', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.developDice.dice = [getMockDie()];
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.developDice.dice[0].face = dieFace.DEVELOP;
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.developDice.dice[0].id = '0';
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(1);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
+        });
+
+        it('should only render a die in the settle field', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.settleDice.dice = [getMockDie()];
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.settleDice.dice[0].face = dieFace.SETTLE;
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.settleDice.dice[0].id = '0';
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(1);
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
+        });
+
+        it('should only render a die in the produce field', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.produceDice.dice = [getMockDie()];
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.produceDice.dice[0].face = dieFace.PRODUCE;
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.produceDice.dice[0].id = '0';
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(1);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
+        });
+
+        it('should only render a die in the ship field', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.shipDice.dice = [getMockDie()];
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.shipDice.dice[0].face = dieFace.SHIP;
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.shipDice.dice[0].id = '0';
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(1);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(0);
+        });
+
+        it('should only render a die in the wild field', () => {
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.wildDice.dice = [getMockDie()];
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.wildDice.dice[0].face = dieFace.WILD;
+            mockSinglePlayerAssignmentState.game.players[0].phaseDice.wildDice.dice[0].id = '0';
+
+            const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+            const startRoundButton = getByText('Start Round');
+
+            fireEvent.click(startRoundButton);
+
+            expect(within(queryByTestId('explore-drop-box')).queryAllByTestId('explore-face').length).toBe(0);
+            expect(within(queryByTestId('develop-drop-box')).queryAllByTestId('develop-face').length).toBe(0);
+            expect(within(queryByTestId('settle-drop-box')).queryAllByTestId('settle-face').length).toBe(0);
+            expect(within(queryByTestId('produce-drop-box')).queryAllByTestId('produce-face').length).toBe(0);
+            expect(within(queryByTestId('ship-drop-box')).queryAllByTestId('ship-face').length).toBe(0);
+            expect(within(queryByTestId('wild-drop-box')).queryAllByTestId('wild-face').length).toBe(1);
+        });
+
+        describe('Submit buttons', () => {
+            let mockDataTransferData,
+                exploreBox,
+                developBox,
+                settleBox,
+                produceBox,
+                shipBox,
+                wildBox,
+                phasePickerBox,
+                exploreButton,
+                developButton,
+                settleButton,
+                produceButton,
+                shipButton;
+
+            const mockDragEvent = {
+                dataTransfer: {
+                    getData: (key) => mockDataTransferData[key],
+                    setData: (key, value) => {
+                        mockDataTransferData = {
+                            ...mockDataTransferData,
+                            [key]: value
+                        }
+                    }
+                },
+                preventDefault: jest.fn()
+            };
+
+            const getDropBoxes = (getByTestId) => {
+                exploreBox = getByTestId('explore-drop-box');
+                developBox = getByTestId('develop-drop-box');
+                settleBox = getByTestId('settle-drop-box');
+                produceBox = getByTestId('produce-drop-box');
+                shipBox = getByTestId('ship-drop-box');
+                wildBox = getByTestId('wild-drop-box');
+                phasePickerBox = getByTestId('phase-picker-box');
+            };
+
+            const getSubmitButtons = (getByText) => {
+                exploreButton = getByText('Pick Explore');
+                developButton = getByText('Pick Develop');
+                settleButton = getByText('Pick Settle');
+                produceButton = getByText('Pick Produce');
+                shipButton = getByText('Pick Ship');
+            };
+
+            beforeEach(() => {
+                mockSinglePlayerAssignmentState.game.players[0].cup.dice = [
+                    {
+                        color: dieColor.WHITE,
+                        face: dieFace.EXPLORE
+                    },
+                    {
+                        color: dieColor.WHITE,
+                        face: dieFace.EXPLORE
+                    },
+                    {
+                        color: dieColor.WHITE,
+                        face: dieFace.EXPLORE
+                    }
+                ];
+                mockSinglePlayerAssignmentState.game.players[0].phaseDice = undefined;
+                getDragEvent.mockReturnValue(mockDragEvent);
+                mockDataTransferData = {};
+            });
+
+            it('should not hide the start round button when the close button is clicked', () => {
+                const { getByText, queryByText, queryByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+                const startRoundButton = getByText('Start Round');
+
+                fireEvent.click(startRoundButton);
+                const closeAssignmentPopupButton = getByText('Close');
+
+                fireEvent.click(closeAssignmentPopupButton);
+
+                expect(queryByText('Start Round')).toBeTruthy();
+            });
+
+            it('should hide the start round button when the assignment is valid and the explore button is clicked', () => {
+                const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+                const startRoundButton = getByText('Start Round');
+
+                fireEvent.click(startRoundButton);
+                getDropBoxes(getByTestId);
+                getSubmitButtons(getByText);
+                const assignmentPopup = getByTestId('assignment-popup');
+                const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(phasePickerBox);
+                fireEvent.drop(phasePickerBox);
+                fireEvent.click(exploreButton);
+
+                expect(queryByTestId('assignment-popup')).toBeFalsy();
+                expect(queryByText('Start Round')).toBeFalsy();
+            });
+
+            it('should hide the start round button when the assignment is valid and the develop button is clicked', () => {
+                const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+                const startRoundButton = getByText('Start Round');
+
+                fireEvent.click(startRoundButton);
+                getDropBoxes(getByTestId);
+                getSubmitButtons(getByText);
+                const assignmentPopup = getByTestId('assignment-popup');
+                const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(phasePickerBox);
+                fireEvent.drop(phasePickerBox);
+                fireEvent.click(developButton);
+
+                expect(queryByTestId('assignment-popup')).toBeFalsy();
+                expect(queryByText('Start Round')).toBeFalsy();
+            });
+
+            it('should hide the start round button when the assignment is valid and the settle button is clicked', () => {
+                const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+                const startRoundButton = getByText('Start Round');
+
+                fireEvent.click(startRoundButton);
+                getDropBoxes(getByTestId);
+                getSubmitButtons(getByText);
+                const assignmentPopup = getByTestId('assignment-popup');
+                const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(phasePickerBox);
+                fireEvent.drop(phasePickerBox);
+                fireEvent.click(settleButton);
+
+                expect(queryByTestId('assignment-popup')).toBeFalsy();
+                expect(queryByText('Start Round')).toBeFalsy();
+            });
+
+            it('should hide the start round button when the assignment is valid and the produce button is clicked', () => {
+                const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+                const startRoundButton = getByText('Start Round');
+
+                fireEvent.click(startRoundButton);
+                getDropBoxes(getByTestId);
+                getSubmitButtons(getByText);
+                const assignmentPopup = getByTestId('assignment-popup');
+                const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(phasePickerBox);
+                fireEvent.drop(phasePickerBox);
+                fireEvent.click(produceButton);
+
+                expect(queryByTestId('assignment-popup')).toBeFalsy();
+                expect(queryByText('Start Round')).toBeFalsy();
+            });
+
+            it('should hide the start round button when the assignment is valid and the ship button is clicked', () => {
+                const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
+                const startRoundButton = getByText('Start Round');
+
+                fireEvent.click(startRoundButton);
+                getDropBoxes(getByTestId);
+                getSubmitButtons(getByText);
+                const assignmentPopup = getByTestId('assignment-popup');
+                const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(phasePickerBox);
+                fireEvent.drop(phasePickerBox);
+                fireEvent.click(shipButton);
+
+                expect(queryByTestId('assignment-popup')).toBeFalsy();
+                expect(queryByText('Start Round')).toBeFalsy();
             });
         });
     });

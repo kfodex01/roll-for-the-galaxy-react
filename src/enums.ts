@@ -1373,10 +1373,13 @@ const initialGameState: gameState = {
     factionTiles,
     homeWorldTiles,
     gameTiles,
+    players: [],
     victoryPointPool: 0
 };
 
 export const initialState: state = {
-    game: {...initialGameState},
-    visibility: true
+    game: { ...initialGameState },
+    startFormVisibility: true,
+    assignmentPopupVisibility: false,
+    startRoundVisibility: true
 }

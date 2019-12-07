@@ -1,10 +1,11 @@
 import React from "react";
-import {BigText, FlexRowDiv, PlayerColumnDiv} from "../styled-components";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faMoneyCheckAlt, faStar} from "@fortawesome/free-solid-svg-icons";
-import Tile, {TileProps} from "./Tile";
-import DicePool, {DicePoolProps} from "./DicePool";
-import ConstructionZone, {Tiles} from "./ConstructionZone";
+import { BigText, FlexRowDiv, PlayerColumnDiv } from "../styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMoneyCheckAlt, faStar } from "@fortawesome/free-solid-svg-icons";
+import Tile, { TileProps } from "./Tile";
+import DicePool, { DicePoolProps } from "./DicePool";
+import ConstructionZone, { Tiles } from "./ConstructionZone";
+import { AssignmentState } from "./AssignmentPopup";
 
 export interface PhasePowersProps {
     assignment: Array<string>;
@@ -24,6 +25,7 @@ export interface PlayerBoardProps {
     id: number;
     nextTileId: number;
     phasePowers: PhasePowersProps;
+    phaseDice?: AssignmentState;
     points: number;
     settleBuildQueue: Array<Tiles>;
     tiles: Array<TileProps>;
@@ -60,24 +62,25 @@ class PlayerBoard extends React.Component<PlayerBoardProps> {
         return (
             <PlayerColumnDiv>
                 <FlexRowDiv>
-                    <FontAwesomeIcon icon={faStar} size='2x'/>
+                    <FontAwesomeIcon icon={faStar} size='2x' />
                     <BigText data-testid='points'>{this.props.points}</BigText>
-                    <FontAwesomeIcon icon={faMoneyCheckAlt} size='2x'/>
+                    <FontAwesomeIcon icon={faMoneyCheckAlt} size='2x' />
                     <BigText data-testid='credits'>{this.props.credits}</BigText>
                     <ConstructionZone
                         developBuildQueue={this.props.developBuildQueue}
                         settleBuildQueue={this.props.settleBuildQueue}
-                     />
+                    />
                     <FlexRowDiv data-testid='citizenry'>
                         <BigText>Citizenry: </BigText>
-                        <DicePool {...this.props.citizenry}/>
+                        <DicePool {...this.props.citizenry} />
                     </FlexRowDiv>
                     <FlexRowDiv data-testid='cup'>
                         <BigText>Cup: </BigText>
-                        <DicePool {...this.props.cup}/>
+                        <DicePool {...this.props.cup} />
                     </FlexRowDiv>
                 </FlexRowDiv>
                 <FlexRowDiv>
+                    <BigText>Tableau: </BigText>
                     {this.props.tiles.map((tile) => {
                         return (
                             <Tile key={tile.tileId} {...tile} />

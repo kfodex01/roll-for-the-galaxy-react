@@ -1,12 +1,14 @@
-import React from "react";
-import StartForm from "./StartForm";
-import { BigText, FlexColumnDiv } from "../styled-components";
-import PlayerBoard, { PhasePowersProps, PlayerBoardProps } from "./PlayerBoard";
-import { bonuses, dieColor, phases } from "../enums";
-import Chance from "chance";
-import { TileProps } from "./Tile";
-import { Tiles } from "./ConstructionZone";
-import { DicePoolProps } from "./DicePool";
+import React from 'react';
+import StartForm from './StartForm';
+import { BigText, FlexColumnDiv } from '../styled-components';
+import PlayerBoard, { PhasePowersProps, PlayerBoardProps } from './PlayerBoard';
+import { bonuses, dieColor, phases, dieFace } from '../enums';
+import Chance from 'chance';
+import { TileProps } from './Tile';
+import { Tiles } from './ConstructionZone';
+import { DicePoolProps } from './DicePool';
+import AssignmentPopup, { AssignmentState } from './AssignmentPopup';
+import { DieProps } from './Die';
 
 const chance = new Chance();
 
@@ -82,7 +84,7 @@ export interface gameState {
     factionTiles: Array<Tiles>,
     gameTiles: Array<Tiles>,
     homeWorldTiles: Array<Tiles>,
-    players?: Array<PlayerBoardProps>,
+    players: Array<PlayerBoardProps>,
     victoryPointPool: number
 }
 
@@ -192,9 +194,159 @@ const createPlayers = (state: gameState, numberOfPlayers: number): gameState => 
     )
 };
 
+const getDiceOfOneFace = (dice: Array<DieProps>, dieFace: string): Array<DieProps> => {
+    return dice.filter((die: DieProps) => {
+        return die.face === dieFace;
+    });
+}
+
+const sortDiceByFaceInAssignmentState = (phaseStripDicePool: DicePoolProps): AssignmentState => {
+    const newState: AssignmentState = {
+        exploreDice: {
+            dice: getDiceOfOneFace(phaseStripDicePool.dice, dieFace.EXPLORE)
+        },
+        developDice: {
+            dice: getDiceOfOneFace(phaseStripDicePool.dice, dieFace.DEVELOP)
+        },
+        settleDice: {
+            dice: getDiceOfOneFace(phaseStripDicePool.dice, dieFace.SETTLE)
+        },
+        produceDice: {
+            dice: getDiceOfOneFace(phaseStripDicePool.dice, dieFace.PRODUCE)
+        },
+        shipDice: {
+            dice: getDiceOfOneFace(phaseStripDicePool.dice, dieFace.SHIP)
+        },
+        wildDice: {
+            dice: getDiceOfOneFace(phaseStripDicePool.dice, dieFace.WILD)
+        },
+        selectorDice: {
+            dice: []
+        }
+    }
+
+    return newState;
+}
+
+const rollDice = (game: gameState): gameState => {
+    if (game.players && !game.players[0].phaseDice) {
+        const cupDice = game.players[0].cup.dice;
+        const phaseStripDice: DicePoolProps = {
+            dice: []
+        };
+        cupDice.forEach((die: DieProps, id: number) => {
+            switch (die.color) {
+                case dieColor.BLUE:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        id: id.toString(),
+                        face: chance.pickone([
+                            dieFace.EXPLORE,
+                            dieFace.PRODUCE,
+                            dieFace.PRODUCE,
+                            dieFace.SHIP,
+                            dieFace.SHIP,
+                            dieFace.WILD
+                        ])
+                    });
+                    break;
+                case dieColor.BROWN:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        id: id.toString(),
+                        face: chance.pickone([
+                            dieFace.EXPLORE,
+                            dieFace.DEVELOP,
+                            dieFace.DEVELOP,
+                            dieFace.PRODUCE,
+                            dieFace.SHIP,
+                            dieFace.WILD
+                        ])
+                    });
+                    break;
+                case dieColor.GREEN:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        id: id.toString(),
+                        face: chance.pickone([
+                            dieFace.EXPLORE,
+                            dieFace.SETTLE,
+                            dieFace.SETTLE,
+                            dieFace.PRODUCE,
+                            dieFace.WILD,
+                            dieFace.WILD
+                        ])
+                    });
+                    break;
+                case dieColor.PURPLE:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        id: id.toString(),
+                        face: chance.pickone([
+                            dieFace.EXPLORE,
+                            dieFace.DEVELOP,
+                            dieFace.SHIP,
+                            dieFace.SHIP,
+                            dieFace.SHIP,
+                            dieFace.WILD
+                        ])
+                    });
+                    break;
+                case dieColor.RED:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        id: id.toString(),
+                        face: chance.pickone([
+                            dieFace.EXPLORE,
+                            dieFace.DEVELOP,
+                            dieFace.DEVELOP,
+                            dieFace.SETTLE,
+                            dieFace.SETTLE,
+                            dieFace.WILD
+                        ])
+                    });
+                    break;
+                case dieColor.WHITE:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        id: id.toString(),
+                        face: chance.pickone([
+                            dieFace.EXPLORE,
+                            dieFace.EXPLORE,
+                            dieFace.DEVELOP,
+                            dieFace.SETTLE,
+                            dieFace.PRODUCE,
+                            dieFace.SHIP
+                        ])
+                    });
+                    break;
+                case dieColor.YELLOW:
+                    phaseStripDice.dice.push({
+                        color: die.color,
+                        id: id.toString(),
+                        face: chance.pickone([
+                            dieFace.DEVELOP,
+                            dieFace.SETTLE,
+                            dieFace.PRODUCE,
+                            dieFace.WILD,
+                            dieFace.WILD,
+                            dieFace.WILD
+                        ])
+                    });
+                    break;
+            }
+        });
+
+        game.players[0].phaseDice = sortDiceByFaceInAssignmentState(phaseStripDice);
+    };
+    return game;
+};
+
 export interface state {
     game: gameState,
-    visibility: boolean
+    startFormVisibility: boolean,
+    assignmentPopupVisibility: boolean,
+    startRoundVisibility: boolean
 }
 
 interface gameProps {
@@ -202,7 +354,7 @@ interface gameProps {
 }
 
 class Game extends React.Component<gameProps, state> {
-    state = {
+    state: state = {
         game: {
             factionTiles: [],
             gameTiles: [],
@@ -210,7 +362,9 @@ class Game extends React.Component<gameProps, state> {
             victoryPointPool: 0,
             players: []
         },
-        visibility: true
+        startFormVisibility: true,
+        assignmentPopupVisibility: false,
+        startRoundVisibility: true
     };
 
     componentDidMount() {
@@ -221,7 +375,7 @@ class Game extends React.Component<gameProps, state> {
 
     hideBeginGameForm = (): void => {
         this.setState({
-            visibility: false
+            startFormVisibility: false
         });
     };
 
@@ -230,23 +384,49 @@ class Game extends React.Component<gameProps, state> {
         this.setState({ game });
     };
 
+    toggleAssignmentPopup = () => {
+        const gameWithRolledDice = rollDice(this.state.game);
+        this.setState({ assignmentPopupVisibility: !this.state.assignmentPopupVisibility, game: gameWithRolledDice });
+    }
+
+    assignDice = (pickedDice: string, assignmentState: AssignmentState) => {
+        this.setState({
+            ...this.state,
+            startRoundVisibility: false
+        })
+    }
+
     render() {
         return (
             <>
-                {this.state.visibility === true ?
-                    (
-                        <StartForm hideBeginGameForm={this.hideBeginGameForm} createPlayers={this.createPlayers} />
-                    ) :
-                    <>
-                        <BigText>Victory Point Pool: {this.state.game.victoryPointPool}</BigText>
-                        <FlexColumnDiv data-testid='player-boards'>
-                            {this.state.game.players.map((player: PlayerBoardProps) => {
-                                return (
-                                    <PlayerBoard key={player.id} {...player} />
-                                );
-                            })}
-                        </FlexColumnDiv>
-                    </>
+                {
+                    this.state.startFormVisibility === true ?
+                        (
+                            <StartForm hideBeginGameForm={this.hideBeginGameForm} createPlayers={this.createPlayers} />
+                        ) :
+                        <>
+                            <BigText>Victory Point Pool: {this.state.game.victoryPointPool}</BigText>
+                            {
+                                this.state.startRoundVisibility === true ?
+                                (
+                                    <button onClick={this.toggleAssignmentPopup} >Start Round</button>
+                                ) : null
+                            }
+                            
+                            <FlexColumnDiv data-testid='player-boards'>
+                                {this.state.game.players.map((player: PlayerBoardProps) => {
+                                    return (
+                                        <PlayerBoard key={player.id} {...player} />
+                                    );
+                                })}
+                            </FlexColumnDiv>
+                        </>
+                }
+                {
+                    this.state.assignmentPopupVisibility === true && this.state.game.players[0].phaseDice ?
+                        (
+                            <AssignmentPopup closePopup={this.toggleAssignmentPopup} assignDice={this.assignDice} initialState={this.state.game.players[0].phaseDice} />
+                        ) : null
                 }
             </>
         )

@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {gameColors} from "./enums";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { gameColors } from "./enums";
 
 export const FlexColumnDiv = styled.div`
   display: flex;
@@ -17,6 +17,17 @@ export const PlayerColumnDiv = styled.div`
 export const FlexRowDiv = styled.div`
   display: flex;
   flex-direction: row;
+  padding: 1px;
+  flex-wrap: wrap;
+`;
+
+export const FlexMaxRowDiv = styled(FlexRowDiv)`
+  justify-content: space-between;
+`;
+
+export const FlexDropBoxRowDiv = styled(FlexRowDiv)`
+  justify-content: space-around;
+  margin: 10px;
 `;
 
 export const BigText = styled.p`
@@ -24,6 +35,18 @@ export const BigText = styled.p`
   font-size: 20px;
   margin: 0;
   padding: 5px;
+`;
+
+export const DropBoxDiv = styled(FlexColumnDiv)`
+  padding: 5px;
+  background-color: #ededed;
+  min-width: 100px;
+  max-width: 110px;
+  min-height: 50px;
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 20px;
+  margin: 0;
 `;
 
 export const BlueWorld = styled(FontAwesomeIcon)`

@@ -1,8 +1,8 @@
 import React from "react";
-import {faEye, faSatellite, faGlobe, faIndustry, faRocket, faStarOfLife} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { faEye, faSatellite, faGlobe, faIndustry, faRocket, faStarOfLife } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from 'styled-components';
-import {dieColor, dieFace, gameColors} from "../enums";
+import { dieColor, dieFace, gameColors } from "../enums";
 
 const DieDiv = styled.div`
   display: flex;
@@ -12,6 +12,7 @@ const DieDiv = styled.div`
   width: 25px;
   border-radius: 5px;
   border: 1px #000000 solid;
+  margin: 0px 2px;
 `;
 
 const BlueDie = styled(DieDiv)`
@@ -42,78 +43,86 @@ const YellowDie = styled(DieDiv)`
   background: ${gameColors.YELLOW};
 `;
 
+const colorMap = {
+    [dieColor.BLUE]: {
+        ColoredDie: BlueDie,
+        name: "BlueDie"
+    },
+    [dieColor.BROWN]: {
+        ColoredDie: BrownDie,
+        name: "BrownDie"
+    },
+    [dieColor.GREEN]: {
+        ColoredDie: GreenDie,
+        name: "GreenDie"
+    },
+    [dieColor.PURPLE]: {
+        ColoredDie: PurpleDie,
+        name: "PurpleDie"
+    },
+    [dieColor.RED]: {
+        ColoredDie: RedDie,
+        name: "RedDie"
+    },
+    [dieColor.WHITE]: {
+        ColoredDie: WhiteDie,
+        name: "WhiteDie"
+    },
+    [dieColor.YELLOW]: {
+        ColoredDie: YellowDie,
+        name: "YellowDie"
+    }
+};
+
 export interface DieProps {
     color: string;
     face: string;
+    draggable?: boolean;
+    id?: string;
+    onDragStart?(event: React.DragEvent<HTMLDivElement>, id: string): void;
 }
 
 class Die extends React.Component<DieProps> {
     getDieFace = (face: string): JSX.Element => {
         switch (face) {
             case dieFace.EXPLORE:
-                return (<FontAwesomeIcon data-testid='explore-face' icon={faEye}/>);
+                return (<FontAwesomeIcon data-testid='explore-face' icon={faEye} />);
             case dieFace.DEVELOP:
-                return (<FontAwesomeIcon data-testid='develop-face' icon={faSatellite}/>);
+                return (<FontAwesomeIcon data-testid='develop-face' icon={faSatellite} />);
             case dieFace.SETTLE:
-                return (<FontAwesomeIcon data-testid='settle-face' icon={faGlobe}/>);
+                return (<FontAwesomeIcon data-testid='settle-face' icon={faGlobe} />);
             case dieFace.PRODUCE:
-                return (<FontAwesomeIcon data-testid='produce-face' icon={faIndustry}/>);
+                return (<FontAwesomeIcon data-testid='produce-face' icon={faIndustry} />);
             case dieFace.SHIP:
-                return (<FontAwesomeIcon data-testid='ship-face' icon={faRocket}/>);
+                return (<FontAwesomeIcon data-testid='ship-face' icon={faRocket} />);
             case dieFace.WILD:
-                return (<FontAwesomeIcon data-testid='wild-face' icon={faStarOfLife}/>);
+                return (<FontAwesomeIcon data-testid='wild-face' icon={faStarOfLife} />);
             default:
-        return (<p>{`Invalid die face: ${face}`}</p>);
+                return (<p>{`Invalid die face: ${face}`}</p>);
         }
     };
 
-    render() {
-        switch (this.props.color) {
-            case dieColor.BLUE:
-                return (
-                    <BlueDie data-testid='BlueDie'>
-                        {this.getDieFace(this.props.face)}
-                    </BlueDie>
-                );
-            case dieColor.BROWN:
-                return (
-                    <BrownDie data-testid='BrownDie'>
-                        {this.getDieFace(this.props.face)}
-                    </BrownDie>
-                );
-            case dieColor.GREEN:
-                return (
-                    <GreenDie data-testid='GreenDie'>
-                        {this.getDieFace(this.props.face)}
-                    </GreenDie>
-                );
-            case dieColor.PURPLE:
-                return (
-                    <PurpleDie data-testid='PurpleDie'>
-                        {this.getDieFace(this.props.face)}
-                    </PurpleDie>
-                );
-            case dieColor.RED:
-                return (
-                    <RedDie data-testid='RedDie'>
-                        {this.getDieFace(this.props.face)}
-                    </RedDie>
-                );
-            case dieColor.WHITE:
-                return (
-                    <WhiteDie data-testid='WhiteDie'>
-                        {this.getDieFace(this.props.face)}
-                    </WhiteDie>
-                );
-            case dieColor.YELLOW:
-                return (
-                    <YellowDie data-testid='YellowDie'>
-                        {this.getDieFace(this.props.face)}
-                    </YellowDie>
-                );
-            default:
-        return (<p>{`Invalid die color: ${this.props.color}`}</p>);
+    handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        if(this.props.id && this.props.onDragStart) {
+            this.props.onDragStart(event, this.props.id);
         }
+    }
+
+    render() {
+        const { ColoredDie, name } = colorMap[this.props.color];
+        if(this.props.draggable) {
+            return (
+                <ColoredDie data-testid={name} onDragStart={this.handleDragStart} draggable>
+                    {this.getDieFace(this.props.face)}
+                </ColoredDie>
+            );
+        }
+
+        return (
+            <ColoredDie data-testid={name}>
+                {this.getDieFace(this.props.face)}
+            </ColoredDie>
+        );
     }
 }
 
