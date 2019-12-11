@@ -1381,5 +1381,5 @@ export const initialState: state = {
     game: { ...initialGameState },
     startFormVisibility: true,
     assignmentPopupVisibility: false,
-    startRoundVisibility: true
+    currentPhase: 'Start Round'
 }

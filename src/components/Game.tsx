@@ -346,7 +346,7 @@ export interface state {
     game: gameState,
     startFormVisibility: boolean,
     assignmentPopupVisibility: boolean,
-    startRoundVisibility: boolean
+    currentPhase: string
 }
 
 interface gameProps {
@@ -364,7 +364,7 @@ class Game extends React.Component<gameProps, state> {
         },
         startFormVisibility: true,
         assignmentPopupVisibility: false,
-        startRoundVisibility: true
+        currentPhase: 'Start Round'
     };
 
     componentDidMount() {
@@ -387,14 +387,22 @@ class Game extends React.Component<gameProps, state> {
     toggleAssignmentPopup = () => {
         const gameWithRolledDice = rollDice(this.state.game);
         this.setState({ assignmentPopupVisibility: !this.state.assignmentPopupVisibility, game: gameWithRolledDice });
-    }
+    };
 
     assignDice = (pickedDice: string, assignmentState: AssignmentState) => {
         this.setState({
             ...this.state,
-            startRoundVisibility: false
+            currentPhase: 'Explore Phase'
         })
-    }
+    };
+
+    fireActionButton = () => {
+        switch(this.state.currentPhase) {
+            default:
+                this.toggleAssignmentPopup();
+                break;
+        }
+    };
 
     render() {
         return (
@@ -406,13 +414,7 @@ class Game extends React.Component<gameProps, state> {
                         ) :
                         <>
                             <BigText>Victory Point Pool: {this.state.game.victoryPointPool}</BigText>
-                            {
-                                this.state.startRoundVisibility === true ?
-                                (
-                                    <button onClick={this.toggleAssignmentPopup} >Start Round</button>
-                                ) : null
-                            }
-                            
+                            <button onClick={this.fireActionButton} >{this.state.currentPhase}</button>
                             <FlexColumnDiv data-testid='player-boards'>
                                 {this.state.game.players.map((player: PlayerBoardProps) => {
                                     return (
