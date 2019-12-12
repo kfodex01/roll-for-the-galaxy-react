@@ -228,114 +228,118 @@ const sortDiceByFaceInAssignmentState = (phaseStripDicePool: DicePoolProps): Ass
     return newState;
 }
 
-const rollDice = (game: gameState): gameState => {
+const rollDice = (dicePool: DicePoolProps): DicePoolProps => {
+    let rolledDicePool: DicePoolProps = {
+        dice: []
+    };
+    dicePool.dice.forEach((die: DieProps, id: number) => {
+        switch (die.color) {
+            case dieColor.BLUE:
+                rolledDicePool.dice.push({
+                    color: die.color,
+                    id: id.toString(),
+                    face: chance.pickone([
+                        dieFace.EXPLORE,
+                        dieFace.PRODUCE,
+                        dieFace.PRODUCE,
+                        dieFace.SHIP,
+                        dieFace.SHIP,
+                        dieFace.WILD
+                    ])
+                });
+                break;
+            case dieColor.BROWN:
+                rolledDicePool.dice.push({
+                    color: die.color,
+                    id: id.toString(),
+                    face: chance.pickone([
+                        dieFace.EXPLORE,
+                        dieFace.DEVELOP,
+                        dieFace.DEVELOP,
+                        dieFace.PRODUCE,
+                        dieFace.SHIP,
+                        dieFace.WILD
+                    ])
+                });
+                break;
+            case dieColor.GREEN:
+                rolledDicePool.dice.push({
+                    color: die.color,
+                    id: id.toString(),
+                    face: chance.pickone([
+                        dieFace.EXPLORE,
+                        dieFace.SETTLE,
+                        dieFace.SETTLE,
+                        dieFace.PRODUCE,
+                        dieFace.WILD,
+                        dieFace.WILD
+                    ])
+                });
+                break;
+            case dieColor.PURPLE:
+                rolledDicePool.dice.push({
+                    color: die.color,
+                    id: id.toString(),
+                    face: chance.pickone([
+                        dieFace.EXPLORE,
+                        dieFace.DEVELOP,
+                        dieFace.SHIP,
+                        dieFace.SHIP,
+                        dieFace.SHIP,
+                        dieFace.WILD
+                    ])
+                });
+                break;
+            case dieColor.RED:
+                rolledDicePool.dice.push({
+                    color: die.color,
+                    id: id.toString(),
+                    face: chance.pickone([
+                        dieFace.EXPLORE,
+                        dieFace.DEVELOP,
+                        dieFace.DEVELOP,
+                        dieFace.SETTLE,
+                        dieFace.SETTLE,
+                        dieFace.WILD
+                    ])
+                });
+                break;
+            case dieColor.WHITE:
+                rolledDicePool.dice.push({
+                    color: die.color,
+                    id: id.toString(),
+                    face: chance.pickone([
+                        dieFace.EXPLORE,
+                        dieFace.EXPLORE,
+                        dieFace.DEVELOP,
+                        dieFace.SETTLE,
+                        dieFace.PRODUCE,
+                        dieFace.SHIP
+                    ])
+                });
+                break;
+            case dieColor.YELLOW:
+                rolledDicePool.dice.push({
+                    color: die.color,
+                    id: id.toString(),
+                    face: chance.pickone([
+                        dieFace.DEVELOP,
+                        dieFace.SETTLE,
+                        dieFace.PRODUCE,
+                        dieFace.WILD,
+                        dieFace.WILD,
+                        dieFace.WILD
+                    ])
+                });
+                break;
+        }
+    });
+    return rolledDicePool;
+}
+
+const rollHumanPlayerDice = (game: gameState): gameState => {
     if (game.players && !game.players[0].phaseDice) {
-        const cupDice = game.players[0].cup.dice;
-        const phaseStripDice: DicePoolProps = {
-            dice: []
-        };
-        cupDice.forEach((die: DieProps, id: number) => {
-            switch (die.color) {
-                case dieColor.BLUE:
-                    phaseStripDice.dice.push({
-                        color: die.color,
-                        id: id.toString(),
-                        face: chance.pickone([
-                            dieFace.EXPLORE,
-                            dieFace.PRODUCE,
-                            dieFace.PRODUCE,
-                            dieFace.SHIP,
-                            dieFace.SHIP,
-                            dieFace.WILD
-                        ])
-                    });
-                    break;
-                case dieColor.BROWN:
-                    phaseStripDice.dice.push({
-                        color: die.color,
-                        id: id.toString(),
-                        face: chance.pickone([
-                            dieFace.EXPLORE,
-                            dieFace.DEVELOP,
-                            dieFace.DEVELOP,
-                            dieFace.PRODUCE,
-                            dieFace.SHIP,
-                            dieFace.WILD
-                        ])
-                    });
-                    break;
-                case dieColor.GREEN:
-                    phaseStripDice.dice.push({
-                        color: die.color,
-                        id: id.toString(),
-                        face: chance.pickone([
-                            dieFace.EXPLORE,
-                            dieFace.SETTLE,
-                            dieFace.SETTLE,
-                            dieFace.PRODUCE,
-                            dieFace.WILD,
-                            dieFace.WILD
-                        ])
-                    });
-                    break;
-                case dieColor.PURPLE:
-                    phaseStripDice.dice.push({
-                        color: die.color,
-                        id: id.toString(),
-                        face: chance.pickone([
-                            dieFace.EXPLORE,
-                            dieFace.DEVELOP,
-                            dieFace.SHIP,
-                            dieFace.SHIP,
-                            dieFace.SHIP,
-                            dieFace.WILD
-                        ])
-                    });
-                    break;
-                case dieColor.RED:
-                    phaseStripDice.dice.push({
-                        color: die.color,
-                        id: id.toString(),
-                        face: chance.pickone([
-                            dieFace.EXPLORE,
-                            dieFace.DEVELOP,
-                            dieFace.DEVELOP,
-                            dieFace.SETTLE,
-                            dieFace.SETTLE,
-                            dieFace.WILD
-                        ])
-                    });
-                    break;
-                case dieColor.WHITE:
-                    phaseStripDice.dice.push({
-                        color: die.color,
-                        id: id.toString(),
-                        face: chance.pickone([
-                            dieFace.EXPLORE,
-                            dieFace.EXPLORE,
-                            dieFace.DEVELOP,
-                            dieFace.SETTLE,
-                            dieFace.PRODUCE,
-                            dieFace.SHIP
-                        ])
-                    });
-                    break;
-                case dieColor.YELLOW:
-                    phaseStripDice.dice.push({
-                        color: die.color,
-                        id: id.toString(),
-                        face: chance.pickone([
-                            dieFace.DEVELOP,
-                            dieFace.SETTLE,
-                            dieFace.PRODUCE,
-                            dieFace.WILD,
-                            dieFace.WILD,
-                            dieFace.WILD
-                        ])
-                    });
-                    break;
-            }
-        });
+        const phaseStripDice: DicePoolProps = rollDice(game.players[0].cup);
 
         game.players[0].phaseDice = sortDiceByFaceInAssignmentState(phaseStripDice);
     };
@@ -346,7 +350,14 @@ export interface state {
     game: gameState,
     startFormVisibility: boolean,
     assignmentPopupVisibility: boolean,
-    currentPhase: string
+    currentPhase: string,
+    pickedPhases: {
+        explore: boolean,
+        develop: boolean,
+        settle: boolean,
+        produce: boolean,
+        ship: boolean
+    }
 }
 
 interface gameProps {
@@ -364,7 +375,14 @@ class Game extends React.Component<gameProps, state> {
         },
         startFormVisibility: true,
         assignmentPopupVisibility: false,
-        currentPhase: 'Start Round'
+        currentPhase: 'Start Round',
+        pickedPhases: {
+            explore: false,
+            develop: false,
+            settle: false,
+            produce: false,
+            ship: false
+        }
     };
 
     componentDidMount() {
@@ -385,19 +403,32 @@ class Game extends React.Component<gameProps, state> {
     };
 
     toggleAssignmentPopup = () => {
-        const gameWithRolledDice = rollDice(this.state.game);
+        const gameWithRolledDice = rollHumanPlayerDice(this.state.game);
         this.setState({ assignmentPopupVisibility: !this.state.assignmentPopupVisibility, game: gameWithRolledDice });
     };
 
-    assignDice = (pickedDice: string, assignmentState: AssignmentState) => {
+    assignDice = (pickedPhase: string) => {
+        let state = this.state;
+        let players = state.game.players;
+        let pickedPhases = {
+            explore: false,
+            develop: false,
+            settle: false,
+            produce: false,
+            ship: false
+        };
+
+        state.game.players = players;
+        let currentPhase = pickedPhase + ' Phase';
         this.setState({
-            ...this.state,
-            currentPhase: 'Explore Phase'
+            ...state,
+            currentPhase,
+            pickedPhases
         })
     };
 
     fireActionButton = () => {
-        switch(this.state.currentPhase) {
+        switch (this.state.currentPhase) {
             default:
                 this.toggleAssignmentPopup();
                 break;

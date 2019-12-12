@@ -1381,5 +1381,12 @@ export const initialState: state = {
     game: { ...initialGameState },
     startFormVisibility: true,
     assignmentPopupVisibility: false,
-    currentPhase: 'Start Round'
+    currentPhase: 'Start Round',
+    pickedPhases: {
+        explore: false,
+        develop: false,
+        settle: false,
+        produce: false,
+        ship: false
+    }
 }

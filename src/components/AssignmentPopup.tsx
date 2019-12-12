@@ -33,7 +33,7 @@ const PopupOnlyDiv = styled.div`
 
 interface AssignmentPopupProps {
     closePopup(): void,
-    assignDice(pickedPhase: string, assignmentState: AssignmentState): void,
+    assignDice(pickedPhase: string): void,
     initialState: AssignmentState
 };
 
@@ -215,7 +215,7 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
             return;
         }
 
-        this.props.assignDice(pickedPhase, state);
+        this.props.assignDice(pickedPhase);
         this.props.closePopup();
     }
 
