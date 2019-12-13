@@ -2,6 +2,7 @@ import React from 'react';
 import StartForm from './StartForm';
 import { BigText, FlexColumnDiv } from '../styled-components';
 import PlayerBoard, { PlayerBoardProps } from './PlayerBoard';
+import { PhaseDice } from './PhaseDice';
 import { Tiles } from './ConstructionZone';
 import AssignmentPopup from './AssignmentPopup';
 import { rollHumanPlayerDice, createPlayers, finishAssignmentPhase } from './utils/game-utilities';
@@ -102,6 +103,7 @@ class Game extends React.Component<gameProps, fullState> {
                         <>
                             <BigText>Victory Point Pool: {this.state.game.victoryPointPool}</BigText>
                             <button onClick={this.fireActionButton} >{this.state.currentPhase}</button>
+                            <PhaseDice {...this.state.pickedPhases}></PhaseDice>
                             <FlexColumnDiv data-testid='player-boards'>
                                 {this.state.game.players.map((player: PlayerBoardProps) => {
                                     return (

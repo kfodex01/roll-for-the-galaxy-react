@@ -813,6 +813,7 @@ describe('Game', () => {
 
                     expect(queryByTestId('assignment-popup')).toBeFalsy();
                     expect(queryByText('Start Round')).toBeFalsy();
+                    expect(queryByTestId('active-explore-phase')).toBeTruthy();
                 });
 
                 it('should hide the start round button when the assignment is valid and the develop button is clicked', () => {
@@ -831,6 +832,7 @@ describe('Game', () => {
 
                     expect(queryByTestId('assignment-popup')).toBeFalsy();
                     expect(queryByText('Start Round')).toBeFalsy();
+                    expect(queryByTestId('active-develop-phase')).toBeTruthy();
                 });
 
                 it('should hide the start round button when the assignment is valid and the settle button is clicked', () => {
@@ -849,6 +851,7 @@ describe('Game', () => {
 
                     expect(queryByTestId('assignment-popup')).toBeFalsy();
                     expect(queryByText('Start Round')).toBeFalsy();
+                    expect(queryByTestId('active-settle-phase')).toBeTruthy();
                 });
 
                 it('should hide the start round button when the assignment is valid and the produce button is clicked', () => {
@@ -867,6 +870,7 @@ describe('Game', () => {
 
                     expect(queryByTestId('assignment-popup')).toBeFalsy();
                     expect(queryByText('Start Round')).toBeFalsy();
+                    expect(queryByTestId('active-produce-phase')).toBeTruthy();
                 });
 
                 it('should hide the start round button when the assignment is valid and the ship button is clicked', () => {
@@ -885,6 +889,7 @@ describe('Game', () => {
 
                     expect(queryByTestId('assignment-popup')).toBeFalsy();
                     expect(queryByText('Start Round')).toBeFalsy();
+                    expect(queryByTestId('active-ship-phase')).toBeTruthy();
                 });
             });
         });
