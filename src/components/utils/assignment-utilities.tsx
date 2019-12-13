@@ -1,5 +1,5 @@
 import { AssignmentState } from '../AssignmentPopup';
-import { DieProps } from '../Die'
+import { DieProps } from '../Die';
 import { dieFace } from '../../enums';
 
 const pushDieBackToDefaultPool = (state: AssignmentState, die: DieProps): AssignmentState => {
