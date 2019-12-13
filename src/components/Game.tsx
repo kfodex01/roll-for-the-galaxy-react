@@ -402,28 +402,90 @@ class Game extends React.Component<gameProps, state> {
         this.setState({ game });
     };
 
-    toggleAssignmentPopup = () => {
+    toggleAssignmentPopup = (): void => {
         const gameWithRolledDice = rollHumanPlayerDice(this.state.game);
         this.setState({ assignmentPopupVisibility: !this.state.assignmentPopupVisibility, game: gameWithRolledDice });
     };
 
-    assignDice = (pickedPhase: string) => {
+    addPickedPhaseToList = (pickedPhase: string): void => {
         let state = this.state;
-        let players = state.game.players;
-        let pickedPhases = {
-            explore: false,
-            develop: false,
-            settle: false,
-            produce: false,
-            ship: false
-        };
+        switch (pickedPhase) {
+            default:
+                state.pickedPhases.explore = true;
+                break;
+            case dieFace.DEVELOP:
+                state.pickedPhases.develop = true;
+                break;
+            case dieFace.SETTLE:
+                state.pickedPhases.settle = true;
+                break;
+            case dieFace.PRODUCE:
+                state.pickedPhases.produce = true;
+                break;
+            case dieFace.SHIP:
+                state.pickedPhases.ship = true;
+                break;
+        }
+        this.setState({...state});
+    }
 
-        state.game.players = players;
+    assignAiPlayersDice = (players: Array<PlayerBoardProps>): Array<PlayerBoardProps> => {
+        for (let i = 1; i < players.length; i++) {
+            let phaseStripDice: DicePoolProps = rollDice(players[i].cup);
+            let aiPlayerAssignmentState: AssignmentState = sortDiceByFaceInAssignmentState(phaseStripDice);
+            for(let j = 0; j < aiPlayerAssignmentState.wildDice.dice.length; j++) {
+                aiPlayerAssignmentState.exploreDice.dice.push(aiPlayerAssignmentState.wildDice.dice[j]);
+            }
+            aiPlayerAssignmentState.wildDice.dice = [];
+
+            if (aiPlayerAssignmentState.exploreDice.dice.length === 0) {
+                let selectorDie: DieProps | undefined;
+
+                if(aiPlayerAssignmentState.developDice.dice.length > 0) {
+                    selectorDie = aiPlayerAssignmentState.developDice.dice.pop();
+                } else if(aiPlayerAssignmentState.settleDice.dice.length > 0) {
+                    selectorDie = aiPlayerAssignmentState.settleDice.dice.pop();
+                } else if(aiPlayerAssignmentState.produceDice.dice.length > 0) {
+                    selectorDie = aiPlayerAssignmentState.produceDice.dice.pop();
+                } else if(aiPlayerAssignmentState.shipDice.dice.length > 0) {
+                    selectorDie = aiPlayerAssignmentState.shipDice.dice.pop();
+                }
+
+                if (selectorDie) {
+                    aiPlayerAssignmentState.exploreDice.dice.push(selectorDie);
+                }
+            };
+            players[i].phaseDice = aiPlayerAssignmentState;
+            this.addPickedPhaseToList(dieFace.EXPLORE);
+        };
+        return players;
+    };
+
+    assignDice = (pickedPhase: string): void => {
+        let state = this.state;
+        this.addPickedPhaseToList(pickedPhase);
+        let randomPhaseRolls = 3 - state.game.players.length;
+        if (randomPhaseRolls > 0) {
+            let whiteDicePool: DicePoolProps = {
+                dice: [
+                    {
+                        color: dieColor.WHITE,
+                        face: dieFace.EXPLORE
+                    }
+                ]
+            }
+
+            for (let i = 0; i < randomPhaseRolls; i++) {
+                whiteDicePool = rollDice(whiteDicePool);
+                this.addPickedPhaseToList(whiteDicePool.dice[0].face);
+            }
+        }
+        state.game.players = this.assignAiPlayersDice(state.game.players);
+
         let currentPhase = pickedPhase + ' Phase';
         this.setState({
             ...state,
-            currentPhase,
-            pickedPhases
+            currentPhase
         })
     };
 
