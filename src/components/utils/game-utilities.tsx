@@ -76,13 +76,13 @@ const addBonus = (tile: TileProps, citizenry: DicePoolProps, cup: DicePoolProps)
             break;
         default:
             break;
-    }
+    };
 };
 
 const getLowestConstructionQueueTotal = (tiles: Array<Tiles>): Array<Tiles> => {
     if (tiles[0].tiles[0].points + tiles[1].tiles[1].points > tiles[0].tiles[1].points + tiles[1].tiles[0].points) {
         return [tiles[1], tiles[0]];
-    }
+    };
     return (tiles);
 };
 
@@ -109,7 +109,7 @@ const sortDiceByFaceInAssignmentState = (phaseStripDicePool: DicePoolProps): Ass
         selectorDice: {
             dice: []
         }
-    }
+    };
 
     return newState;
 };
@@ -380,7 +380,7 @@ export const createPlayers = (state: gameState, numberOfPlayers: number): gameSt
                 tiles
             }
         );
-    }
+    };
 
     return (
         {
@@ -388,7 +388,7 @@ export const createPlayers = (state: gameState, numberOfPlayers: number): gameSt
             players,
             victoryPointPool
         }
-    )
+    );
 };
 
 export const finishAssignmentPhase = (state: fullState, pickedPhase: string): fullState => {
@@ -402,13 +402,13 @@ export const finishAssignmentPhase = (state: fullState, pickedPhase: string): fu
                     face: dieFace.EXPLORE
                 }
             ]
-        }
+        };
 
         for (let i = 0; i < randomPhaseRolls; i++) {
             whiteDicePool = rollDice(whiteDicePool);
             state = addPickedPhaseToList(whiteDicePool.dice[0].face, state);
-        }
-    }
+        };
+    };
     state = assignAiPlayersDice(state);
     state.currentPhase = pickedPhase + ' Phase';
 

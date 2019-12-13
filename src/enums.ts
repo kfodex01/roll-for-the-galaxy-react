@@ -1389,4 +1389,4 @@ export const initialState: fullState = {
         produce: false,
         ship: false
     }
-}
+};

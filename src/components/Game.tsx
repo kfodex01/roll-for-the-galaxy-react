@@ -57,7 +57,7 @@ class Game extends React.Component<gameProps, fullState> {
         this.setState({
             ...this.props.initialState
         });
-    }
+    };
 
     hideBeginGameForm = (): void => {
         this.setState({
@@ -120,6 +120,6 @@ class Game extends React.Component<gameProps, fullState> {
             </>
         )
     }
-}
+};
 
 export default Game;
