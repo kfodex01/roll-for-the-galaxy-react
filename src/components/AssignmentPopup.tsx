@@ -45,7 +45,8 @@ export interface AssignmentState {
     produceDice: DicePoolProps,
     shipDice: DicePoolProps,
     wildDice: DicePoolProps,
-    selectorDice: DicePoolProps
+    selectorDice: DicePoolProps,
+    phaseDiceRolled: boolean
 }
 
 class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentState> {
@@ -70,7 +71,8 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
         },
         selectorDice: {
             dice: []
-        }
+        },
+        phaseDiceRolled: false
     }
 
     onDragStart = (event: React.DragEvent<HTMLDivElement>, id: string): void => {

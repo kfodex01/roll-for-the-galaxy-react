@@ -39,6 +39,30 @@ describe('Distribution Tests', () => {
                             settle: [],
                             ship: []
                         },
+                        phaseDice: {
+                            exploreDice: {
+                                dice: []
+                            },
+                            developDice: {
+                                dice: []
+                            },
+                            settleDice: {
+                                dice: []
+                            },
+                            produceDice: {
+                                dice: []
+                            },
+                            shipDice: {
+                                dice: []
+                            },
+                            wildDice: {
+                                dice: []
+                            },
+                            selectorDice: {
+                                dice: []
+                            },
+                            phaseDiceRolled: false
+                        },
                         points: 0,
                         settleBuildQueue: [],
                         tiles: []

@@ -6,6 +6,7 @@ import { DieProps } from '../Die';
 import { AssignmentState } from '../AssignmentPopup';
 import { gameState, fullState } from '../Game';
 import { PhasePowersProps, PlayerBoardProps } from '../PlayerBoard';
+import { assignAiPlayersDice } from './ai-components';
 import Chance from 'chance';
 
 const chance = new Chance();
@@ -86,7 +87,57 @@ const getLowestConstructionQueueTotal = (tiles: Array<Tiles>): Array<Tiles> => {
     return (tiles);
 };
 
-const sortDiceByFaceInAssignmentState = (phaseStripDicePool: DicePoolProps): AssignmentState => {
+const returnPhaseDiceForInactivePhases = (state: fullState): fullState => {
+    let pickedPhases = state.pickedPhases;
+    let players = state.game.players;
+    for (let i = 0; i < players.length; i++) {
+        players[i].cup.dice = [];
+        if (!pickedPhases.explore) {
+            players[i].cup.dice = players[i].cup.dice.concat(players[i].phaseDice.exploreDice.dice);
+            players[i].phaseDice.exploreDice.dice = [];
+        }
+        if (!pickedPhases.develop) {
+            players[i].cup.dice = players[i].cup.dice.concat(players[i].phaseDice.developDice.dice);
+            players[i].phaseDice.developDice.dice = [];
+        }
+        if (!pickedPhases.settle) {
+            players[i].cup.dice = players[i].cup.dice.concat(players[i].phaseDice.settleDice.dice);
+            players[i].phaseDice.settleDice.dice = [];
+        }
+        if (!pickedPhases.produce) {
+            players[i].cup.dice = players[i].cup.dice.concat(players[i].phaseDice.produceDice.dice);
+            players[i].phaseDice.produceDice.dice = [];
+        }
+        if (!pickedPhases.ship) {
+            players[i].cup.dice = players[i].cup.dice.concat(players[i].phaseDice.shipDice.dice);
+            players[i].phaseDice.shipDice.dice = [];
+        }
+    }
+    return state;
+} 
+
+export const addPickedPhaseToList = (pickedPhase: string, state: fullState): fullState => {
+    switch (pickedPhase) {
+        default:
+            state.pickedPhases.explore = true;
+            break;
+        case dieFace.DEVELOP:
+            state.pickedPhases.develop = true;
+            break;
+        case dieFace.SETTLE:
+            state.pickedPhases.settle = true;
+            break;
+        case dieFace.PRODUCE:
+            state.pickedPhases.produce = true;
+            break;
+        case dieFace.SHIP:
+            state.pickedPhases.ship = true;
+            break;
+    }
+    return state;
+};
+
+export const sortDiceByFaceInAssignmentState = (phaseStripDicePool: DicePoolProps): AssignmentState => {
     const newState: AssignmentState = {
         exploreDice: {
             dice: getDiceOfOneFace(phaseStripDicePool.dice, dieFace.EXPLORE)
@@ -108,13 +159,14 @@ const sortDiceByFaceInAssignmentState = (phaseStripDicePool: DicePoolProps): Ass
         },
         selectorDice: {
             dice: []
-        }
+        },
+        phaseDiceRolled: true
     };
 
     return newState;
 };
 
-const rollDice = (dicePool: DicePoolProps): DicePoolProps => {
+export const rollDice = (dicePool: DicePoolProps): DicePoolProps => {
     let rolledDicePool: DicePoolProps = {
         dice: []
     };
@@ -223,61 +275,8 @@ const rollDice = (dicePool: DicePoolProps): DicePoolProps => {
     return rolledDicePool;
 };
 
-const addPickedPhaseToList = (pickedPhase: string, state: fullState): fullState => {
-    switch (pickedPhase) {
-        default:
-            state.pickedPhases.explore = true;
-            break;
-        case dieFace.DEVELOP:
-            state.pickedPhases.develop = true;
-            break;
-        case dieFace.SETTLE:
-            state.pickedPhases.settle = true;
-            break;
-        case dieFace.PRODUCE:
-            state.pickedPhases.produce = true;
-            break;
-        case dieFace.SHIP:
-            state.pickedPhases.ship = true;
-            break;
-    }
-    return state;
-};
-
-const assignAiPlayersDice = (state: fullState): fullState => {
-    for (let i = 1; i < state.game.players.length; i++) {
-        let phaseStripDice: DicePoolProps = rollDice(state.game.players[i].cup);
-        let aiPlayerAssignmentState: AssignmentState = sortDiceByFaceInAssignmentState(phaseStripDice);
-        for (let j = 0; j < aiPlayerAssignmentState.wildDice.dice.length; j++) {
-            aiPlayerAssignmentState.exploreDice.dice.push(aiPlayerAssignmentState.wildDice.dice[j]);
-        }
-        aiPlayerAssignmentState.wildDice.dice = [];
-
-        if (aiPlayerAssignmentState.exploreDice.dice.length === 0) {
-            let selectorDie: DieProps | undefined;
-
-            if (aiPlayerAssignmentState.developDice.dice.length > 0) {
-                selectorDie = aiPlayerAssignmentState.developDice.dice.pop();
-            } else if (aiPlayerAssignmentState.settleDice.dice.length > 0) {
-                selectorDie = aiPlayerAssignmentState.settleDice.dice.pop();
-            } else if (aiPlayerAssignmentState.produceDice.dice.length > 0) {
-                selectorDie = aiPlayerAssignmentState.produceDice.dice.pop();
-            } else if (aiPlayerAssignmentState.shipDice.dice.length > 0) {
-                selectorDie = aiPlayerAssignmentState.shipDice.dice.pop();
-            }
-
-            if (selectorDie) {
-                aiPlayerAssignmentState.exploreDice.dice.push(selectorDie);
-            }
-        };
-        state.game.players[i].phaseDice = aiPlayerAssignmentState;
-        state = addPickedPhaseToList(dieFace.EXPLORE, state);
-    };
-    return state;
-};
-
 export const rollHumanPlayerDice = (game: gameState): gameState => {
-    if (game.players && !game.players[0].phaseDice) {
+    if (game.players && !game.players[0].phaseDice.phaseDiceRolled) {
         const phaseStripDice: DicePoolProps = rollDice(game.players[0].cup);
 
         game.players[0].phaseDice = sortDiceByFaceInAssignmentState(phaseStripDice);
@@ -366,6 +365,30 @@ export const createPlayers = (state: gameState, numberOfPlayers: number): gameSt
             points = points + tile.points;
             addBonus(tile, citizenry, cup);
         });
+        let phaseDice: AssignmentState = {
+            exploreDice: {
+                dice: []
+            },
+            developDice: {
+                dice: []
+            },
+            settleDice: {
+                dice: []
+            },
+            produceDice: {
+                dice: []
+            },
+            shipDice: {
+                dice: []
+            },
+            wildDice: {
+                dice: []
+            },
+            selectorDice: {
+                dice: []
+            },
+            phaseDiceRolled: false
+        };
         players.push(
             {
                 id: i + 1,
@@ -374,6 +397,7 @@ export const createPlayers = (state: gameState, numberOfPlayers: number): gameSt
                 cup,
                 developBuildQueue: [buildQueueTiles[0]],
                 nextTileId: 4,
+                phaseDice,
                 phasePowers,
                 points,
                 settleBuildQueue: [buildQueueTiles[1]],
@@ -410,6 +434,7 @@ export const finishAssignmentPhase = (state: fullState, pickedPhase: string): fu
         };
     };
     state = assignAiPlayersDice(state);
+    state = returnPhaseDiceForInactivePhases(state);
     state.currentPhase = pickedPhase + ' Phase';
 
     return state;

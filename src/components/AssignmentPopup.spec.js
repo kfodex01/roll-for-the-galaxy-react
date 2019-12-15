@@ -33,7 +33,8 @@ describe('Popup', () => {
             },
             selectorDice: {
                 dice: [getMockDie()]
-            }
+            },
+            phaseDiceRolled: true
         };
         mockPhaseDice.selectorDice.dice[0].id = '0';
     });

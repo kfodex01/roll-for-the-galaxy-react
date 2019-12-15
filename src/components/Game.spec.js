@@ -513,7 +513,8 @@ describe('Game', () => {
                                 },
                                 selectorDice: {
                                     dice: []
-                                }
+                                },
+                                phaseDiceRolled: true
                             }
                         }
                     ]
@@ -576,7 +577,7 @@ describe('Game', () => {
                         face: dieFace.WILD
                     }
                 ];
-                mockSinglePlayerAssignmentState.game.players[0].phaseDice = undefined;
+                mockSinglePlayerAssignmentState.game.players[0].phaseDice.phaseDiceRolled = false;
 
                 const { getByText, queryByTestId, queryAllByTestId } = render(<Game initialState={mockSinglePlayerAssignmentState} />);
                 const startRoundButton = getByText('Start Round');
@@ -780,7 +781,7 @@ describe('Game', () => {
                             face: dieFace.EXPLORE
                         }
                     ];
-                    mockSinglePlayerAssignmentState.game.players[0].phaseDice = undefined;
+                    mockSinglePlayerAssignmentState.game.players[0].phaseDice.phaseDiceRolled = false;
                     getDragEvent.mockReturnValue(mockDragEvent);
                     mockDataTransferData = {};
                 });
