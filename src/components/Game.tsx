@@ -70,17 +70,20 @@ class Game extends React.Component<gameProps, fullState> {
     };
 
     createPlayers = (numberOfPlayers: number): void => {
-        const game = createPlayers(this.state.game, numberOfPlayers);
+        let gameState: gameState = {...this.state.game};
+        const game = createPlayers(gameState, numberOfPlayers);
         this.setState({ game });
     };
 
     toggleAssignmentPopup = (): void => {
-        const gameWithRolledDice = rollHumanPlayerDice(this.state.game);
-        this.setState({ assignmentPopupVisibility: !this.state.assignmentPopupVisibility, game: gameWithRolledDice });
+        let state: fullState = {...this.state};
+        const gameWithRolledDice = rollHumanPlayerDice(state.game);
+        this.setState({ assignmentPopupVisibility: !state.assignmentPopupVisibility, game: gameWithRolledDice });
     };
 
     toggleExplorePopup = (): void => {
-        this.setState({ explorePopupVisibility: !this.state.explorePopupVisibility });
+        let state: fullState = {...this.state};
+        this.setState({ explorePopupVisibility: !state.explorePopupVisibility });
     };
 
     assignDice = (pickedPhase: string): void => {
@@ -92,7 +95,8 @@ class Game extends React.Component<gameProps, fullState> {
     };
 
     fireActionButton = () => {
-        switch (this.state.currentPhase) {
+        let state = {...this.state};
+        switch (state.currentPhase) {
             default:
                 this.toggleAssignmentPopup();
                 break;

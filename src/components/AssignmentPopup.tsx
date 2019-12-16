@@ -92,10 +92,10 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
     }
 
     submitPhaseStrip = (pickedPhase: string): void => {
-        if (this.state.wildDice.dice.length > 0) {
+        let state: AssignmentState = {...this.state};
+        if (state.wildDice.dice.length > 0) {
             return;
         }
-        let state: AssignmentState = {...this.state};
         let selectorDie: DieProps | undefined = state.selectorDice.dice.pop();
         if (selectorDie) {
             switch (pickedPhase) {
