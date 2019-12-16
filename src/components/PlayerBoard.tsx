@@ -25,7 +25,7 @@ export interface PlayerBoardProps {
     id: number;
     nextTileId: number;
     phasePowers: PhasePowersProps;
-    phaseDice?: AssignmentState;
+    phaseDice: AssignmentState;
     points: number;
     settleBuildQueue: Array<Tiles>;
     tiles: Array<TileProps>;

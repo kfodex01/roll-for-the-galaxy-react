@@ -1,4 +1,4 @@
-import { gameState, state } from "./components/Game";
+import { gameState, fullState } from "./components/Game";
 import { Tiles } from "./components/ConstructionZone";
 
 export const tileTypes = {
@@ -1377,9 +1377,16 @@ const initialGameState: gameState = {
     victoryPointPool: 0
 };
 
-export const initialState: state = {
+export const initialState: fullState = {
     game: { ...initialGameState },
     startFormVisibility: true,
     assignmentPopupVisibility: false,
-    startRoundVisibility: true
-}
+    currentPhase: 'Start Round',
+    pickedPhases: {
+        explore: false,
+        develop: false,
+        settle: false,
+        produce: false,
+        ship: false
+    }
+};

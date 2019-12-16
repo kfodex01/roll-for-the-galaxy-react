@@ -33,7 +33,8 @@ describe('Popup', () => {
             },
             selectorDice: {
                 dice: [getMockDie()]
-            }
+            },
+            phaseDiceRolled: true
         };
         mockPhaseDice.selectorDice.dice[0].id = '0';
     });
@@ -808,7 +809,6 @@ describe('Popup', () => {
     describe('Submit Buttons', () => {
         let assignDiceCalled,
             phasePicked,
-            finalState,
             exploreButton,
             developButton,
             settleButton,
@@ -819,10 +819,9 @@ describe('Popup', () => {
             assignDiceCalled = false;
         });
 
-        const mockAssignDice = (pickedPhase, assignmentState) => {
+        const mockAssignDice = (pickedPhase) => {
             assignDiceCalled = true;
             phasePicked = pickedPhase;
-            finalState = assignmentState;
         };
 
         const getSubmitButtons = (getByText) => {
@@ -834,8 +833,7 @@ describe('Popup', () => {
         };
 
         describe('Explore Button', () => {
-            it('should submit with explore picked and selector die in explore pool when explore button is clicked', () => {
-                mockPhaseDice.selectorDice.dice[0].id = '7';
+            it('should submit with explore picked when explore button is clicked', () => {
                 const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
 
                 expect(assignDiceCalled).toBe(false);
@@ -845,9 +843,6 @@ describe('Popup', () => {
 
                 expect(assignDiceCalled).toBe(true);
                 expect(phasePicked).toBe(dieFace.EXPLORE);
-                expect(finalState.selectorDice.dice.length).toBe(0);
-                expect(finalState.exploreDice.dice.length).toBe(1);
-                expect(finalState.exploreDice.dice[0].id).toBe('7');
                 expect(closePopupEventFired).toBe(true);
             });
 
@@ -879,8 +874,7 @@ describe('Popup', () => {
         });
 
         describe('Develop Button', () => {
-            it('should submit with develop picked and selector die in develop pool when develop button is clicked', () => {
-                mockPhaseDice.selectorDice.dice[0].id = '7';
+            it('should submit with develop picked when develop button is clicked', () => {
                 const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
 
                 expect(assignDiceCalled).toBe(false);
@@ -890,9 +884,6 @@ describe('Popup', () => {
 
                 expect(assignDiceCalled).toBe(true);
                 expect(phasePicked).toBe(dieFace.DEVELOP);
-                expect(finalState.selectorDice.dice.length).toBe(0);
-                expect(finalState.developDice.dice.length).toBe(1);
-                expect(finalState.developDice.dice[0].id).toBe('7');
                 expect(closePopupEventFired).toBe(true);
             });
 
@@ -924,8 +915,7 @@ describe('Popup', () => {
         });
 
         describe('Settle Button', () => {
-            it('should submit with settle picked and selector die in settle pool when settle button is clicked', () => {
-                mockPhaseDice.selectorDice.dice[0].id = '7';
+            it('should submit with settle picked when settle button is clicked', () => {
                 const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
 
                 expect(assignDiceCalled).toBe(false);
@@ -935,9 +925,6 @@ describe('Popup', () => {
 
                 expect(assignDiceCalled).toBe(true);
                 expect(phasePicked).toBe(dieFace.SETTLE);
-                expect(finalState.selectorDice.dice.length).toBe(0);
-                expect(finalState.settleDice.dice.length).toBe(1);
-                expect(finalState.settleDice.dice[0].id).toBe('7');
                 expect(closePopupEventFired).toBe(true);
             });
 
@@ -969,8 +956,7 @@ describe('Popup', () => {
         });
 
         describe('Produce Button', () => {
-            it('should submit with produce picked and selector die in produce pool when produce button is clicked', () => {
-                mockPhaseDice.selectorDice.dice[0].id = '7';
+            it('should submit with produce picked when produce button is clicked', () => {
                 const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
 
                 expect(assignDiceCalled).toBe(false);
@@ -980,9 +966,6 @@ describe('Popup', () => {
 
                 expect(assignDiceCalled).toBe(true);
                 expect(phasePicked).toBe(dieFace.PRODUCE);
-                expect(finalState.selectorDice.dice.length).toBe(0);
-                expect(finalState.produceDice.dice.length).toBe(1);
-                expect(finalState.produceDice.dice[0].id).toBe('7');
                 expect(closePopupEventFired).toBe(true);
             });
 
@@ -1014,8 +997,7 @@ describe('Popup', () => {
         });
 
         describe('Ship Button', () => {
-            it('should submit with ship picked and selector die in ship pool when ship button is clicked', () => {
-                mockPhaseDice.selectorDice.dice[0].id = '7';
+            it('should submit with ship picked when ship button is clicked', () => {
                 const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
 
                 expect(assignDiceCalled).toBe(false);
@@ -1025,9 +1007,6 @@ describe('Popup', () => {
 
                 expect(assignDiceCalled).toBe(true);
                 expect(phasePicked).toBe(dieFace.SHIP);
-                expect(finalState.selectorDice.dice.length).toBe(0);
-                expect(finalState.shipDice.dice.length).toBe(1);
-                expect(finalState.shipDice.dice[0].id).toBe('7');
                 expect(closePopupEventFired).toBe(true);
             });
 

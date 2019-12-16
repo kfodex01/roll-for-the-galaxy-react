@@ -6,7 +6,7 @@ interface StartFormProps {
 }
 
 class StartForm extends React.Component<StartFormProps> {
-    buildPlayersAndHideForm = (numberOfPlayers: number) => {
+    buildPlayersAndHideForm = (numberOfPlayers: number): void => {
         this.props.hideBeginGameForm();
         this.props.createPlayers(numberOfPlayers);
     };

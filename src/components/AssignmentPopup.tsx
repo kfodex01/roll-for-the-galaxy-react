@@ -7,6 +7,7 @@ import DicePool, { DicePoolProps } from './DicePool';
 import { DieProps } from './Die';
 import { dieFace } from '../enums';
 import { getDragEvent } from './utils/drag-event-utility';
+import { findDieByIdInAssignmentState, removeDieByIdFromAssignmentState, moveDieToPool } from './utils/assignment-utilities';
 
 const PopupFullPageCoverDiv = styled.div`
     position: fixed;
@@ -33,7 +34,7 @@ const PopupOnlyDiv = styled.div`
 
 interface AssignmentPopupProps {
     closePopup(): void,
-    assignDice(pickedPhase: string, assignmentState: AssignmentState): void,
+    assignDice(pickedPhase: string): void,
     initialState: AssignmentState
 };
 
@@ -44,7 +45,8 @@ export interface AssignmentState {
     produceDice: DicePoolProps,
     shipDice: DicePoolProps,
     wildDice: DicePoolProps,
-    selectorDice: DicePoolProps
+    selectorDice: DicePoolProps,
+    phaseDiceRolled: boolean
 }
 
 class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentState> {
@@ -69,7 +71,8 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
         },
         selectorDice: {
             dice: []
-        }
+        },
+        phaseDiceRolled: false
     }
 
     onDragStart = (event: React.DragEvent<HTMLDivElement>, id: string): void => {
@@ -82,116 +85,29 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
         dragEvent.preventDefault();
     };
 
-    findDie = (state: AssignmentState, id: string): DieProps => {
-        let die: DieProps[] = [];
-        die.push(state.exploreDice.dice.filter(die => die.id === id)[0]);
-        die.push(state.developDice.dice.filter(die => die.id === id)[0]);
-        die.push(state.settleDice.dice.filter(die => die.id === id)[0]);
-        die.push(state.produceDice.dice.filter(die => die.id === id)[0]);
-        die.push(state.shipDice.dice.filter(die => die.id === id)[0]);
-        die.push(state.wildDice.dice.filter(die => die.id === id)[0]);
-        die.push(state.selectorDice.dice.filter(die => die.id === id)[0]);
-        return die.filter(die => die)[0];
-    };
-
     dropInContainer = (event: React.DragEvent<HTMLDivElement>, containerToDropIn: string): void => {
         let dragEvent: React.DragEvent<HTMLDivElement> = getDragEvent(event);
         let id: string = dragEvent.dataTransfer.getData('id');
         let state: AssignmentState = { ...this.state };
-        let die: DieProps = this.findDie(state, id);
-        state.exploreDice.dice = state.exploreDice.dice.filter(die => die.id !== id);
-        state.developDice.dice = state.developDice.dice.filter(die => die.id !== id);
-        state.settleDice.dice = state.settleDice.dice.filter(die => die.id !== id);
-        state.produceDice.dice = state.produceDice.dice.filter(die => die.id !== id);
-        state.shipDice.dice = state.shipDice.dice.filter(die => die.id !== id);
-        state.wildDice.dice = state.wildDice.dice.filter(die => die.id !== id);
-        state.selectorDice.dice = state.selectorDice.dice.filter(die => die.id !== id);
-        switch (containerToDropIn) {
-            case dieFace.EXPLORE:
-                if (die.face === dieFace.EXPLORE || die.face === dieFace.WILD) {
-                    state.exploreDice.dice.push(die);
-                } else {
-                    this.pushDieBackToDefaultPool(state, die);
-                }
-                break;
-            case dieFace.DEVELOP:
-                if (die.face === dieFace.DEVELOP || die.face === dieFace.WILD) {
-                    state.developDice.dice.push(die);
-                } else {
-                    this.pushDieBackToDefaultPool(state, die);
-                }
-                break;
-            case dieFace.SETTLE:
-                if (die.face === dieFace.SETTLE || die.face === dieFace.WILD) {
-                    state.settleDice.dice.push(die);
-                } else {
-                    this.pushDieBackToDefaultPool(state, die);
-                }
-                break;
-            case dieFace.PRODUCE:
-                if (die.face === dieFace.PRODUCE || die.face === dieFace.WILD) {
-                    state.produceDice.dice.push(die);
-                } else {
-                    this.pushDieBackToDefaultPool(state, die);
-                }
-                break;
-            case dieFace.SHIP:
-                if (die.face === dieFace.SHIP || die.face === dieFace.WILD) {
-                    state.shipDice.dice.push(die);
-                } else {
-                    this.pushDieBackToDefaultPool(state, die);
-                }
-                break;
-            case dieFace.WILD:
-                if (die.face === dieFace.WILD) {
-                    state.wildDice.dice.push(die);
-                } else {
-                    this.pushDieBackToDefaultPool(state, die);
-                }
-                break;
-            default:
-                if (state.selectorDice.dice.length === 0) {
-                    state.selectorDice.dice.push(die);
-                } else {
-                    this.pushDieBackToDefaultPool(state, die);
-                }
-                break;
-        };
-        this.setStateOnThis(state);
+        let die: DieProps = findDieByIdInAssignmentState(state, id);
+        state = removeDieByIdFromAssignmentState(state, id);
+        state = moveDieToPool(state, die, containerToDropIn);
+        this.setState({
+            ...state
+        });
     };
 
     componentDidMount() {
-        this.setStateOnThis(this.props.initialState);
-    }
-
-    pushDieBackToDefaultPool = (state: AssignmentState, die: DieProps): void => {
-        switch (die.face) {
-            case dieFace.EXPLORE:
-                state.exploreDice.dice.push(die);
-                break;
-            case dieFace.DEVELOP:
-                state.developDice.dice.push(die);
-                break;
-            case dieFace.SETTLE:
-                state.settleDice.dice.push(die);
-                break;
-            case dieFace.PRODUCE:
-                state.produceDice.dice.push(die);
-                break;
-            case dieFace.SHIP:
-                state.shipDice.dice.push(die);
-                break;
-            case dieFace.WILD:
-                state.wildDice.dice.push(die);
-                break;
-        }
+        this.setState({
+            ...this.props.initialState
+        });
     }
 
     submitPhaseStrip = (pickedPhase: string): void => {
         if (this.state.wildDice.dice.length > 0) {
             return;
         }
-        let state: AssignmentState = this.state;
+        let state: AssignmentState = {...this.state};
         let selectorDie: DieProps | undefined = state.selectorDice.dice.pop();
         if (selectorDie) {
             switch (pickedPhase) {
@@ -215,14 +131,9 @@ class AssignmentPopup extends React.Component<AssignmentPopupProps, AssignmentSt
             return;
         }
 
-        this.props.assignDice(pickedPhase, state);
+        this.setState({...state});
+        this.props.assignDice(pickedPhase);
         this.props.closePopup();
-    }
-
-    setStateOnThis = (state: AssignmentState): void => {
-        this.setState({
-            ...state
-        });
     }
 
     render() {

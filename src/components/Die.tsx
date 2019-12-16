@@ -102,7 +102,7 @@ class Die extends React.Component<DieProps> {
         }
     };
 
-    handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+    handleDragStart = (event: React.DragEvent<HTMLDivElement>): void => {
         if(this.props.id && this.props.onDragStart) {
             this.props.onDragStart(event, this.props.id);
         }
