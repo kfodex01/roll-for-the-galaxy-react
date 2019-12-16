@@ -1,36 +1,24 @@
 import React from 'react';
-import styled from 'styled-components';
-import { BigText, FlexMaxRowDiv, FlexDropBoxRowDiv, DropBoxDiv, FlexRowDiv } from '../styled-components';
+import {
+    BigText,
+    FlexMaxRowDiv,
+    FlexDropBoxRowDiv,
+    DropBoxDiv,
+    FlexRowDiv,
+    PopupFullPageCoverDiv,
+    PopupOnlyDiv
+} from '../styled-components';
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DicePool, { DicePoolProps } from './DicePool';
 import { DieProps } from './Die';
 import { dieFace } from '../enums';
 import { getDragEvent } from './utils/drag-event-utility';
-import { findDieByIdInAssignmentState, removeDieByIdFromAssignmentState, moveDieToPool } from './utils/assignment-utilities';
-
-const PopupFullPageCoverDiv = styled.div`
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    background-color: rgba(0,0,0, 0.5);
-`;
-
-const PopupOnlyDiv = styled.div`
-    position: absolute;
-    left: 25%;
-    right: 25%;
-    top: 25%;
-    bottom: 25%;
-    margin: auto;
-    padding: 5px;
-    background: white;
-`;
+import {
+    findDieByIdInAssignmentState,
+    removeDieByIdFromAssignmentState,
+    moveDieToPool
+} from './utils/assignment-utilities';
 
 interface AssignmentPopupProps {
     closePopup(): void,

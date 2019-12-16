@@ -1381,6 +1381,7 @@ export const initialState: fullState = {
     game: { ...initialGameState },
     startFormVisibility: true,
     assignmentPopupVisibility: false,
+    explorePopupVisibility: false,
     currentPhase: 'Start Round',
     pickedPhases: {
         explore: false,

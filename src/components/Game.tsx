@@ -5,6 +5,7 @@ import PlayerBoard, { PlayerBoardProps } from './PlayerBoard';
 import { PhaseDice } from './PhaseDice';
 import { Tiles } from './ConstructionZone';
 import AssignmentPopup from './AssignmentPopup';
+import ExplorePopup from './ExplorePopup';
 import { rollHumanPlayerDice, createPlayers, finishAssignmentPhase } from './utils/game-utilities';
 
 export interface gameState {
@@ -19,6 +20,7 @@ export interface fullState {
     game: gameState,
     startFormVisibility: boolean,
     assignmentPopupVisibility: boolean,
+    explorePopupVisibility: boolean,
     currentPhase: string,
     pickedPhases: {
         explore: boolean,
@@ -44,6 +46,7 @@ class Game extends React.Component<gameProps, fullState> {
         },
         startFormVisibility: true,
         assignmentPopupVisibility: false,
+        explorePopupVisibility: false,
         currentPhase: 'Start Round',
         pickedPhases: {
             explore: false,
@@ -76,6 +79,10 @@ class Game extends React.Component<gameProps, fullState> {
         this.setState({ assignmentPopupVisibility: !this.state.assignmentPopupVisibility, game: gameWithRolledDice });
     };
 
+    toggleExplorePopup = (): void => {
+        this.setState({ explorePopupVisibility: !this.state.explorePopupVisibility });
+    };
+
     assignDice = (pickedPhase: string): void => {
         let state = {...this.state};
         state = finishAssignmentPhase(state, pickedPhase);
@@ -88,6 +95,9 @@ class Game extends React.Component<gameProps, fullState> {
         switch (this.state.currentPhase) {
             default:
                 this.toggleAssignmentPopup();
+                break;
+            case 'Explore Phase':
+                this.toggleExplorePopup();
                 break;
         }
     };
@@ -114,9 +124,15 @@ class Game extends React.Component<gameProps, fullState> {
                         </>
                 }
                 {
-                    this.state.assignmentPopupVisibility === true && this.state.game.players[0].phaseDice ?
+                    this.state.assignmentPopupVisibility === true ?
                         (
                             <AssignmentPopup closePopup={this.toggleAssignmentPopup} assignDice={this.assignDice} initialState={this.state.game.players[0].phaseDice} />
+                        ) : null
+                }
+                {
+                    this.state.explorePopupVisibility === true ?
+                        (
+                            <ExplorePopup closePopup={this.toggleExplorePopup} exploreDice={this.state.game.players[0].phaseDice.exploreDice} />
                         ) : null
                 }
             </>
