@@ -7,6 +7,7 @@ import { Tiles } from './ConstructionZone';
 import AssignmentPopup from './AssignmentPopup';
 import ExplorePopup from './ExplorePopup';
 import { rollHumanPlayerDice, createPlayers, finishAssignmentPhase } from './utils/game-utilities';
+import { DicePoolProps } from './DicePool';
 
 export interface gameState {
     factionTiles: Array<Tiles>,
@@ -94,6 +95,13 @@ class Game extends React.Component<gameProps, fullState> {
         });
     };
 
+    assignDiceToStock = (dicePool: DicePoolProps): void => {
+        let state: fullState = {...this.state};
+        state.game.players[0].credits = state.game.players[0].credits + (dicePool.dice.length * 2);
+        state.game.players[0].citizenry.dice = state.game.players[0].citizenry.dice.concat(dicePool.dice);
+        this.setState({...state});
+    };
+
     fireActionButton = () => {
         let state = {...this.state};
         switch (state.currentPhase) {
@@ -136,7 +144,7 @@ class Game extends React.Component<gameProps, fullState> {
                 {
                     this.state.explorePopupVisibility === true ?
                         (
-                            <ExplorePopup closePopup={this.toggleExplorePopup} exploreDice={this.state.game.players[0].phaseDice.exploreDice} />
+                            <ExplorePopup closePopup={this.toggleExplorePopup} exploreDice={this.state.game.players[0].phaseDice.exploreDice} assignDiceToStock={this.assignDiceToStock} />
                         ) : null
                 }
             </>
