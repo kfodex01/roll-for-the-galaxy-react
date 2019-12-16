@@ -114,7 +114,24 @@ const returnPhaseDiceForInactivePhases = (state: fullState): fullState => {
         }
     }
     return state;
-} 
+};
+
+const setNextPhase = (state: fullState): fullState => {
+    if (state.pickedPhases.explore) {
+        state.currentPhase = 'Explore Phase';
+    // } else if (state.pickedPhases.develop) {
+    //     state.currentPhase = 'Develop Phase';
+    // } else if (state.pickedPhases.settle) {
+    //     state.currentPhase = 'Settle Phase';
+    // } else if (state.pickedPhases.produce) {
+    //     state.currentPhase = 'Produce Phase';
+    // } else if (state.pickedPhases.ship) {
+    //     state.currentPhase = 'Ship Phase';
+    } else {
+        state.currentPhase = 'Start Round';
+    };
+    return state;
+};
 
 export const addPickedPhaseToList = (pickedPhase: string, state: fullState): fullState => {
     switch (pickedPhase) {
@@ -270,7 +287,7 @@ export const rollDice = (dicePool: DicePoolProps): DicePoolProps => {
                     ])
                 });
                 break;
-        }
+        };
     });
     return rolledDicePool;
 };
@@ -435,7 +452,7 @@ export const finishAssignmentPhase = (state: fullState, pickedPhase: string): fu
     };
     state = assignAiPlayersDice(state);
     state = returnPhaseDiceForInactivePhases(state);
-    state.currentPhase = pickedPhase + ' Phase';
+    state = setNextPhase(state);
 
     return state;
 };
