@@ -9,14 +9,9 @@ import ExplorePopup from './ExplorePopup';
 import { rollHumanPlayerDice, createPlayers, finishAssignmentPhase } from './utils/game-utilities';
 import { DicePoolProps } from './DicePool';
 import { DieProps } from './Die';
-import Chance from 'chance';
-
-const chance = new Chance();
+import GameManager from './utils/GameManager';
 
 export interface gameState {
-    factionTiles: Array<Tiles>,
-    gameTiles: Array<Tiles>,
-    homeWorldTiles: Array<Tiles>,
     players: Array<PlayerBoardProps>,
     victoryPointPool: number
 }
@@ -37,15 +32,12 @@ export interface fullState {
 };
 
 interface gameProps {
-    initialState: fullState
+    gameManager: GameManager
 };
 
 class Game extends React.Component<gameProps, fullState> {
     state: fullState = {
         game: {
-            factionTiles: [],
-            gameTiles: [],
-            homeWorldTiles: [],
             victoryPointPool: 0,
             players: []
         },
@@ -62,12 +54,6 @@ class Game extends React.Component<gameProps, fullState> {
         }
     };
 
-    componentDidMount() {
-        this.setState({
-            ...this.props.initialState
-        });
-    };
-
     hideBeginGameForm = (): void => {
         this.setState({
             startFormVisibility: false
@@ -76,7 +62,7 @@ class Game extends React.Component<gameProps, fullState> {
 
     createPlayers = (numberOfPlayers: number): void => {
         let gameState: gameState = { ...this.state.game };
-        const game = createPlayers(gameState, numberOfPlayers);
+        const game = createPlayers(this.props.gameManager, gameState, numberOfPlayers);
         this.setState({ game });
     };
 
@@ -108,8 +94,7 @@ class Game extends React.Component<gameProps, fullState> {
 
     assignDieToScout = (die: DieProps): Tiles => {
         let state: fullState = { ...this.state };
-        let pickedTile: Tiles = chance.pickone(state.game.gameTiles);
-        state.game.gameTiles = state.game.gameTiles.filter((tile: Tiles) => tile !== pickedTile);
+        let pickedTile: Tiles = this.props.gameManager.popRandomGameTile();
         state.game.players[0].citizenry.dice.push(die);
         this.setState({ ...state });
         return pickedTile;

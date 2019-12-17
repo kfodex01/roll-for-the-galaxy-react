@@ -8,6 +8,7 @@ import { gameState, fullState } from '../Game';
 import { PhasePowersProps, PlayerBoardProps } from '../PlayerBoard';
 import { assignAiPlayersDice } from './ai-components';
 import Chance from 'chance';
+import GameManager from './GameManager';
 
 const chance = new Chance();
 
@@ -301,21 +302,21 @@ export const rollHumanPlayerDice = (game: gameState): gameState => {
     return game;
 };
 
-export const createPlayers = (state: gameState, numberOfPlayers: number): gameState => {
+export const createPlayers = (gameManager: GameManager, state: gameState, numberOfPlayers: number): gameState => {
     const victoryPointPool = 12 * numberOfPlayers;
     const players: Array<PlayerBoardProps> = [];
-    const factionTiles: Array<Tiles> = chance.pickset(state.factionTiles, numberOfPlayers);
-    const homeWorldTiles: Array<Tiles> = chance.pickset(state.homeWorldTiles, numberOfPlayers);
-    const gameTiles: Array<Tiles> = chance.pickset(state.gameTiles, numberOfPlayers * 2);
-    state.factionTiles = state.factionTiles.filter((tile: Tiles) => !factionTiles.includes(tile));
-    state.homeWorldTiles = state.homeWorldTiles.filter((tile: Tiles) => !homeWorldTiles.includes(tile));
-    state.gameTiles = state.gameTiles.filter((tile: Tiles) => !gameTiles.includes(tile));
+    // const factionTiles: Array<Tiles> = chance.pickset(state.factionTiles, numberOfPlayers);
+    // const homeWorldTiles: Array<Tiles> = chance.pickset(state.homeWorldTiles, numberOfPlayers);
+    // const gameTiles: Array<Tiles> = chance.pickset(state.gameTiles, numberOfPlayers * 2);
+    // state.factionTiles = state.factionTiles.filter((tile: Tiles) => !factionTiles.includes(tile));
+    // state.homeWorldTiles = state.homeWorldTiles.filter((tile: Tiles) => !homeWorldTiles.includes(tile));
+    // state.gameTiles = state.gameTiles.filter((tile: Tiles) => !gameTiles.includes(tile));
     for (let i = 0; i < numberOfPlayers; i++) {
-        const factionTile: Tiles = factionTiles[i];
-        const homeWorldTile: Tiles = homeWorldTiles[i];
+        const factionTile: Tiles = gameManager.popRandomFactionTile();
+        const homeWorldTile: Tiles = gameManager.popRandomHomeWorldTile();
         let buildQueueTiles: Array<Tiles> = [];
-        buildQueueTiles.push(gameTiles[i * 2]);
-        buildQueueTiles.push(gameTiles[(i * 2) + 1]);
+        buildQueueTiles.push(gameManager.popRandomGameTile());
+        buildQueueTiles.push(gameManager.popRandomGameTile());
         buildQueueTiles = getLowestConstructionQueueTotal(buildQueueTiles);
         const credits = homeWorldTile.tiles[0].bonus === bonuses.EIGHT_CREDITS ? 8 : 1;
         let points = 0;
