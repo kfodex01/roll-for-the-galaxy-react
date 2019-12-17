@@ -13,17 +13,27 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DicePool, { DicePoolProps } from './DicePool';
 import { getDragEvent } from './utils/drag-event-utility';
 import { DieProps } from './Die';
+import { Tiles } from './ConstructionZone';
+import Tile, { TileProps } from './Tile';
+import styled from "styled-components";
+
+const TileSideDiv = styled.div`
+    background-color: #ededed;
+`;
 
 interface ExplorePopupProps {
     closePopup(): void,
     assignDiceToStock(dicePool: DicePoolProps): void,
+    assignDieToScout(die: DieProps): Tiles,
+    assignTileToQueue(tile: Tiles, isDevelopQueue: boolean): void,
     exploreDice: DicePoolProps
 };
 
 interface ExploreState {
     scoutPool: DicePoolProps,
     stockPool: DicePoolProps,
-    unassignedPool: DicePoolProps
+    unassignedPool: DicePoolProps,
+    tiles: Array<Tiles>
 };
 
 class ExplorePopup extends React.Component<ExplorePopupProps, ExploreState> {
@@ -36,7 +46,8 @@ class ExplorePopup extends React.Component<ExplorePopupProps, ExploreState> {
         },
         unassignedPool: {
             dice: []
-        }
+        },
+        tiles: Array<Tiles>()
     };
 
     findDieByIdInExploreState = (state: ExploreState, id: string): DieProps => {
@@ -74,10 +85,53 @@ class ExplorePopup extends React.Component<ExplorePopupProps, ExploreState> {
     };
 
     initiateStock = (): void => {
-        let state = {...this.state};
+        let state = { ...this.state };
         this.props.assignDiceToStock(state.stockPool);
         state.stockPool.dice = [];
+        this.setState({ ...state });
+    };
+
+    initiateScout = (): void => {
+        let state = { ...this.state };
+        state.tiles.push(this.props.assignDieToScout(state.scoutPool.dice[0]));
+        state.scoutPool.dice = [];
+        this.setState({ ...state });
+    };
+
+    initiateTileSelection = (isDevelopQueue: boolean): void => {
+        let state = { ...this.state };
+        this.props.assignTileToQueue(state.tiles[0], isDevelopQueue);
+        state.tiles = [];
         this.setState({...state});
+    };
+
+    getListOfTilePowers = (tile: TileProps): Array<JSX.Element> => {
+        let powerList: Array<JSX.Element> = [];
+        if (tile.bonus) {
+            powerList.push(<p>{'Bonus: '}{tile.bonus}</p>);
+        };
+        if (tile.assignment) {
+            powerList.push(<p>{'Assignment: '}{tile.assignment}</p>);
+        };
+        if (tile.explore) {
+            powerList.push(<p>{'Explore: '}{tile.explore}</p>);
+        };
+        if (tile.develop) {
+            powerList.push(<p>{'Develop: '}{tile.develop}</p>);
+        };
+        if (tile.settle) {
+            powerList.push(<p>{'Settle: '}{tile.settle}</p>);
+        };
+        if (tile.produce) {
+            powerList.push(<p>{'Produce: '}{tile.produce}</p>);
+        };
+        if (tile.ship) {
+            powerList.push(<p>{'Assignment: '}{tile.ship}</p>);
+        };
+        if (tile.endGame) {
+            powerList.push(<p>{'End Game: '}{tile.endGame}</p>);
+        };
+        return powerList;
     };
 
     onDragStart = (event: React.DragEvent<HTMLDivElement>, id: string): void => {
@@ -129,7 +183,7 @@ class ExplorePopup extends React.Component<ExplorePopupProps, ExploreState> {
                                 <DicePool {...this.state.scoutPool} draggable={true} onDragStart={this.onDragStart} />
                             </FlexRowDiv>
                             {
-                                this.state.scoutPool.dice.length > 0 ? <button>{'Send Scout'}</button> : null
+                                this.state.scoutPool.dice.length > 0 && this.state.tiles.length === 0 ? <button onClick={this.initiateScout}>{'Send Scout'}</button> : null
                             }
                         </DropBoxDiv>
                         <DropBoxDiv
@@ -154,6 +208,29 @@ class ExplorePopup extends React.Component<ExplorePopupProps, ExploreState> {
                             }
                         </DropBoxDiv>
                     </FlexDropBoxRowDiv>
+                    {
+                        this.state.tiles.length > 0 ?
+                            <>
+                                <TileSideDiv>
+                                    <FlexRowDiv>
+                                        <BigText>{this.state.tiles[0].tiles[0].points}</BigText>
+                                        <Tile key={this.state.tiles[0].tileId} {...this.state.tiles[0].tiles[0]} />
+                                    </FlexRowDiv>
+                                    {this.getListOfTilePowers(this.state.tiles[0].tiles[0])}
+                                    <button onClick={() => this.initiateTileSelection(true)}>Select Tile</button>
+                                </TileSideDiv>
+                                <BigText>{'- OR -'}</BigText>
+                                <TileSideDiv>
+                                    <FlexRowDiv>
+                                        <BigText>{this.state.tiles[0].tiles[1].points}</BigText>
+                                        <Tile key={this.state.tiles[0].tileId + 1} {...this.state.tiles[0].tiles[1]} />
+                                    </FlexRowDiv>
+                                    {this.getListOfTilePowers(this.state.tiles[0].tiles[1])}
+                                    <button onClick={() => this.initiateTileSelection(false)}>Select Tile</button>
+                                </TileSideDiv>
+                            </>
+                            : null
+                    }
                 </PopupOnlyDiv>
             </PopupFullPageCoverDiv>
         );
