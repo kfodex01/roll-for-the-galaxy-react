@@ -10,6 +10,7 @@ import { rollHumanPlayerDice, createPlayers, finishAssignmentPhase } from './uti
 import { DicePoolProps } from './DicePool';
 import { DieProps } from './Die';
 import GameManager from './utils/GameManager';
+import DiceManager from './utils/DiceManager';
 
 export interface gameState {
     players: Array<PlayerBoardProps>,
@@ -32,7 +33,8 @@ export interface fullState {
 };
 
 interface gameProps {
-    gameManager: GameManager
+    gameManager: GameManager,
+    diceManager: DiceManager
 };
 
 class Game extends React.Component<gameProps, fullState> {
@@ -68,7 +70,7 @@ class Game extends React.Component<gameProps, fullState> {
 
     toggleAssignmentPopup = (): void => {
         let state: fullState = { ...this.state };
-        const gameWithRolledDice = rollHumanPlayerDice(state.game);
+        const gameWithRolledDice = rollHumanPlayerDice(state.game, this.props.diceManager);
         this.setState({ assignmentPopupVisibility: !state.assignmentPopupVisibility, game: gameWithRolledDice });
     };
 
@@ -79,7 +81,7 @@ class Game extends React.Component<gameProps, fullState> {
 
     assignDice = (pickedPhase: string): void => {
         let state = { ...this.state };
-        state = finishAssignmentPhase(state, pickedPhase);
+        state = finishAssignmentPhase(state, pickedPhase, this.props.diceManager);
         this.setState({
             ...state
         });
