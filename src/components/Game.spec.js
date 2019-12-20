@@ -2,442 +2,614 @@ import React from 'react';
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Game from './Game';
-import { initialState, bonuses, tileTypes, dieColor, dieFace } from '../enums';
+import { initialState, bonuses, tileTypes, dieColor, dieFace, developmentPowers } from '../enums';
 import Chance from 'chance';
 import { getMockTile, getMockFullTile, getArrayOfRandomDice, getArrayOfRandomTiles, getMockDie } from '../test-utilities/mock-object-generators';
 import { getDragEvent } from './utils/drag-event-utility';
+import GameManager from './utils/GameManager';
+import DiceManager from './utils/DiceManager';
 
 jest.mock('./utils/drag-event-utility');
 
 const chance = new Chance();
 
 describe('Game', () => {
-    // afterEach(cleanup);
-
-    // describe('Setup', () => {
-    //     let playerOneButton,
-    //         playerTwoButton,
-    //         playerThreeButton,
-    //         playerFourButton,
-    //         playerFiveButton,
-    //         initialTestState,
-    //         mockSinglePlayerStartingState;
-
-    //     const getButtons = (queryByText) => {
-    //         playerOneButton = queryByText('1');
-    //         playerTwoButton = queryByText('2');
-    //         playerThreeButton = queryByText('3');
-    //         playerFourButton = queryByText('4');
-    //         playerFiveButton = queryByText('5');
-    //     };
-
-    //     beforeEach(() => {
-    //         initialTestState = JSON.parse(JSON.stringify(initialState));
-    //         mockSinglePlayerStartingState = {
-    //             game: {
-    //                 factionTiles: [
-    //                     getMockFullTile()
-    //                 ],
-    //                 homeWorldTiles: [
-    //                     getMockFullTile()
-    //                 ],
-    //                 gameTiles: [
-    //                     getMockFullTile(),
-    //                     getMockFullTile()
-    //                 ],
-    //                 victoryPointPool: chance.integer({ min: 1, max: 60 })
-    //             },
-    //             startFormVisibility: true,
-    //             assignmentPopupVisibility: false
-    //         }
-    //     });
-
-    //     describe('Player Creation', () => {
-    //         it('should display the start form', () => {
-    //             const { getByTestId } = render(<Game initialState={initialTestState} />);
-
-    //             expect(getByTestId('start-form')).toBeTruthy();
-    //         });
-
-    //         it('should hide the start form, create a victory point pool with 12 points, and create 1 player', () => {
-    //             const { queryByText, getByTestId, queryByTestId } = render(<Game initialState={initialTestState} />);
-
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const playerBoards = getByTestId('player-boards');
-
-    //             expect(queryByTestId('start-form')).toBeFalsy();
-    //             expect(queryByText('Victory Point Pool: 12')).toBeTruthy();
-    //             expect(playerBoards).toBeTruthy();
-    //             expect(playerBoards.children.length).toBe(1);
-    //         });
-
-    //         it('should hide the start form, create a victory point pool with 24 points, and create 2 players', () => {
-    //             const { queryByText, getByTestId, queryByTestId } = render(<Game initialState={initialTestState} />);
-
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerTwoButton);
-    //             const playerBoards = getByTestId('player-boards');
-
-    //             expect(queryByTestId('start-form')).toBeFalsy();
-    //             expect(queryByText('Victory Point Pool: 24')).toBeTruthy();
-    //             expect(playerBoards).toBeTruthy();
-    //             expect(playerBoards.children.length).toBe(2);
-    //         });
-
-    //         it('should hide the start form, create a victory point pool with 36 points, and create 3 players', () => {
-    //             const { queryByText, getByTestId, queryByTestId } = render(<Game initialState={initialTestState} />);
-
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerThreeButton);
-    //             const playerBoards = getByTestId('player-boards');
-
-    //             expect(queryByTestId('start-form')).toBeFalsy();
-    //             expect(queryByText('Victory Point Pool: 36')).toBeTruthy();
-    //             expect(playerBoards).toBeTruthy();
-    //             expect(playerBoards.children.length).toBe(3);
-    //         });
-
-    //         it('should hide the start form, create a victory point pool with 48 points, and create 4 players', () => {
-
-    //             const { queryByText, getByTestId, queryByTestId } = render(<Game initialState={initialTestState} />);
-
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerFourButton);
-    //             const playerBoards = getByTestId('player-boards');
-
-    //             expect(queryByTestId('start-form')).toBeFalsy();
-    //             expect(queryByText('Victory Point Pool: 48')).toBeTruthy();
-    //             expect(playerBoards).toBeTruthy();
-    //             expect(playerBoards.children.length).toBe(4);
-    //         });
-
-    //         it('should hide the start form, create a victory point pool with 60 points, and create 5 players', () => {
-    //             const { queryByText, getByTestId, queryByTestId } = render(<Game initialState={initialTestState} />);
-
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerFiveButton);
-    //             const playerBoards = getByTestId('player-boards');
-
-    //             expect(queryByTestId('start-form')).toBeFalsy();
-    //             expect(queryByText('Victory Point Pool: 60')).toBeTruthy();
-    //             expect(playerBoards).toBeTruthy();
-    //             expect(playerBoards.children.length).toBe(5);
-    //         });
-
-    //         it('should create a player with three white dice in cup and two white dice in citizenry', () => {
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const cup = getByTestId('cup');
-    //             const citizenry = getByTestId('citizenry');
-
-    //             expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
-    //             expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
-    //         });
-
-    //         it('should create a player with the correct number of points', () => {
-    //             mockSinglePlayerStartingState.game.factionTiles[0].tiles[0].points = 1;
-    //             mockSinglePlayerStartingState.game.factionTiles[0].tiles[1].points = 2;
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].points = 3;
-
-    //             const { queryByText, getByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const points = getByTestId('points');
-
-    //             expect(points).toBeTruthy();
-    //             expect(points.textContent).toBe('6');
-    //         });
-
-    //         it('should create a player with the correct number of credits', () => {
-    //             const { queryByText, getByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const credits = getByTestId('credits');
-
-    //             expect(credits).toBeTruthy();
-    //             expect(credits.textContent).toBe('1');
-    //         });
-    //     });
-
-    //     describe('Bonus Tests', () => {
-    //         it('should add one brown die to citizenry', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BROWN_DIE_TO_CITIZENRY;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const citizenry = getByTestId('citizenry');
-
-    //             expect(within(citizenry).queryAllByTestId('BrownDie').length).toBe(1);
-    //         });
-
-    //         it('should add one green die to citizenry', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_GREEN_DIE_TO_CITIZENRY;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const citizenry = getByTestId('citizenry');
-
-    //             expect(within(citizenry).queryAllByTestId('GreenDie').length).toBe(1);
-    //         });
-
-    //         it('should add one purple die to citizenry', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_PURPLE_DIE_TO_CITIZENRY;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const citizenry = getByTestId('citizenry');
-
-    //             expect(within(citizenry).queryAllByTestId('PurpleDie').length).toBe(1);
-    //         });
-
-    //         it('should add one red die to citizenry', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_RED_DIE_TO_CITIZENRY;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const citizenry = getByTestId('citizenry');
-
-    //             expect(within(citizenry).queryAllByTestId('RedDie').length).toBe(1);
-    //         });
-
-    //         it('should add one yellow die to citizenry', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_YELLOW_DIE_TO_CITIZENRY;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const citizenry = getByTestId('citizenry');
-
-    //             expect(within(citizenry).queryAllByTestId('YellowDie').length).toBe(1);
-    //         });
-
-    //         it('should add one blue die and one red die to citizenry', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BLUE_DIE_AND_ONE_RED_DIE_TO_CITIZENRY;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const citizenry = getByTestId('citizenry');
-
-    //             expect(within(citizenry).queryAllByTestId('BlueDie').length).toBe(1);
-    //             expect(within(citizenry).queryAllByTestId('RedDie').length).toBe(1);
-    //         });
-
-    //         it('should add two red dice to citizenry', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.TWO_RED_DICE_TO_CITIZENRY;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const citizenry = getByTestId('citizenry');
-
-    //             expect(within(citizenry).queryAllByTestId('RedDie').length).toBe(2);
-    //         });
-
-    //         it('should add one blue die to cup', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BLUE_DIE_TO_CUP;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const cup = getByTestId('cup');
-
-    //             expect(within(cup).queryAllByTestId('BlueDie').length).toBe(1);
-    //         });
-
-    //         it('should add one brown die to cup', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BROWN_DIE_TO_CUP;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const cup = getByTestId('cup');
-
-    //             expect(within(cup).queryAllByTestId('BrownDie').length).toBe(1);
-    //         });
-
-    //         it('should add one green die to cup', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_GREEN_DIE_TO_CUP;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const cup = getByTestId('cup');
-
-    //             expect(within(cup).queryAllByTestId('GreenDie').length).toBe(1);
-    //         });
-
-    //         it('should add one purple die to cup', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_PURPLE_DIE_TO_CUP;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const cup = getByTestId('cup');
-
-    //             expect(within(cup).queryAllByTestId('PurpleDie').length).toBe(1);
-    //         });
-
-    //         it('should add one red die to cup', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_RED_DIE_TO_CUP;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const cup = getByTestId('cup');
-
-    //             expect(within(cup).queryAllByTestId('RedDie').length).toBe(1);
-    //         });
-
-    //         it('should add one blue die to world', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].name = 'Here I am';
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BLUE_DIE_TO_WORLD;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const world = getByTestId('Here I am');
-
-    //             expect(within(world).queryAllByTestId('BlueDie').length).toBe(1);
-    //         });
-
-    //         it('should add one brown die to world', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].name = 'Here I am';
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_BROWN_DIE_TO_WORLD;
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const world = getByTestId('Here I am');
-
-    //             expect(within(world).queryAllByTestId('BrownDie').length).toBe(1);
-    //         });
-
-    //         it('should add one green die to world', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].name = 'Here I am';
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.ONE_GREEN_DIE_TO_WORLD;
-
-    //             const { queryByText, getByTestId, queryAllByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-    //             const world = getByTestId('Here I am');
-
-    //             expect(within(world).queryAllByTestId('GreenDie').length).toBe(1);
-    //         });
-
-    //         it('should start the player with eight credits', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].bonus = bonuses.EIGHT_CREDITS;
-
-    //             const { queryByText, getByTestId } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-
-    //             expect(getByTestId('credits').textContent).toBe('8');
-    //         });
-    //     });
-
-    //     describe('Picking build queue tiles', () => {
-    //         it('should keep the build queue totals as low as possible', () => {
-    //             const customGameTiles = [
-    //                 getMockFullTile(['Low Dev', 'High Settle'], [1, 10]),
-    //                 getMockFullTile(['High Dev', 'Low Settle'], [10, 1])
-    //             ];
-    //             mockSinglePlayerStartingState.game.gameTiles = customGameTiles;
-
-    //             for (let i = 0; i < 100; i++) {
-    //                 const { queryByText } = render(<Game initialState={JSON.parse(JSON.stringify(mockSinglePlayerStartingState))} />);
-    //                 getButtons(queryByText);
-    //                 fireEvent.click(playerOneButton);
-
-    //                 expect(queryByText('Low Dev')).toBeTruthy();
-    //                 expect(queryByText('Low Settle')).toBeTruthy();
-    //                 expect(queryByText('High Dev')).toBeFalsy();
-    //                 expect(queryByText('High Settle')).toBeFalsy();
-
-    //                 cleanup();
-    //             }
-    //         });
-    //     });
-
-    //     describe('Phase Powers', () => {
-    //         it('should add an assignment phase power', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].assignment = 'Ima power.';
-
-    //             const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-
-    //             expect(queryByText('Assignment: Ima power.')).toBeTruthy();
-    //         });
-
-    //         it('should add an explore phase power', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].explore = 'Ima power.';
-
-    //             const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-
-    //             expect(queryByText('Explore: Ima power.')).toBeTruthy();
-    //         });
-
-    //         it('should add a develop phase power', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].develop = 'Ima power.';
-
-    //             const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-
-    //             expect(queryByText('Develop: Ima power.')).toBeTruthy();
-    //         });
-
-    //         it('should add a settle phase power', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].settle = 'Ima power.';
-
-    //             const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-
-    //             expect(queryByText('Settle: Ima power.')).toBeTruthy();
-    //         });
-
-    //         it('should add a produce phase power', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].produce = 'Ima power.';
-
-    //             const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-
-    //             expect(queryByText('Produce: Ima power.')).toBeTruthy();
-    //         });
-
-    //         it('should add a ship phase power', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].ship = 'Ima power.';
-
-    //             const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-
-    //             expect(queryByText('Ship: Ima power.')).toBeTruthy();
-    //         });
-
-    //         it('should add an end game phase power', () => {
-    //             mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].endGame = 'Ima power.';
-
-    //             const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
-    //             getButtons(queryByText);
-    //             fireEvent.click(playerOneButton);
-
-    //             expect(queryByText('End Game: Ima power.')).toBeTruthy();
-    //         });
-    //     });
-    // });
+    let gameManager,
+        diceManager;
+
+    beforeEach(() => {
+        gameManager = new GameManager();
+        diceManager = new DiceManager();
+    });
+
+    afterEach(cleanup);
+
+    describe('Setup', () => {
+        let playerOneButton,
+            playerTwoButton,
+            playerThreeButton,
+            playerFourButton,
+            playerFiveButton;
+
+        const getButtons = (queryByText) => {
+            playerOneButton = queryByText('1');
+            playerTwoButton = queryByText('2');
+            playerThreeButton = queryByText('3');
+            playerFourButton = queryByText('4');
+            playerFiveButton = queryByText('5');
+        };
+
+        describe('Player Creation', () => {
+            it('should display the start form', () => {
+                const { getByTestId } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+
+                expect(getByTestId('start-form')).toBeTruthy();
+            });
+
+            it('should hide the start form, create a victory point pool with 12 points, and create 1 player', () => {
+                const { queryByText, getByTestId, queryByTestId } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+                const playerBoards = getByTestId('player-boards');
+
+                expect(queryByTestId('start-form')).toBeFalsy();
+                expect(queryByText('Victory Point Pool: 12')).toBeTruthy();
+                expect(playerBoards).toBeTruthy();
+                expect(playerBoards.children.length).toBe(1);
+            });
+
+            it('should hide the start form, create a victory point pool with 24 points, and create 2 players', () => {
+                const { queryByText, getByTestId, queryByTestId } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+
+                getButtons(queryByText);
+                fireEvent.click(playerTwoButton);
+                const playerBoards = getByTestId('player-boards');
+
+                expect(queryByTestId('start-form')).toBeFalsy();
+                expect(queryByText('Victory Point Pool: 24')).toBeTruthy();
+                expect(playerBoards).toBeTruthy();
+                expect(playerBoards.children.length).toBe(2);
+            });
+
+            it('should hide the start form, create a victory point pool with 36 points, and create 3 players', () => {
+                const { queryByText, getByTestId, queryByTestId } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+
+                getButtons(queryByText);
+                fireEvent.click(playerThreeButton);
+                const playerBoards = getByTestId('player-boards');
+
+                expect(queryByTestId('start-form')).toBeFalsy();
+                expect(queryByText('Victory Point Pool: 36')).toBeTruthy();
+                expect(playerBoards).toBeTruthy();
+                expect(playerBoards.children.length).toBe(3);
+            });
+
+            it('should hide the start form, create a victory point pool with 48 points, and create 4 players', () => {
+
+                const { queryByText, getByTestId, queryByTestId } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+
+                getButtons(queryByText);
+                fireEvent.click(playerFourButton);
+                const playerBoards = getByTestId('player-boards');
+
+                expect(queryByTestId('start-form')).toBeFalsy();
+                expect(queryByText('Victory Point Pool: 48')).toBeTruthy();
+                expect(playerBoards).toBeTruthy();
+                expect(playerBoards.children.length).toBe(4);
+            });
+
+            it('should hide the start form, create a victory point pool with 60 points, and create 5 players', () => {
+                const { queryByText, getByTestId, queryByTestId } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+
+                getButtons(queryByText);
+                fireEvent.click(playerFiveButton);
+                const playerBoards = getByTestId('player-boards');
+
+                expect(queryByTestId('start-form')).toBeFalsy();
+                expect(queryByText('Victory Point Pool: 60')).toBeTruthy();
+                expect(playerBoards).toBeTruthy();
+                expect(playerBoards.children.length).toBe(5);
+            });
+
+            it('should create a player with three white dice in cup and two white dice in citizenry', () => {
+                const { queryByText, getByTestId, queryAllByTestId } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                getButtons(queryByText);
+                fireEvent.click(playerOneButton);
+                const cup = getByTestId('cup');
+                const citizenry = getByTestId('citizenry');
+
+                expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+            });
+
+            describe('Faction Tiles', () => {
+                it('should render a player with Space Piracy and Hidden Fortress', () => {
+                    gameManager.chooseNextFactionTiles([1]);
+                    gameManager.chooseNextHomeWorldTiles([3]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('3');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('development').length).toBe(1);
+                    expect(within(tableau).queryAllByTestId('gray-world').length).toBe(1);
+                    expect(within(tableau).getByText('Space Piracy')).toBeTruthy();
+                    expect(within(tableau).getByText('Hidden Fortress')).toBeTruthy();
+                    expect(getByText('Ship: ' + developmentPowers.SPACE_PIRACY)).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(citizenry).queryAllByTestId('RedDie').length).toBe(1);
+                });
+
+                it('should render a player with Alien Archaeology and Alien Rosetta Stone World', () => {
+                    gameManager.chooseNextFactionTiles([2]);
+                    gameManager.chooseNextHomeWorldTiles([3]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('3');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('development').length).toBe(1);
+                    expect(within(tableau).queryAllByTestId('gray-world').length).toBe(1);
+                    expect(within(tableau).getByText('Alien Archaeology')).toBeTruthy();
+                    expect(within(tableau).getByText('Alien Rosetta Stone World')).toBeTruthy();
+                    expect(getByText('Ship: ' + developmentPowers.ALIEN_ARCHAEOLOGY)).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(citizenry).queryAllByTestId('YellowDie').length).toBe(1);
+                });
+
+                it('should render a player with Consumer Markets and Space Mall', () => {
+                    gameManager.chooseNextFactionTiles([3]);
+                    gameManager.chooseNextHomeWorldTiles([3]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('4');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('development').length).toBe(1);
+                    expect(within(tableau).queryAllByTestId('blue-world').length).toBe(1);
+                    expect(within(tableau).getByText('Consumer Markets')).toBeTruthy();
+                    expect(within(tableau).getByText('Space Mall')).toBeTruthy();
+                    expect(getByText('Produce: ' + developmentPowers.CONSUMER_MARKETS)).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(cup).queryAllByTestId('BlueDie').length).toBe(1);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                });
+
+                it('should render a player with Improved Reconnaissance and Wormhole Station', () => {
+                    gameManager.chooseNextFactionTiles([4]);
+                    gameManager.chooseNextHomeWorldTiles([1]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('7');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('development').length).toBe(1);
+                    expect(within(tableau).queryAllByTestId('brown-world').length).toBe(1);
+                    expect(within(tableau).getByText('Improved Reconnaissance')).toBeTruthy();
+                    expect(within(tableau).getByText('Wormhole Station')).toBeTruthy();
+                    expect(getByText('Explore: ' + developmentPowers.IMPROVED_RECONNAISSANCE)).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(cup).queryAllByTestId('BrownDie').length).toBe(1);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                });
+
+                it('should render a player with Genetics Lab and The Last of the Gnarssh', () => {
+                    gameManager.chooseNextFactionTiles([5]);
+                    gameManager.chooseNextHomeWorldTiles([1]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('4');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('development').length).toBe(1);
+                    expect(within(tableau).queryAllByTestId('green-world').length).toBe(1);
+                    expect(within(tableau).getByText('Genetics Lab')).toBeTruthy();
+                    expect(within(tableau).getByText('The Last of the Gnarssh')).toBeTruthy();
+                    expect(getByText('Produce: ' + developmentPowers.GENETICS_LAB)).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(citizenry).queryAllByTestId('GreenDie').length).toBe(1);
+                });
+
+                it('should render a player with Galactic Religion and Pilgrimage World', () => {
+                    gameManager.chooseNextFactionTiles([6]);
+                    gameManager.chooseNextHomeWorldTiles([1]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('7');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('development').length).toBe(1);
+                    expect(within(tableau).queryAllByTestId('blue-world').length).toBe(1);
+                    expect(within(tableau).getByText('Galactic Religion')).toBeTruthy();
+                    expect(within(tableau).getByText('Pilgrimage World')).toBeTruthy();
+                    expect(getByText('Develop: ' + developmentPowers.GALACTIC_RELIGION)).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(tableau).queryAllByTestId('BlueDie').length).toBe(1);
+                });
+
+                it('should render a player with Biological Adaptation and Aquatic Uplift World', () => {
+                    gameManager.chooseNextFactionTiles([7]);
+                    gameManager.chooseNextHomeWorldTiles([3]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('5');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('development').length).toBe(1);
+                    expect(within(tableau).queryAllByTestId('gray-world').length).toBe(1);
+                    expect(within(tableau).getByText('Biological Adaptation')).toBeTruthy();
+                    expect(within(tableau).getByText('Aquatic Uplift World')).toBeTruthy();
+                    expect(getByText('Develop: ' + developmentPowers.BIOLOGICAL_ADAPTATION)).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(cup).queryAllByTestId('GreenDie').length).toBe(1);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                });
+
+                it('should render a player with Mining Industry and Meteorite Planet', () => {
+                    gameManager.chooseNextFactionTiles([8]);
+                    gameManager.chooseNextHomeWorldTiles([1]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('5');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('development').length).toBe(1);
+                    expect(within(tableau).queryAllByTestId('brown-world').length).toBe(1);
+                    expect(within(tableau).getByText('Mining Industry')).toBeTruthy();
+                    expect(within(tableau).getByText('Meteorite Planet')).toBeTruthy();
+                    expect(getByText('Ship: ' + developmentPowers.MINING_INDUSTRY)).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(citizenry).queryAllByTestId('BrownDie').length).toBe(1);
+                });
+
+                it('should render a player with Destroyed Colony and Awakened Alien Outpost', () => {
+                    gameManager.chooseNextFactionTiles([9]);
+                    gameManager.chooseNextHomeWorldTiles([3]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('4');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('gray-world').length).toBe(1);
+                    expect(within(tableau).queryAllByTestId('yellow-world').length).toBe(1);
+                    expect(within(tableau).getByText('Destroyed Colony')).toBeTruthy();
+                    expect(within(tableau).getByText('Awakened Alien Outpost')).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(cup).queryAllByTestId('PurpleDie').length).toBe(1);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(citizenry).queryAllByTestId('RedDie').length).toBe(1);
+                });
+            });
+
+            describe('Homeworld Tiles', () => {
+                it('should render a player with New Sparta', () => {
+                    gameManager.chooseNextFactionTiles([4]);
+                    gameManager.chooseNextHomeWorldTiles([1]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('7');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('gray-world').length).toBe(1);
+                    expect(within(tableau).getByText('New Sparta')).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(citizenry).queryAllByTestId('RedDie').length).toBe(2);
+                });
+
+                it('should render a player with Doomed World', () => {
+                    gameManager.chooseNextFactionTiles([4]);
+                    gameManager.chooseNextHomeWorldTiles([2]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('5');
+                    expect(getByTestId('credits').textContent).toBe('8');
+                    expect(within(tableau).queryAllByTestId('gray-world').length).toBe(1);
+                    expect(within(tableau).getByText('Doomed World')).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                });
+
+                it('should render a player with Alpha Centauri', () => {
+                    gameManager.chooseNextFactionTiles([1]);
+                    gameManager.chooseNextHomeWorldTiles([3]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('3');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('brown-world').length).toBe(1);
+                    expect(within(tableau).getByText('Alpha Centauri')).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(tableau).queryAllByTestId('BrownDie').length).toBe(1);
+                });
+
+                it('should render a player with Earth\'s Lost Colony', () => {
+                    gameManager.chooseNextFactionTiles([1]);
+                    gameManager.chooseNextHomeWorldTiles([4]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('4');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('blue-world').length).toBe(1);
+                    expect(within(tableau).getByText('Earth\'s Lost Colony')).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(tableau).queryAllByTestId('BlueDie').length).toBe(1);
+                });
+
+                it('should render a player with Ancient Race', () => {
+                    gameManager.chooseNextFactionTiles([1]);
+                    gameManager.chooseNextHomeWorldTiles([5]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('2');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('green-world').length).toBe(1);
+                    expect(within(tableau).getByText('Ancient Race')).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(tableau).queryAllByTestId('GreenDie').length).toBe(1);
+                });
+
+                it('should render a player with Damaged Alien Factory', () => {
+                    gameManager.chooseNextFactionTiles([1]);
+                    gameManager.chooseNextHomeWorldTiles([6]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('3');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('yellow-world').length).toBe(1);
+                    expect(within(tableau).getByText('Damaged Alien Factory')).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(citizenry).queryAllByTestId('YellowDie').length).toBe(1);
+                });
+
+                it('should render a player with Old Earth', () => {
+                    gameManager.chooseNextFactionTiles([3]);
+                    gameManager.chooseNextHomeWorldTiles([7]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('6');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('gray-world').length).toBe(1);
+                    expect(within(tableau).getByText('Old Earth')).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(citizenry).queryAllByTestId('PurpleDie').length).toBe(1);
+                });
+
+                it('should render a player with Separatist Colony', () => {
+                    gameManager.chooseNextFactionTiles([3]);
+                    gameManager.chooseNextHomeWorldTiles([8]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('5');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('gray-world').length).toBe(1);
+                    expect(within(tableau).getByText('Separatist Colony')).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(cup).queryAllByTestId('RedDie').length).toBe(1);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                });
+
+                it('should render a player with Epsilon Eridani', () => {
+                    gameManager.chooseNextFactionTiles([3]);
+                    gameManager.chooseNextHomeWorldTiles([9]);
+
+                    const { queryByText, getByTestId, queryAllByTestId, getByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const cup = getByTestId('cup');
+                    const citizenry = getByTestId('citizenry');
+                    const tableau = getByTestId('tableau');
+
+                    expect(getByTestId('points').textContent).toBe('5');
+                    expect(getByTestId('credits').textContent).toBe('1');
+                    expect(within(tableau).queryAllByTestId('gray-world').length).toBe(1);
+                    expect(within(tableau).getByText('Epsilon Eridani')).toBeTruthy();
+                    expect(within(cup).queryAllByTestId('WhiteDie').length).toBe(3);
+                    expect(within(citizenry).queryAllByTestId('WhiteDie').length).toBe(2);
+                    expect(within(citizenry).queryAllByTestId('RedDie').length).toBe(1);
+                    expect(within(citizenry).queryAllByTestId('BlueDie').length).toBe(1);
+                });
+            });
+        });
+
+        // describe('Picking build queue tiles', () => {
+        //     it('should keep the build queue totals as low as possible', () => {
+        //         const customGameTiles = [
+        //             getMockFullTile(['Low Dev', 'High Settle'], [1, 10]),
+        //             getMockFullTile(['High Dev', 'Low Settle'], [10, 1])
+        //         ];
+        //         mockSinglePlayerStartingState.game.gameTiles = customGameTiles;
+
+        //         for (let i = 0; i < 100; i++) {
+        //             const { queryByText } = render(<Game initialState={JSON.parse(JSON.stringify(mockSinglePlayerStartingState))} />);
+        //             getButtons(queryByText);
+        //             fireEvent.click(playerOneButton);
+
+        //             expect(queryByText('Low Dev')).toBeTruthy();
+        //             expect(queryByText('Low Settle')).toBeTruthy();
+        //             expect(queryByText('High Dev')).toBeFalsy();
+        //             expect(queryByText('High Settle')).toBeFalsy();
+
+        //             cleanup();
+        //         }
+        //     });
+        // });
+
+        // describe('Phase Powers', () => {
+        //     it('should add an assignment phase power', () => {
+        //         mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].assignment = 'Ima power.';
+
+        //         const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
+        //         getButtons(queryByText);
+        //         fireEvent.click(playerOneButton);
+
+        //         expect(queryByText('Assignment: Ima power.')).toBeTruthy();
+        //     });
+
+        //     it('should add an explore phase power', () => {
+        //         mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].explore = 'Ima power.';
+
+        //         const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
+        //         getButtons(queryByText);
+        //         fireEvent.click(playerOneButton);
+
+        //         expect(queryByText('Explore: Ima power.')).toBeTruthy();
+        //     });
+
+        //     it('should add a develop phase power', () => {
+        //         mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].develop = 'Ima power.';
+
+        //         const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
+        //         getButtons(queryByText);
+        //         fireEvent.click(playerOneButton);
+
+        //         expect(queryByText('Develop: Ima power.')).toBeTruthy();
+        //     });
+
+        //     it('should add a settle phase power', () => {
+        //         mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].settle = 'Ima power.';
+
+        //         const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
+        //         getButtons(queryByText);
+        //         fireEvent.click(playerOneButton);
+
+        //         expect(queryByText('Settle: Ima power.')).toBeTruthy();
+        //     });
+
+        //     it('should add a produce phase power', () => {
+        //         mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].produce = 'Ima power.';
+
+        //         const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
+        //         getButtons(queryByText);
+        //         fireEvent.click(playerOneButton);
+
+        //         expect(queryByText('Produce: Ima power.')).toBeTruthy();
+        //     });
+
+        //     it('should add a ship phase power', () => {
+        //         mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].ship = 'Ima power.';
+
+        //         const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
+        //         getButtons(queryByText);
+        //         fireEvent.click(playerOneButton);
+
+        //         expect(queryByText('Ship: Ima power.')).toBeTruthy();
+        //     });
+
+        //     it('should add an end game phase power', () => {
+        //         mockSinglePlayerStartingState.game.homeWorldTiles[0].tiles[0].endGame = 'Ima power.';
+
+        //         const { queryByText } = render(<Game initialState={{ ...mockSinglePlayerStartingState }} />);
+        //         getButtons(queryByText);
+        //         fireEvent.click(playerOneButton);
+
+        //         expect(queryByText('End Game: Ima power.')).toBeTruthy();
+        //     });
+        // });
+    });
 
     // describe('Main Game Loop', () => {
     //     let mockDataTransferData,

@@ -79,7 +79,7 @@ class PlayerBoard extends React.Component<PlayerBoardProps> {
                         <DicePool {...this.props.cup} />
                     </FlexRowDiv>
                 </FlexRowDiv>
-                <FlexRowDiv>
+                <FlexRowDiv data-testid='tableau'>
                     <BigText>Tableau: </BigText>
                     {this.props.tiles.map((tile) => {
                         return (

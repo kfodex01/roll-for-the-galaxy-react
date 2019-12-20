@@ -1261,11 +1261,11 @@ class GameManager {
     };
 
     chooseNextHomeWorldTiles(ids: Array<number>): void {
-        this.nextFactionTileIds = this.nextHomeWorldTileIds.concat(ids);
+        this.nextHomeWorldTileIds = this.nextHomeWorldTileIds.concat(ids);
     };
 
     chooseNextGameTiles(ids: Array<number>): void {
-        this.nextFactionTileIds = this.nextGameTileIds.concat(ids);
+        this.nextGameTileIds = this.nextGameTileIds.concat(ids);
     };
 };
 
