@@ -38,7 +38,7 @@ class ConstructionZone extends React.Component<ConstructionZoneProps> {
 
     render() {
         return (
-            <FlexRowDiv>
+            <FlexRowDiv data-testid='build-queues'>
                 <FontAwesomeIcon icon={faWrench} size='2x' />
                 {this.renderBuildQueue(this.props.developBuildQueue, true)}
                 {this.renderBuildQueue(this.props.settleBuildQueue, false)}

@@ -513,6 +513,40 @@ describe('Game', () => {
                     expect(within(citizenry).queryAllByTestId('BlueDie').length).toBe(1);
                 });
             });
+
+            describe('Game Tiles', () => {
+                it('should keep tiles in the same order when the lowest build total is achieved', () => {
+                    gameManager.chooseNextGameTiles([6, 1]);
+
+                    const { queryByText, getByTestId, queryAllByTestId } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const buildQueues = getByTestId('build-queues');
+
+                    expect(within(buildQueues).queryAllByText('1').length).toBe(1);
+                    expect(within(buildQueues).queryAllByTestId('development').length).toBe(1);
+                    expect(within(buildQueues).getByText('Advanced Logistics')).toBeTruthy();
+                    expect(within(buildQueues).queryAllByText('2').length).toBe(1);
+                    expect(within(buildQueues).queryAllByTestId('blue-world').length).toBe(1);
+                    expect(within(buildQueues).getByText('Gem World')).toBeTruthy();
+                });
+
+                it('should swap tiles when the lowest build total is the reverse', () => {
+                    gameManager.chooseNextGameTiles([1, 6]);
+
+                    const { queryByText, getByTestId, queryAllByTestId } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    getButtons(queryByText);
+                    fireEvent.click(playerOneButton);
+                    const buildQueues = getByTestId('build-queues');
+
+                    expect(within(buildQueues).queryAllByText('1').length).toBe(1);
+                    expect(within(buildQueues).queryAllByTestId('development').length).toBe(1);
+                    expect(within(buildQueues).getByText('Advanced Logistics')).toBeTruthy();
+                    expect(within(buildQueues).queryAllByText('2').length).toBe(1);
+                    expect(within(buildQueues).queryAllByTestId('blue-world').length).toBe(1);
+                    expect(within(buildQueues).getByText('Gem World')).toBeTruthy();
+                });
+            });
         });
     });
 
