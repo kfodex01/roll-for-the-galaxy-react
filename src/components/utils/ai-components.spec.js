@@ -57,7 +57,7 @@ describe('ai-components', () => {
                 ship: false
             }
         };
-        Chance.mockClear();
+        jest.clearAllMocks();
     });
 
     it('should add the only die to the explore pool when explore is rolled', () => {
