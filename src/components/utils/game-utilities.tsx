@@ -118,14 +118,14 @@ const returnPhaseDiceForInactivePhases = (state: fullState): fullState => {
 const setNextPhase = (state: fullState): fullState => {
     if (state.pickedPhases.explore) {
         state.currentPhase = 'Explore Phase';
-    // } else if (state.pickedPhases.develop) {
-    //     state.currentPhase = 'Develop Phase';
-    // } else if (state.pickedPhases.settle) {
-    //     state.currentPhase = 'Settle Phase';
-    // } else if (state.pickedPhases.produce) {
-    //     state.currentPhase = 'Produce Phase';
-    // } else if (state.pickedPhases.ship) {
-    //     state.currentPhase = 'Ship Phase';
+    } else if (state.pickedPhases.develop) {
+        state.currentPhase = 'Develop Phase';
+    } else if (state.pickedPhases.settle) {
+        state.currentPhase = 'Settle Phase';
+    } else if (state.pickedPhases.produce) {
+        state.currentPhase = 'Produce Phase';
+    } else if (state.pickedPhases.ship) {
+        state.currentPhase = 'Ship Phase';
     } else {
         state.currentPhase = 'Start Round';
     };

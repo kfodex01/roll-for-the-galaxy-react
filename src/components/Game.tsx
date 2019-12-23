@@ -4,7 +4,7 @@ import { BigText, FlexColumnDiv } from '../styled-components';
 import PlayerBoard, { PlayerBoardProps } from './PlayerBoard';
 import { PhaseDice } from './PhaseDice';
 import { Tiles } from './ConstructionZone';
-import AssignmentPopup from './AssignmentPopup';
+import AssignmentPopup, { AssignmentState } from './AssignmentPopup';
 import ExplorePopup from './ExplorePopup';
 import { rollHumanPlayerDice, createPlayers, finishAssignmentPhase } from './utils/game-utilities';
 import { DicePoolProps } from './DicePool';
@@ -79,6 +79,14 @@ class Game extends React.Component<gameProps, fullState> {
         this.setState({ explorePopupVisibility: !state.explorePopupVisibility });
     };
 
+    modifyPhaseDice = (phaseDice: AssignmentState): void => {
+        let state = { ...this.state };
+        state.game.players[0].phaseDice = phaseDice;
+        this.setState({
+            ...state
+        });
+    };
+
     assignDice = (pickedPhase: string): void => {
         let state = { ...this.state };
         state = finishAssignmentPhase(state, pickedPhase, this.props.diceManager);
@@ -148,7 +156,7 @@ class Game extends React.Component<gameProps, fullState> {
                 {
                     this.state.assignmentPopupVisibility === true ?
                         (
-                            <AssignmentPopup closePopup={this.toggleAssignmentPopup} assignDice={this.assignDice} initialState={this.state.game.players[0].phaseDice} />
+                            <AssignmentPopup closePopup={this.toggleAssignmentPopup} assignDice={this.assignDice} phaseDice={this.state.game.players[0].phaseDice} modifyPhaseDice={this.modifyPhaseDice} />
                         ) : null
                 }
                 {

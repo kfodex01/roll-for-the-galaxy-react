@@ -655,126 +655,121 @@ describe('Game', () => {
                     expect(queryByText('Start Round')).toBeTruthy();
                 });
 
-                // it('should hide the start round button when the assignment is valid and the explore button is clicked', () => {
-                //     console.log('explore');
-                //     gameManager.chooseNextFactionTiles([1]);
-                //     gameManager.chooseNextHomeWorldTiles([1]);
+                it('should hide the start round button when the assignment is valid and the explore button is clicked', () => {
+                    gameManager.chooseNextFactionTiles([1]);
+                    gameManager.chooseNextHomeWorldTiles([1]);
 
-                //     const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
-                //     fireEvent.click(getByText('1'));
-                //     const startRoundButton = getByText('Start Round');
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    fireEvent.click(getByText('1'));
+                    const startRoundButton = getByText('Start Round');
 
-                //     fireEvent.click(startRoundButton);
-                //     getDropBoxes(getByTestId);
-                //     getSubmitButtons(getByText);
-                //     const assignmentPopup = getByTestId('assignment-popup');
-                //     const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
-                //     fireEvent.dragStart(dieToDrag);
-                //     fireEvent.dragOver(phasePickerBox);
-                //     fireEvent.drop(phasePickerBox);
+                    fireEvent.click(startRoundButton);
+                    getDropBoxes(getByTestId);
+                    getSubmitButtons(getByText);
+                    const assignmentPopup = getByTestId('assignment-popup');
+                    const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(phasePickerBox);
+                    fireEvent.drop(phasePickerBox);
 
-                //     fireEvent.click(exploreButton);
+                    fireEvent.click(exploreButton);
 
-                //     expect(queryByTestId('assignment-popup')).toBeFalsy();
-                //     expect(queryByText('Start Round')).toBeFalsy();
-                //     expect(queryByTestId('active-explore-phase')).toBeTruthy();
-                // });
+                    expect(queryByTestId('assignment-popup')).toBeFalsy();
+                    expect(queryByText('Start Round')).toBeFalsy();
+                    expect(queryByTestId('active-explore-phase')).toBeTruthy();
+                });
 
-                // it('should hide the start round button when the assignment is valid and the develop button is clicked', () => {
-                //     console.log('develop');
-                //     gameManager.chooseNextFactionTiles([1]);
-                //     gameManager.chooseNextHomeWorldTiles([1]);
+                it('should hide the start round button when the assignment is valid and the develop button is clicked', () => {
+                    gameManager.chooseNextFactionTiles([1]);
+                    gameManager.chooseNextHomeWorldTiles([1]);
 
-                //     const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
-                //     fireEvent.click(getByText('1'));
-                //     const startRoundButton = getByText('Start Round');
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    fireEvent.click(getByText('1'));
+                    const startRoundButton = getByText('Start Round');
 
-                //     fireEvent.click(startRoundButton);
-                //     getDropBoxes(getByTestId);
-                //     getSubmitButtons(getByText);
-                //     const assignmentPopup = getByTestId('assignment-popup');
-                //     const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
-                //     fireEvent.dragStart(dieToDrag);
-                //     fireEvent.dragOver(phasePickerBox);
-                //     fireEvent.drop(phasePickerBox);
-                //     fireEvent.click(developButton);
+                    fireEvent.click(startRoundButton);
+                    getDropBoxes(getByTestId);
+                    getSubmitButtons(getByText);
+                    const assignmentPopup = getByTestId('assignment-popup');
+                    const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(phasePickerBox);
+                    fireEvent.drop(phasePickerBox);
+                    fireEvent.click(developButton);
 
-                //     expect(queryByTestId('assignment-popup')).toBeFalsy();
-                //     expect(queryByText('Start Round')).toBeFalsy();
-                //     expect(queryByTestId('active-develop-phase')).toBeTruthy();
-                // });
+                    expect(queryByTestId('assignment-popup')).toBeFalsy();
+                    expect(queryByText('Start Round')).toBeFalsy();
+                    expect(queryByTestId('active-develop-phase')).toBeTruthy();
+                });
 
-                // it('should hide the start round button when the assignment is valid and the settle button is clicked', () => {
-                //     console.log('settle');
-                //     gameManager.chooseNextFactionTiles([1]);
-                //     gameManager.chooseNextHomeWorldTiles([1]);
+                it('should hide the start round button when the assignment is valid and the settle button is clicked', () => {
+                    gameManager.chooseNextFactionTiles([1]);
+                    gameManager.chooseNextHomeWorldTiles([1]);
 
-                //     const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
-                //     fireEvent.click(getByText('1'));
-                //     const startRoundButton = getByText('Start Round');
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    fireEvent.click(getByText('1'));
+                    const startRoundButton = getByText('Start Round');
 
-                //     fireEvent.click(startRoundButton);
-                //     getDropBoxes(getByTestId);
-                //     getSubmitButtons(getByText);
-                //     const assignmentPopup = getByTestId('assignment-popup');
-                //     const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
-                //     fireEvent.dragStart(dieToDrag);
-                //     fireEvent.dragOver(phasePickerBox);
-                //     fireEvent.drop(phasePickerBox);
-                //     fireEvent.click(settleButton);
+                    fireEvent.click(startRoundButton);
+                    getDropBoxes(getByTestId);
+                    getSubmitButtons(getByText);
+                    const assignmentPopup = getByTestId('assignment-popup');
+                    const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(phasePickerBox);
+                    fireEvent.drop(phasePickerBox);
+                    fireEvent.click(settleButton);
 
-                //     expect(queryByTestId('assignment-popup')).toBeFalsy();
-                //     expect(queryByText('Start Round')).toBeFalsy();
-                //     expect(queryByTestId('active-settle-phase')).toBeTruthy();
-                // });
+                    expect(queryByTestId('assignment-popup')).toBeFalsy();
+                    expect(queryByText('Start Round')).toBeFalsy();
+                    expect(queryByTestId('active-settle-phase')).toBeTruthy();
+                });
 
-                // it('should hide the start round button when the assignment is valid and the produce button is clicked', () => {
-                //     console.log('produce');
-                //     gameManager.chooseNextFactionTiles([1]);
-                //     gameManager.chooseNextHomeWorldTiles([1]);
+                it('should hide the start round button when the assignment is valid and the produce button is clicked', () => {
+                    gameManager.chooseNextFactionTiles([1]);
+                    gameManager.chooseNextHomeWorldTiles([1]);
 
-                //     const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
-                //     fireEvent.click(getByText('1'));
-                //     const startRoundButton = getByText('Start Round');
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    fireEvent.click(getByText('1'));
+                    const startRoundButton = getByText('Start Round');
 
-                //     fireEvent.click(startRoundButton);
-                //     getDropBoxes(getByTestId);
-                //     getSubmitButtons(getByText);
-                //     const assignmentPopup = getByTestId('assignment-popup');
-                //     const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
-                //     fireEvent.dragStart(dieToDrag);
-                //     fireEvent.dragOver(phasePickerBox);
-                //     fireEvent.drop(phasePickerBox);
-                //     fireEvent.click(produceButton);
+                    fireEvent.click(startRoundButton);
+                    getDropBoxes(getByTestId);
+                    getSubmitButtons(getByText);
+                    const assignmentPopup = getByTestId('assignment-popup');
+                    const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(phasePickerBox);
+                    fireEvent.drop(phasePickerBox);
+                    fireEvent.click(produceButton);
 
-                //     expect(queryByTestId('assignment-popup')).toBeFalsy();
-                //     expect(queryByText('Start Round')).toBeFalsy();
-                //     expect(queryByTestId('active-produce-phase')).toBeTruthy();
-                // });
+                    expect(queryByTestId('assignment-popup')).toBeFalsy();
+                    expect(queryByText('Start Round')).toBeFalsy();
+                    expect(queryByTestId('active-produce-phase')).toBeTruthy();
+                });
 
-                // it('should hide the start round button when the assignment is valid and the ship button is clicked', () => {
-                //     console.log('ship');
-                //     gameManager.chooseNextFactionTiles([1]);
-                //     gameManager.chooseNextHomeWorldTiles([1]);
+                it('should hide the start round button when the assignment is valid and the ship button is clicked', () => {
+                    gameManager.chooseNextFactionTiles([1]);
+                    gameManager.chooseNextHomeWorldTiles([1]);
 
-                //     const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
-                //     fireEvent.click(getByText('1'));
-                //     const startRoundButton = getByText('Start Round');
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+                    fireEvent.click(getByText('1'));
+                    const startRoundButton = getByText('Start Round');
 
-                //     fireEvent.click(startRoundButton);
-                //     getDropBoxes(getByTestId);
-                //     getSubmitButtons(getByText);
-                //     const assignmentPopup = getByTestId('assignment-popup');
-                //     const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
-                //     fireEvent.dragStart(dieToDrag);
-                //     fireEvent.dragOver(phasePickerBox);
-                //     fireEvent.drop(phasePickerBox);
-                //     fireEvent.click(shipButton);
+                    fireEvent.click(startRoundButton);
+                    getDropBoxes(getByTestId);
+                    getSubmitButtons(getByText);
+                    const assignmentPopup = getByTestId('assignment-popup');
+                    const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(phasePickerBox);
+                    fireEvent.drop(phasePickerBox);
+                    fireEvent.click(shipButton);
 
-                //     expect(queryByTestId('assignment-popup')).toBeFalsy();
-                //     expect(queryByText('Start Round')).toBeFalsy();
-                //     expect(queryByTestId('active-ship-phase')).toBeTruthy();
-                // });
+                    expect(queryByTestId('assignment-popup')).toBeFalsy();
+                    expect(queryByText('Start Round')).toBeFalsy();
+                    expect(queryByTestId('active-ship-phase')).toBeTruthy();
+                });
             });
         });
 
