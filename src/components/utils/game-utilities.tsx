@@ -9,6 +9,7 @@ import { PhasePowersProps, PlayerBoardProps } from '../PlayerBoard';
 import { assignAiPlayersDice } from './ai-components';
 import GameManager from './GameManager';
 import DiceManager from './DiceManager';
+import { ExploreState } from '../ExplorePopup';
 
 const addDieToPool = (dicePool: DicePoolProps, dieColor: string, dieFace: string): DicePoolProps => {
     dicePool.dice.push({
@@ -115,7 +116,7 @@ const returnPhaseDiceForInactivePhases = (state: fullState): fullState => {
     return state;
 };
 
-const setNextPhase = (state: fullState): fullState => {
+export const setNextPhase = (state: fullState): fullState => {
     if (state.pickedPhases.explore) {
         state.currentPhase = 'Explore Phase';
     } else if (state.pickedPhases.develop) {
@@ -128,6 +129,7 @@ const setNextPhase = (state: fullState): fullState => {
         state.currentPhase = 'Ship Phase';
     } else {
         state.currentPhase = 'Start Round';
+        state.game.players[0].phaseDice.phaseDiceRolled = false;
     };
     return state;
 };
@@ -290,6 +292,18 @@ export const createPlayers = (gameManager: GameManager, state: gameState, number
             },
             phaseDiceRolled: false
         };
+        let explorePhase: ExploreState = {
+            scoutPool: {
+                dice: []
+            },
+            stockPool: {
+                dice: []
+            },
+            tiles: [],
+            unassignedPool: {
+                dice: []
+            }
+        };
         players.push(
             {
                 id: i + 1,
@@ -297,6 +311,7 @@ export const createPlayers = (gameManager: GameManager, state: gameState, number
                 citizenry,
                 cup,
                 developBuildQueue: [buildQueueTiles[0]],
+                explorePhase,
                 nextTileId: 4,
                 phaseDice,
                 phasePowers,

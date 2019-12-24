@@ -5,8 +5,8 @@ import PlayerBoard, { PlayerBoardProps } from './PlayerBoard';
 import { PhaseDice } from './PhaseDice';
 import { Tiles } from './ConstructionZone';
 import AssignmentPopup, { AssignmentState } from './AssignmentPopup';
-import ExplorePopup from './ExplorePopup';
-import { rollHumanPlayerDice, createPlayers, finishAssignmentPhase } from './utils/game-utilities';
+import ExplorePopup, { ExploreState } from './ExplorePopup';
+import { rollHumanPlayerDice, createPlayers, finishAssignmentPhase, setNextPhase } from './utils/game-utilities';
 import { DicePoolProps } from './DicePool';
 import { DieProps } from './Die';
 import GameManager from './utils/GameManager';
@@ -76,12 +76,33 @@ class Game extends React.Component<gameProps, fullState> {
 
     toggleExplorePopup = (): void => {
         let state: fullState = { ...this.state };
-        this.setState({ explorePopupVisibility: !state.explorePopupVisibility });
+        state.explorePopupVisibility = !state.explorePopupVisibility;
+        if (state.game.players[0].phaseDice.exploreDice.dice.length > 0) {
+            state.game.players[0].explorePhase.unassignedPool.dice = state.game.players[0].phaseDice.exploreDice.dice;
+            state.game.players[0].phaseDice.exploreDice.dice = [];
+        };
+        if (state.game.players[0].explorePhase.unassignedPool.dice.length === 0 &&
+            state.game.players[0].explorePhase.scoutPool.dice.length === 0 &&
+            state.game.players[0].explorePhase.stockPool.dice.length === 0 &&
+            state.game.players[0].explorePhase.tiles.length === 0) {
+                state.explorePopupVisibility = false;
+                state.pickedPhases.explore = false;
+                setNextPhase(state);
+        };
+        this.setState({ ...state });
     };
 
     modifyPhaseDice = (phaseDice: AssignmentState): void => {
         let state = { ...this.state };
         state.game.players[0].phaseDice = phaseDice;
+        this.setState({
+            ...state
+        });
+    };
+
+    modifyExplorePhase = (explorePhase: ExploreState): void => {
+        let state = { ...this.state };
+        state.game.players[0].explorePhase = explorePhase;
         this.setState({
             ...state
         });
@@ -99,15 +120,17 @@ class Game extends React.Component<gameProps, fullState> {
         let state: fullState = { ...this.state };
         state.game.players[0].credits = state.game.players[0].credits + (dicePool.dice.length * 2);
         state.game.players[0].citizenry.dice = state.game.players[0].citizenry.dice.concat(dicePool.dice);
+        state.game.players[0].explorePhase.stockPool.dice = [];
         this.setState({ ...state });
     };
 
-    assignDieToScout = (die: DieProps): Tiles => {
+    assignDieToScout = (die: DieProps): void => {
         let state: fullState = { ...this.state };
         let pickedTile: Tiles = this.props.gameManager.popRandomGameTile();
         state.game.players[0].citizenry.dice.push(die);
+        state.game.players[0].explorePhase.scoutPool.dice = [];
+        state.game.players[0].explorePhase.tiles.push(pickedTile);
         this.setState({ ...state });
-        return pickedTile;
     };
 
     assignTileToQueue = (tile: Tiles, isDevelopmentQueue: boolean): void => {
@@ -117,6 +140,7 @@ class Game extends React.Component<gameProps, fullState> {
         } else {
             state.game.players[0].settleBuildQueue.push(tile);
         };
+        state.game.players[0].explorePhase.tiles = [];
         this.setState({ ...state });
     };
 
@@ -164,10 +188,11 @@ class Game extends React.Component<gameProps, fullState> {
                         (
                             <ExplorePopup
                                 closePopup={this.toggleExplorePopup}
-                                exploreDice={this.state.game.players[0].phaseDice.exploreDice}
+                                explorePhase={this.state.game.players[0].explorePhase}
                                 assignDiceToStock={this.assignDiceToStock}
                                 assignDieToScout={this.assignDieToScout}
                                 assignTileToQueue={this.assignTileToQueue}
+                                modifyExplorePhase={this.modifyExplorePhase}
                             />
                         ) : null
                 }
