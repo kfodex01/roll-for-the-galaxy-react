@@ -562,6 +562,7 @@ describe('Game', () => {
             wildBox,
             phasePickerBox,
             scoutBox,
+            unassignedBox,
             stockBox,
             exploreButton,
             developButton,
@@ -825,6 +826,199 @@ describe('Game', () => {
                 expect(queryByTestId('scout-box')).toBeFalsy();
                 expect(queryByTestId('unassigned-box')).toBeFalsy();
                 expect(queryByTestId('stock-box')).toBeFalsy();
+            });
+
+            describe('Scouting', () => {
+                it('should display the send scout button', () => {
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+    
+                    finishAssignmentPhase(getByText, getByTestId);
+                    fireEvent.click(getByText('Explore Phase'));
+    
+                    getExploreDropBoxes(getByTestId);
+                    const explorePopup = getByTestId('explore-popup');
+                    const dieToDrag = within(explorePopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(scoutBox);
+                    fireEvent.drop(scoutBox);
+    
+                    expect(within(explorePopup).queryByText('Send Scout')).toBeTruthy();
+                });
+
+                it('should return the die to the citizenry when the scout button is clicked', () => {
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+    
+                    finishAssignmentPhase(getByText, getByTestId);
+                    fireEvent.click(getByText('Explore Phase'));
+    
+                    getExploreDropBoxes(getByTestId);
+                    const explorePopup = getByTestId('explore-popup');
+                    const dieToDrag = within(explorePopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(scoutBox);
+                    fireEvent.drop(scoutBox);
+                    const citizenry = getByTestId('citizenry');
+                    const beforeNumberOfWhiteDiceInCitizenry = within(citizenry).getAllByTestId('WhiteDie').length;
+                    fireEvent.click(getByText('Send Scout'));
+                    const afterNumberOfWhiteDiceInCitizenry = within(citizenry).getAllByTestId('WhiteDie').length;
+    
+                    expect(beforeNumberOfWhiteDiceInCitizenry).toBe(afterNumberOfWhiteDiceInCitizenry - 1);
+                });
+
+                it('should display the correct tile choice when scout button is clicked and tile has assignment power', () => {
+                    gameManager.chooseNextGameTiles([7,1,2]);
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText, queryAllByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+    
+                    finishAssignmentPhase(getByText, getByTestId);
+                    fireEvent.click(getByText('Explore Phase'));
+    
+                    getExploreDropBoxes(getByTestId);
+                    const explorePopup = getByTestId('explore-popup');
+                    const dieToDrag = within(explorePopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(scoutBox);
+                    fireEvent.drop(scoutBox);
+                    fireEvent.click(getByText('Send Scout'));
+    
+                    expect(within(explorePopup).queryByText('Colonial Affinity')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Assignment: You may Reassign one worker to become a settler.')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Malevolent Lifeforms')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Bonus: Gain a Genes (green) good on this world when you place it.')).toBeTruthy();
+                    expect(within(explorePopup).queryAllByText('Select Tile').length).toBe(2);
+                });
+
+                it('should display the correct tile choice when scout button is clicked and tile has explore power', () => {
+                    gameManager.chooseNextGameTiles([1,2,3]);
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText, queryAllByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+    
+                    finishAssignmentPhase(getByText, getByTestId);
+                    fireEvent.click(getByText('Explore Phase'));
+    
+                    getExploreDropBoxes(getByTestId);
+                    const explorePopup = getByTestId('explore-popup');
+                    const dieToDrag = within(explorePopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(scoutBox);
+                    fireEvent.drop(scoutBox);
+                    fireEvent.click(getByText('Send Scout'));
+    
+                    expect(within(explorePopup).queryByText('Advanced Logistics')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Explore: You may rearrange all tiles in your construction zone (including turning them over).')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Designer Species, Ultd.')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Bonus: Gain $1 and a Genes (green) good on this world when you place it.')).toBeTruthy();
+                    expect(within(explorePopup).queryAllByText('Select Tile').length).toBe(2);
+                });
+
+                it('should display the correct tile choice when scout button is clicked and tile has develop power', () => {
+                    gameManager.chooseNextGameTiles([18,1,2]);
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText, queryAllByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+    
+                    finishAssignmentPhase(getByText, getByTestId);
+                    fireEvent.click(getByText('Explore Phase'));
+    
+                    getExploreDropBoxes(getByTestId);
+                    const explorePopup = getByTestId('explore-popup');
+                    const dieToDrag = within(explorePopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(scoutBox);
+                    fireEvent.drop(scoutBox);
+                    fireEvent.click(getByText('Send Scout'));
+    
+                    expect(within(explorePopup).queryByText('Galactic Investors')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Develop: +$2 at the end of this phase, including the phase in which you complete this.')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('New Vinland')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Bonus: Gain a Novelty (blue) die into your cup when you place this world.')).toBeTruthy();
+                    expect(within(explorePopup).queryAllByText('Select Tile').length).toBe(2);
+                });
+
+                it('should display the correct tile choice when scout button is clicked and tile has settle power', () => {
+                    gameManager.chooseNextGameTiles([4,1,2]);
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText, queryAllByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+    
+                    finishAssignmentPhase(getByText, getByTestId);
+                    fireEvent.click(getByText('Explore Phase'));
+    
+                    getExploreDropBoxes(getByTestId);
+                    const explorePopup = getByTestId('explore-popup');
+                    const dieToDrag = within(explorePopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(scoutBox);
+                    fireEvent.drop(scoutBox);
+                    fireEvent.click(getByText('Send Scout'));
+    
+                    expect(within(explorePopup).queryByText('Alien Uplift Blueprints')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Settle: Genes (green) and Alien Technology (yellow) worlds require one fewer settler to complete.')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Information Hub')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Bonus: Gain a Novelty (blue) good on this world when you place it.')).toBeTruthy();
+                    expect(within(explorePopup).queryAllByText('Select Tile').length).toBe(2);
+                });
+
+                it('should display the correct tile choice when scout button is clicked and tile has produce power', () => {
+                    gameManager.chooseNextGameTiles([33,1,2]);
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText, queryAllByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+    
+                    finishAssignmentPhase(getByText, getByTestId);
+                    fireEvent.click(getByText('Explore Phase'));
+    
+                    getExploreDropBoxes(getByTestId);
+                    const explorePopup = getByTestId('explore-popup');
+                    const dieToDrag = within(explorePopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(scoutBox);
+                    fireEvent.drop(scoutBox);
+                    fireEvent.click(getByText('Send Scout'));
+    
+                    expect(within(explorePopup).queryByText('Merchant Guild')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Produce: +$2 at the end of this phase.')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Jumpdrive Fuel Refinery')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Bonus: Gain a Rare Elements (brown) good on this world when you place it.')).toBeTruthy();
+                    expect(within(explorePopup).queryAllByText('Select Tile').length).toBe(2);
+                });
+
+                it('should display the correct tile choice when scout button is clicked and tile has ship power', () => {
+                    gameManager.chooseNextGameTiles([10,1,2]);
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText, queryAllByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+    
+                    finishAssignmentPhase(getByText, getByTestId);
+                    fireEvent.click(getByText('Explore Phase'));
+    
+                    getExploreDropBoxes(getByTestId);
+                    const explorePopup = getByTestId('explore-popup');
+                    const dieToDrag = within(explorePopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(scoutBox);
+                    fireEvent.drop(scoutBox);
+                    fireEvent.click(getByText('Send Scout'));
+    
+                    expect(within(explorePopup).queryByText('Export Duties')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Ship: +$1 for each good you Trade this phase.')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Silicon World')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Bonus: Gain $1 and a Rare Elements (brown) good on this world when you place it.')).toBeTruthy();
+                    expect(within(explorePopup).queryAllByText('Select Tile').length).toBe(2);
+                });
+
+                it('should display the correct tile choice when scout button is clicked and tile has end game power', () => {
+                    gameManager.chooseNextGameTiles([11,1,2]);
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText, queryAllByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+    
+                    finishAssignmentPhase(getByText, getByTestId);
+                    fireEvent.click(getByText('Explore Phase'));
+    
+                    getExploreDropBoxes(getByTestId);
+                    const explorePopup = getByTestId('explore-popup');
+                    const dieToDrag = within(explorePopup).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(scoutBox);
+                    fireEvent.drop(scoutBox);
+                    fireEvent.click(getByText('Send Scout'));
+    
+                    expect(within(explorePopup).queryByText('Free Trade Association')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Ship: +$2 at the end of this phase.')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('End Game: Add half of your total Novelty (blue) world cost (rounded up).')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Sentient Robots')).toBeTruthy();
+                    expect(within(explorePopup).queryByText('Bonus: Gain a Military (red) die into your cup when you place this world.')).toBeTruthy();
+                    expect(within(explorePopup).queryAllByText('Select Tile').length).toBe(2);
+                });
             });
         });
     });

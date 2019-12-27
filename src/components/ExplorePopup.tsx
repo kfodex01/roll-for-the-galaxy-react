@@ -90,28 +90,28 @@ class ExplorePopup extends React.Component<ExplorePopupProps> {
     getListOfTilePowers = (tile: TileProps): Array<JSX.Element> => {
         let powerList: Array<JSX.Element> = [];
         if (tile.bonus) {
-            powerList.push(<p>{'Bonus: '}{tile.bonus}</p>);
+            powerList.push(<p key={tile.tileId + 'bonus'}>{'Bonus: '}{tile.bonus}</p>);
         };
         if (tile.assignment) {
-            powerList.push(<p>{'Assignment: '}{tile.assignment}</p>);
+            powerList.push(<p key={tile.tileId + 'assignment'}>{'Assignment: '}{tile.assignment}</p>);
         };
         if (tile.explore) {
-            powerList.push(<p>{'Explore: '}{tile.explore}</p>);
+            powerList.push(<p key={tile.tileId + 'explore'}>{'Explore: '}{tile.explore}</p>);
         };
         if (tile.develop) {
-            powerList.push(<p>{'Develop: '}{tile.develop}</p>);
+            powerList.push(<p key={tile.tileId + 'develop'}>{'Develop: '}{tile.develop}</p>);
         };
         if (tile.settle) {
-            powerList.push(<p>{'Settle: '}{tile.settle}</p>);
+            powerList.push(<p key={tile.tileId + 'settle'}>{'Settle: '}{tile.settle}</p>);
         };
         if (tile.produce) {
-            powerList.push(<p>{'Produce: '}{tile.produce}</p>);
+            powerList.push(<p key={tile.tileId + 'produce'}>{'Produce: '}{tile.produce}</p>);
         };
         if (tile.ship) {
-            powerList.push(<p>{'Assignment: '}{tile.ship}</p>);
+            powerList.push(<p key={tile.tileId + 'ship'}>{'Ship: '}{tile.ship}</p>);
         };
         if (tile.endGame) {
-            powerList.push(<p>{'End Game: '}{tile.endGame}</p>);
+            powerList.push(<p key={tile.tileId + 'endGame'}>{'End Game: '}{tile.endGame}</p>);
         };
         return powerList;
     };

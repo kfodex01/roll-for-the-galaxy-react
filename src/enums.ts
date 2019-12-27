@@ -88,7 +88,7 @@ export const bonuses = {
 };
 
 export const developmentPowers = {
-    ADVANCED_LOGISTICS: 'You may rearrange all tiles in your construction zone (including turning them over)',
+    ADVANCED_LOGISTICS: 'You may rearrange all tiles in your construction zone (including turning them over).',
     ALIEN_ARCHAEOLOGY: '+$4 (instead of +$2) when Stocking with an Alien Technology (yellow) explorer.',
     ALIEN_RESEARCH_SHIP: 'Act as if your had an extra Home (white) explorer and an extra Alien Technology (yellow) explorer for use this phase.',
     ALIEN_RESEARCH_TEAM: 'Draw and keep an extra tile at the end of this phase. If you Scouted with at least one Alien Technology (yellow) explorer, +$1.',
