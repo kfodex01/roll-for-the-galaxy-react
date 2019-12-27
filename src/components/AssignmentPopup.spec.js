@@ -838,7 +838,6 @@ describe('AssignmentPopup', () => {
 
         describe('Explore Button', () => {
             it('should submit with explore picked when explore button is clicked', () => {
-                console.log('here');
                 const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
