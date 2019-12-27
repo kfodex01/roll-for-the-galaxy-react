@@ -139,7 +139,7 @@ class ExplorePopup extends React.Component<ExplorePopupProps> {
     render() {
         return (
             <PopupFullPageCoverDiv>
-                <PopupOnlyDiv>
+                <PopupOnlyDiv data-testid='explore-popup'>
                     <FlexMaxRowDiv>
                         <BigText>Explore Phase</BigText>
                         <button onClick={this.props.closePopup}>

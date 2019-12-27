@@ -8,6 +8,7 @@ import { getMockTile, getMockFullTile, getArrayOfRandomDice, getArrayOfRandomTil
 import { getDragEvent } from './utils/drag-event-utility';
 import GameManager from './utils/GameManager';
 import DiceManager from './utils/DiceManager';
+import { finishAssignmentPhase } from './utils/game-utilities';
 
 jest.mock('./utils/drag-event-utility');
 
@@ -552,7 +553,21 @@ describe('Game', () => {
 
     describe('Main Game Loop', () => {
         let mockDataTransferData,
-            mockSinglePlayerAssignmentState;
+            mockSinglePlayerAssignmentState,
+            exploreBox,
+            developBox,
+            settleBox,
+            produceBox,
+            shipBox,
+            wildBox,
+            phasePickerBox,
+            scoutBox,
+            stockBox,
+            exploreButton,
+            developButton,
+            settleButton,
+            produceButton,
+            shipButton;
 
         const mockDragEvent = {
             dataTransfer: {
@@ -565,6 +580,30 @@ describe('Game', () => {
                 }
             },
             preventDefault: jest.fn()
+        };
+
+        const getAssignmentDropBoxes = (getByTestId) => {
+            exploreBox = getByTestId('explore-drop-box');
+            developBox = getByTestId('develop-drop-box');
+            settleBox = getByTestId('settle-drop-box');
+            produceBox = getByTestId('produce-drop-box');
+            shipBox = getByTestId('ship-drop-box');
+            wildBox = getByTestId('wild-drop-box');
+            phasePickerBox = getByTestId('phase-picker-box');
+        };
+
+        const getAssignmentSubmitButtons = (getByText) => {
+            exploreButton = getByText('Pick Explore');
+            developButton = getByText('Pick Develop');
+            settleButton = getByText('Pick Settle');
+            produceButton = getByText('Pick Produce');
+            shipButton = getByText('Pick Ship');
+        };
+
+        const getExploreDropBoxes = (getByTestId) => {
+            scoutBox = getByTestId('scout-box');
+            unassignedBox = getByTestId('unassigned-box');
+            stockBox = getByTestId('stock-box');
         };
 
         describe('Assignment Phase', () => {
@@ -606,37 +645,6 @@ describe('Game', () => {
             });
 
             describe('Submit buttons', () => {
-                let exploreBox,
-                    developBox,
-                    settleBox,
-                    produceBox,
-                    shipBox,
-                    wildBox,
-                    phasePickerBox,
-                    exploreButton,
-                    developButton,
-                    settleButton,
-                    produceButton,
-                    shipButton;
-
-                const getDropBoxes = (getByTestId) => {
-                    exploreBox = getByTestId('explore-drop-box');
-                    developBox = getByTestId('develop-drop-box');
-                    settleBox = getByTestId('settle-drop-box');
-                    produceBox = getByTestId('produce-drop-box');
-                    shipBox = getByTestId('ship-drop-box');
-                    wildBox = getByTestId('wild-drop-box');
-                    phasePickerBox = getByTestId('phase-picker-box');
-                };
-
-                const getSubmitButtons = (getByText) => {
-                    exploreButton = getByText('Pick Explore');
-                    developButton = getByText('Pick Develop');
-                    settleButton = getByText('Pick Settle');
-                    produceButton = getByText('Pick Produce');
-                    shipButton = getByText('Pick Ship');
-                };
-
                 beforeEach(() => {
                     getDragEvent.mockReturnValue(mockDragEvent);
                     mockDataTransferData = {};
@@ -664,8 +672,8 @@ describe('Game', () => {
                     const startRoundButton = getByText('Start Round');
 
                     fireEvent.click(startRoundButton);
-                    getDropBoxes(getByTestId);
-                    getSubmitButtons(getByText);
+                    getAssignmentDropBoxes(getByTestId);
+                    getAssignmentSubmitButtons(getByText);
                     const assignmentPopup = getByTestId('assignment-popup');
                     const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
                     fireEvent.dragStart(dieToDrag);
@@ -688,8 +696,8 @@ describe('Game', () => {
                     const startRoundButton = getByText('Start Round');
 
                     fireEvent.click(startRoundButton);
-                    getDropBoxes(getByTestId);
-                    getSubmitButtons(getByText);
+                    getAssignmentDropBoxes(getByTestId);
+                    getAssignmentSubmitButtons(getByText);
                     const assignmentPopup = getByTestId('assignment-popup');
                     const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
                     fireEvent.dragStart(dieToDrag);
@@ -711,8 +719,8 @@ describe('Game', () => {
                     const startRoundButton = getByText('Start Round');
 
                     fireEvent.click(startRoundButton);
-                    getDropBoxes(getByTestId);
-                    getSubmitButtons(getByText);
+                    getAssignmentDropBoxes(getByTestId);
+                    getAssignmentSubmitButtons(getByText);
                     const assignmentPopup = getByTestId('assignment-popup');
                     const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
                     fireEvent.dragStart(dieToDrag);
@@ -734,8 +742,8 @@ describe('Game', () => {
                     const startRoundButton = getByText('Start Round');
 
                     fireEvent.click(startRoundButton);
-                    getDropBoxes(getByTestId);
-                    getSubmitButtons(getByText);
+                    getAssignmentDropBoxes(getByTestId);
+                    getAssignmentSubmitButtons(getByText);
                     const assignmentPopup = getByTestId('assignment-popup');
                     const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
                     fireEvent.dragStart(dieToDrag);
@@ -757,8 +765,8 @@ describe('Game', () => {
                     const startRoundButton = getByText('Start Round');
 
                     fireEvent.click(startRoundButton);
-                    getDropBoxes(getByTestId);
-                    getSubmitButtons(getByText);
+                    getAssignmentDropBoxes(getByTestId);
+                    getAssignmentSubmitButtons(getByText);
                     const assignmentPopup = getByTestId('assignment-popup');
                     const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
                     fireEvent.dragStart(dieToDrag);
@@ -774,7 +782,50 @@ describe('Game', () => {
         });
 
         describe('Explore Phase', () => {
+            beforeEach(() => {
+                gameManager.chooseNextFactionTiles([1]);
+                gameManager.chooseNextHomeWorldTiles([1]);
+            });
 
+            const finishAssignmentPhase = (getByText, getByTestId) => {
+                fireEvent.click(getByText('1'));
+                const startRoundButton = getByText('Start Round');
+
+                fireEvent.click(startRoundButton);
+                getAssignmentDropBoxes(getByTestId);
+                getAssignmentSubmitButtons(getByText);
+                const assignmentPopup = getByTestId('assignment-popup');
+                const dieToDrag = within(assignmentPopup).queryAllByTestId('WhiteDie')[0];
+                fireEvent.dragStart(dieToDrag);
+                fireEvent.dragOver(phasePickerBox);
+                fireEvent.drop(phasePickerBox);
+                fireEvent.click(exploreButton);
+            };
+
+            it('should display the Explore Phase popup', () => {
+                const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+
+                finishAssignmentPhase(getByText, getByTestId);
+                fireEvent.click(getByText('Explore Phase'));
+
+                expect(getByTestId('explore-popup')).toBeTruthy();
+                expect(queryByTestId('scout-box')).toBeTruthy();
+                expect(queryByTestId('unassigned-box')).toBeTruthy();
+                expect(queryByTestId('stock-box')).toBeTruthy();
+            });
+
+            it('should close the Explore Phase popup when the close button is clicked', () => {
+                const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+
+                finishAssignmentPhase(getByText, getByTestId);
+                fireEvent.click(getByText('Explore Phase'));
+                fireEvent.click(getByText('Close'));
+                
+                expect(queryByTestId('explore-popup')).toBeFalsy();
+                expect(queryByTestId('scout-box')).toBeFalsy();
+                expect(queryByTestId('unassigned-box')).toBeFalsy();
+                expect(queryByTestId('stock-box')).toBeFalsy();
+            });
         });
     });
 });
