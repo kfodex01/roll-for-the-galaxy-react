@@ -1151,26 +1151,26 @@ describe('Game', () => {
                 it('should display the get credits button when a die is dragged to the stock box', () => {
                     gameManager.chooseNextGameTiles([1, 2, 3]);
                     const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText, queryAllByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
-    
+
                     finishAssignmentPhase(getByText, getByTestId);
                     fireEvent.click(getByText('Explore Phase'));
-    
+
                     getExploreDropBoxes(getByTestId);
                     let dieToDrag = within(getByTestId('unassigned-box')).queryAllByTestId('WhiteDie')[0];
                     fireEvent.dragStart(dieToDrag);
                     fireEvent.dragOver(stockBox);
                     fireEvent.drop(stockBox);
-    
+
                     expect(within(stockBox).queryByText('Get Credits')).toBeTruthy();
                 });
 
                 it('should send the die to the player\'s citizenry and add two credits to the player\'s total credits when the get credits button is clicked', () => {
                     gameManager.chooseNextGameTiles([1, 2, 3]);
                     const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText, queryAllByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
-    
+
                     finishAssignmentPhase(getByText, getByTestId);
                     fireEvent.click(getByText('Explore Phase'));
-    
+
                     getExploreDropBoxes(getByTestId);
                     let dieToDrag = within(getByTestId('unassigned-box')).queryAllByTestId('WhiteDie')[0];
                     fireEvent.dragStart(dieToDrag);
@@ -1181,10 +1181,35 @@ describe('Game', () => {
                     const beforeNumberOfWhiteDiceInCitizenry = within(citizenry).getAllByTestId('WhiteDie').length;
                     fireEvent.click(within(stockBox).getByText('Get Credits'));
                     const afterNumberOfWhiteDiceInCitizenry = within(citizenry).getAllByTestId('WhiteDie').length;
-                    
-    
+
+
                     expect(afterNumberOfWhiteDiceInCitizenry).toBe(beforeNumberOfWhiteDiceInCitizenry + 1);
                     expect(parseInt(getByTestId('credits'))).toBe(startingCredits + 2);
+                });
+            });
+
+            describe('Ending Explore Phase', () => {
+                it('should end the explore phase if there are no actions left to perform and the close button is clicked', () => {
+                    let dieToDrag, numberOfUnassignedDiceBeforeDrag;
+                    gameManager.chooseNextGameTiles([1, 2, 3]);
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText, queryAllByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+
+                    finishAssignmentPhase(getByText, getByTestId);
+                    fireEvent.click(getByText('Explore Phase'));
+
+                    getExploreDropBoxes(getByTestId);
+                    do {
+                        dieToDrag = within(getByTestId('unassigned-box')).queryAllByTestId('WhiteDie')[0];
+                        fireEvent.dragStart(dieToDrag);
+                        fireEvent.dragOver(stockBox);
+                        fireEvent.drop(stockBox);
+                        numberOfUnassignedDiceBeforeDrag = within(getByTestId('unassigned-box')).queryAllByTestId('WhiteDie').length;
+                    } while (numberOfUnassignedDiceBeforeDrag > 0);
+
+                    fireEvent.click(within(stockBox).getByText('Get Credits'));
+                    fireEvent.click(getByText('Close'));
+
+                    expect(queryByText('Explore Phase')).toBeFalsy();
                 });
             });
         });
