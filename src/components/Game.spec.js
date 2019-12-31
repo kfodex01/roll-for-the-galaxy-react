@@ -927,7 +927,8 @@ describe('Game', () => {
                     fireEvent.click(getByText('Send Scout'));
                     const afterNumberOfWhiteDiceInCitizenry = within(citizenry).getAllByTestId('WhiteDie').length;
 
-                    expect(beforeNumberOfWhiteDiceInCitizenry).toBe(afterNumberOfWhiteDiceInCitizenry - 1);
+                    expect(within(scoutBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                    expect(afterNumberOfWhiteDiceInCitizenry).toBe(beforeNumberOfWhiteDiceInCitizenry + 1);
                 });
 
                 it('should display the correct tile choice when scout button is clicked and tile has assignment power', () => {
@@ -1143,6 +1144,47 @@ describe('Game', () => {
                     expect(within(explorePopup).queryByText('Designer Species, Ultd.')).toBeFalsy();
                     expect(within(explorePopup).queryByText('Bonus: Gain $1 and a Genes (green) good on this world when you place it.')).toBeFalsy();
                     expect(within(explorePopup).queryAllByText('Select Tile').length).toBe(0);
+                });
+            });
+
+            describe('Stocking', () => {
+                it('should display the get credits button when a die is dragged to the stock box', () => {
+                    gameManager.chooseNextGameTiles([1, 2, 3]);
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText, queryAllByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+    
+                    finishAssignmentPhase(getByText, getByTestId);
+                    fireEvent.click(getByText('Explore Phase'));
+    
+                    getExploreDropBoxes(getByTestId);
+                    let dieToDrag = within(getByTestId('unassigned-box')).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(stockBox);
+                    fireEvent.drop(stockBox);
+    
+                    expect(within(stockBox).queryByText('Get Credits')).toBeTruthy();
+                });
+
+                it('should send the die to the player\'s citizenry and add two credits to the player\'s total credits when the get credits button is clicked', () => {
+                    gameManager.chooseNextGameTiles([1, 2, 3]);
+                    const { getByText, getByTestId, queryAllByTestId, queryByTestId, queryByText, queryAllByText } = render(<Game gameManager={gameManager} diceManager={diceManager} />);
+    
+                    finishAssignmentPhase(getByText, getByTestId);
+                    fireEvent.click(getByText('Explore Phase'));
+    
+                    getExploreDropBoxes(getByTestId);
+                    let dieToDrag = within(getByTestId('unassigned-box')).queryAllByTestId('WhiteDie')[0];
+                    fireEvent.dragStart(dieToDrag);
+                    fireEvent.dragOver(stockBox);
+                    fireEvent.drop(stockBox);
+                    const startingCredits = parseInt(getByTestId('credits'));
+                    const citizenry = getByTestId('citizenry');
+                    const beforeNumberOfWhiteDiceInCitizenry = within(citizenry).getAllByTestId('WhiteDie').length;
+                    fireEvent.click(within(stockBox).getByText('Get Credits'));
+                    const afterNumberOfWhiteDiceInCitizenry = within(citizenry).getAllByTestId('WhiteDie').length;
+                    
+    
+                    expect(afterNumberOfWhiteDiceInCitizenry).toBe(beforeNumberOfWhiteDiceInCitizenry + 1);
+                    expect(parseInt(getByTestId('credits'))).toBe(startingCredits + 2);
                 });
             });
         });
