@@ -3,7 +3,6 @@ import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Game from './Game';
 import { initialState, bonuses, tileTypes, dieColor, dieFace, developmentPowers } from '../enums';
-import Chance from 'chance';
 import { getMockTile, getMockFullTile, getArrayOfRandomDice, getArrayOfRandomTiles, getMockDie } from '../test-utilities/mock-object-generators';
 import { getDragEvent } from './utils/drag-event-utility';
 import GameManager from './utils/GameManager';
@@ -11,8 +10,6 @@ import DiceManager from './utils/DiceManager';
 import { finishAssignmentPhase } from './utils/game-utilities';
 
 jest.mock('./utils/drag-event-utility');
-
-const chance = new Chance();
 
 describe('Game', () => {
     let gameManager,
