@@ -8,8 +8,12 @@ import { getDragEvent } from './utils/drag-event-utility';
 
 jest.mock('./utils/drag-event-utility');
 
-describe('Popup', () => {
-    let mockPhaseDice, closePopupEventFired = false;
+describe('AssignmentPopup', () => {
+    let mockPhaseDice, phaseDiceResult, closePopupEventFired = false;
+
+    const mockModifyPhaseDice = (phaseDice) => {
+        phaseDiceResult = phaseDice;
+    };
 
     beforeEach(() => {
         mockPhaseDice = {
@@ -37,6 +41,7 @@ describe('Popup', () => {
             phaseDiceRolled: true
         };
         mockPhaseDice.selectorDice.dice[0].id = '0';
+        phaseDiceResult = undefined;
     });
 
     afterEach(() => {
@@ -50,7 +55,7 @@ describe('Popup', () => {
 
     describe('Setup', () => {
         it('should fire a close event when the close button is clicked', () => {
-            const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+            const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
             expect(closePopupEventFired).toBe(false);
             fireEvent.click(getByText('Close'));
@@ -102,7 +107,7 @@ describe('Popup', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -111,14 +116,14 @@ describe('Popup', () => {
                 fireEvent.drop(exploreBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.exploreDice.dice.length).toBe(1);
             });
 
             it('should not allow a develop die to be moved to the explore box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -127,15 +132,15 @@ describe('Popup', () => {
                 fireEvent.drop(exploreBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.exploreDice.dice.length).toBe(0);
+                expect(phaseDiceResult.developDice.dice.length).toBe(1);
             });
 
             it('should not allow a settle die to be moved to the explore box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -144,15 +149,15 @@ describe('Popup', () => {
                 fireEvent.drop(exploreBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.exploreDice.dice.length).toBe(0);
+                expect(phaseDiceResult.settleDice.dice.length).toBe(1);
             });
 
             it('should not allow a produce die to be moved to the explore box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -161,15 +166,15 @@ describe('Popup', () => {
                 fireEvent.drop(exploreBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.exploreDice.dice.length).toBe(0);
+                expect(phaseDiceResult.produceDice.dice.length).toBe(1);
             });
 
             it('should not allow a ship die to be moved to the explore box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -178,15 +183,15 @@ describe('Popup', () => {
                 fireEvent.drop(exploreBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.exploreDice.dice.length).toBe(0);
+                expect(phaseDiceResult.shipDice.dice.length).toBe(1);
             });
 
             it('should allow a wild die to be moved to the explore box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -195,8 +200,8 @@ describe('Popup', () => {
                 fireEvent.drop(exploreBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
-                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(phaseDiceResult.exploreDice.dice.length).toBe(1);
+                expect(phaseDiceResult.wildDice.dice.length).toBe(0);
             });
         });
 
@@ -205,7 +210,7 @@ describe('Popup', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -214,15 +219,15 @@ describe('Popup', () => {
                 fireEvent.drop(developBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.developDice.dice.length).toBe(0);
+                expect(phaseDiceResult.exploreDice.dice.length).toBe(1);
             });
 
             it('should allow a develop die to be moved to the develop box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -231,14 +236,14 @@ describe('Popup', () => {
                 fireEvent.drop(developBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.developDice.dice.length).toBe(1);
             });
 
             it('should not allow a settle die to be moved to the develop box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -247,15 +252,15 @@ describe('Popup', () => {
                 fireEvent.drop(developBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.developDice.dice.length).toBe(0);
+                expect(phaseDiceResult.settleDice.dice.length).toBe(1);
             });
 
             it('should not allow a produce die to be moved to the develop box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -264,15 +269,15 @@ describe('Popup', () => {
                 fireEvent.drop(developBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.developDice.dice.length).toBe(0);
+                expect(phaseDiceResult.produceDice.dice.length).toBe(1);
             });
 
             it('should not allow a ship die to be moved to the develop box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -281,15 +286,15 @@ describe('Popup', () => {
                 fireEvent.drop(developBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.developDice.dice.length).toBe(0);
+                expect(phaseDiceResult.shipDice.dice.length).toBe(1);
             });
 
             it('should allow a wild die to be moved to the develop box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -298,8 +303,8 @@ describe('Popup', () => {
                 fireEvent.drop(developBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
-                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(phaseDiceResult.developDice.dice.length).toBe(1);
+                expect(phaseDiceResult.wildDice.dice.length).toBe(0);
             });
         });
 
@@ -308,7 +313,7 @@ describe('Popup', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -317,15 +322,15 @@ describe('Popup', () => {
                 fireEvent.drop(settleBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.settleDice.dice.length).toBe(0);
+                expect(phaseDiceResult.exploreDice.dice.length).toBe(1);
             });
 
             it('should not allow a develop die to be moved to the settle box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -334,15 +339,15 @@ describe('Popup', () => {
                 fireEvent.drop(settleBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.settleDice.dice.length).toBe(0);
+                expect(phaseDiceResult.developDice.dice.length).toBe(1);
             });
 
             it('should allow a settle die to be moved to the settle box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -351,14 +356,14 @@ describe('Popup', () => {
                 fireEvent.drop(settleBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.settleDice.dice.length).toBe(1);
             });
 
             it('should not allow a produce die to be moved to the settle box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -367,15 +372,15 @@ describe('Popup', () => {
                 fireEvent.drop(settleBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.settleDice.dice.length).toBe(0);
+                expect(phaseDiceResult.produceDice.dice.length).toBe(1);
             });
 
             it('should not allow a ship die to be moved to the settle box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -384,15 +389,15 @@ describe('Popup', () => {
                 fireEvent.drop(settleBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.settleDice.dice.length).toBe(0);
+                expect(phaseDiceResult.shipDice.dice.length).toBe(1);
             });
 
             it('should allow a wild die to be moved to the settle box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -401,8 +406,8 @@ describe('Popup', () => {
                 fireEvent.drop(settleBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
-                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(phaseDiceResult.settleDice.dice.length).toBe(1);
+                expect(phaseDiceResult.wildDice.dice.length).toBe(0);
             });
         });
 
@@ -411,7 +416,7 @@ describe('Popup', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -420,15 +425,15 @@ describe('Popup', () => {
                 fireEvent.drop(produceBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.produceDice.dice.length).toBe(0);
+                expect(phaseDiceResult.exploreDice.dice.length).toBe(1);
             });
 
             it('should not allow a develop die to be moved to the produce box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -437,15 +442,15 @@ describe('Popup', () => {
                 fireEvent.drop(produceBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.produceDice.dice.length).toBe(0);
+                expect(phaseDiceResult.developDice.dice.length).toBe(1);
             });
 
             it('should not allow a settle die to be moved to the produce box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -454,15 +459,15 @@ describe('Popup', () => {
                 fireEvent.drop(produceBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.produceDice.dice.length).toBe(0);
+                expect(phaseDiceResult.settleDice.dice.length).toBe(1);
             });
 
             it('should allow a produce die to be moved to the produce box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -471,14 +476,14 @@ describe('Popup', () => {
                 fireEvent.drop(produceBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.produceDice.dice.length).toBe(1);
             });
 
             it('should not allow a ship die to be moved to the produce box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -487,15 +492,15 @@ describe('Popup', () => {
                 fireEvent.drop(produceBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.produceDice.dice.length).toBe(0);
+                expect(phaseDiceResult.shipDice.dice.length).toBe(1);
             });
 
             it('should allow a wild die to be moved to the produce box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -504,8 +509,8 @@ describe('Popup', () => {
                 fireEvent.drop(produceBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
-                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(phaseDiceResult.produceDice.dice.length).toBe(1);
+                expect(phaseDiceResult.wildDice.dice.length).toBe(0);
             });
         });
 
@@ -514,7 +519,7 @@ describe('Popup', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -523,15 +528,15 @@ describe('Popup', () => {
                 fireEvent.drop(shipBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.shipDice.dice.length).toBe(0);
+                expect(phaseDiceResult.exploreDice.dice.length).toBe(1);
             });
 
             it('should not allow a develop die to be moved to the ship box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -540,15 +545,15 @@ describe('Popup', () => {
                 fireEvent.drop(shipBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.shipDice.dice.length).toBe(0);
+                expect(phaseDiceResult.developDice.dice.length).toBe(1);
             });
 
             it('should not allow a settle die to be moved to the ship box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -557,15 +562,15 @@ describe('Popup', () => {
                 fireEvent.drop(shipBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.shipDice.dice.length).toBe(0);
+                expect(phaseDiceResult.settleDice.dice.length).toBe(1);
             });
 
             it('should not allow a produce die to be moved to the ship box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -574,15 +579,15 @@ describe('Popup', () => {
                 fireEvent.drop(shipBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.shipDice.dice.length).toBe(0);
+                expect(phaseDiceResult.produceDice.dice.length).toBe(1);
             });
 
             it('should allow a ship die to be moved to the ship box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -591,14 +596,14 @@ describe('Popup', () => {
                 fireEvent.drop(shipBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.shipDice.dice.length).toBe(1);
             });
 
             it('should allow a wild die to be moved to the ship box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -607,8 +612,8 @@ describe('Popup', () => {
                 fireEvent.drop(shipBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
-                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
+                expect(phaseDiceResult.shipDice.dice.length).toBe(1);
+                expect(phaseDiceResult.wildDice.dice.length).toBe(0);
             });
         });
 
@@ -617,7 +622,7 @@ describe('Popup', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.EXPLORE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -626,15 +631,15 @@ describe('Popup', () => {
                 fireEvent.drop(wildBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.wildDice.dice.length).toBe(0);
+                expect(phaseDiceResult.exploreDice.dice.length).toBe(1);
             });
 
             it('should not allow a develop die to be moved to the wild box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.DEVELOP;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -643,15 +648,15 @@ describe('Popup', () => {
                 fireEvent.drop(wildBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(developBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.wildDice.dice.length).toBe(0);
+                expect(phaseDiceResult.developDice.dice.length).toBe(1);
             });
 
             it('should not allow a settle die to be moved to the wild box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.SETTLE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -660,15 +665,15 @@ describe('Popup', () => {
                 fireEvent.drop(wildBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(settleBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.wildDice.dice.length).toBe(0);
+                expect(phaseDiceResult.settleDice.dice.length).toBe(1);
             });
 
             it('should not allow a produce die to be moved to the wild box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.PRODUCE;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -677,15 +682,15 @@ describe('Popup', () => {
                 fireEvent.drop(wildBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(produceBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.wildDice.dice.length).toBe(0);
+                expect(phaseDiceResult.produceDice.dice.length).toBe(1);
             });
 
             it('should not allow a ship die to be moved to the wild box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.SHIP;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -694,15 +699,15 @@ describe('Popup', () => {
                 fireEvent.drop(wildBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(shipBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.wildDice.dice.length).toBe(0);
+                expect(phaseDiceResult.shipDice.dice.length).toBe(1);
             });
 
             it('should allow a wild die to be moved to the wild box', () => {
                 mockPhaseDice.selectorDice.dice[0].face = dieFace.WILD;
                 mockPhaseDice.selectorDice.dice[0].color = dieColor.WHITE;
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -711,7 +716,7 @@ describe('Popup', () => {
                 fireEvent.drop(wildBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(wildBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.wildDice.dice.length).toBe(1);
             });
         });
 
@@ -721,7 +726,7 @@ describe('Popup', () => {
                 die.color = dieColor.WHITE;
                 mockPhaseDice.wildDice.dice.push(die);
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('WhiteDie');
                 getDropBoxes(getByTestId);
@@ -730,7 +735,7 @@ describe('Popup', () => {
                 fireEvent.drop(phasePickerBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(phasePickerBox).queryAllByTestId('WhiteDie').length).toBe(1);
+                expect(phaseDiceResult.selectorDice.dice.length).toBe(1);
             });
 
             it('should reject die if the selector box contains a die', () => {
@@ -741,7 +746,7 @@ describe('Popup', () => {
                     id: '1'
                 });
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 const dieToDrag = getByTestId('RedDie');
                 getDropBoxes(getByTestId);
@@ -750,9 +755,8 @@ describe('Popup', () => {
                 fireEvent.drop(phasePickerBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(phasePickerBox).queryAllByTestId('WhiteDie').length).toBe(1);
-                expect(within(phasePickerBox).queryAllByTestId('RedDie').length).toBe(0);
-                expect(within(wildBox).queryAllByTestId('RedDie').length).toBe(1);
+                expect(phaseDiceResult.selectorDice.dice.length).toBe(1);
+                expect(phaseDiceResult.wildDice.dice.length).toBe(1);
             });
         });
 
@@ -791,7 +795,7 @@ describe('Popup', () => {
                     id: '6'
                 });
 
-                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} />);
+                const { getByTestId, queryAllByTestId } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 getDropBoxes(getByTestId);
                 const dieToDrag = within(phasePickerBox).getByTestId('WhiteDie');
@@ -800,9 +804,9 @@ describe('Popup', () => {
                 fireEvent.drop(exploreBox);
 
                 expect(mockDragEvent.preventDefault).toBeCalled();
-                expect(within(phasePickerBox).queryAllByTestId('WhiteDie').length).toBe(0);
-                expect(within(exploreBox).queryAllByTestId('WhiteDie').length).toBe(2);
-            })
+                expect(phaseDiceResult.selectorDice.dice.length).toBe(0);
+                expect(phaseDiceResult.exploreDice.dice.length).toBe(2);
+            });
         });
     });
 
@@ -834,7 +838,7 @@ describe('Popup', () => {
 
         describe('Explore Button', () => {
             it('should submit with explore picked when explore button is clicked', () => {
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -848,7 +852,7 @@ describe('Popup', () => {
 
             it('should not submit with dice in wild pool when explore button is clicked', () => {
                 mockPhaseDice.wildDice.dice.push(getMockDie());
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -861,7 +865,7 @@ describe('Popup', () => {
 
             it('should not submit with no selector dice when explore button is clicked', () => {
                 mockPhaseDice.selectorDice.dice = [];
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -875,7 +879,7 @@ describe('Popup', () => {
 
         describe('Develop Button', () => {
             it('should submit with develop picked when develop button is clicked', () => {
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -889,7 +893,7 @@ describe('Popup', () => {
 
             it('should not submit with dice in wild pool when develop button is clicked', () => {
                 mockPhaseDice.wildDice.dice.push(getMockDie());
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -902,7 +906,7 @@ describe('Popup', () => {
 
             it('should not submit with no selector dice when develop button is clicked', () => {
                 mockPhaseDice.selectorDice.dice = [];
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -916,7 +920,7 @@ describe('Popup', () => {
 
         describe('Settle Button', () => {
             it('should submit with settle picked when settle button is clicked', () => {
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -930,7 +934,7 @@ describe('Popup', () => {
 
             it('should not submit with dice in wild pool when settle button is clicked', () => {
                 mockPhaseDice.wildDice.dice.push(getMockDie());
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -943,7 +947,7 @@ describe('Popup', () => {
 
             it('should not submit with no selector dice when settle button is clicked', () => {
                 mockPhaseDice.selectorDice.dice = [];
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -957,7 +961,7 @@ describe('Popup', () => {
 
         describe('Produce Button', () => {
             it('should submit with produce picked when produce button is clicked', () => {
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -971,7 +975,7 @@ describe('Popup', () => {
 
             it('should not submit with dice in wild pool when produce button is clicked', () => {
                 mockPhaseDice.wildDice.dice.push(getMockDie());
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -984,7 +988,7 @@ describe('Popup', () => {
 
             it('should not submit with no selector dice when produce button is clicked', () => {
                 mockPhaseDice.selectorDice.dice = [];
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -998,7 +1002,7 @@ describe('Popup', () => {
 
         describe('Ship Button', () => {
             it('should submit with ship picked when ship button is clicked', () => {
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -1012,7 +1016,7 @@ describe('Popup', () => {
 
             it('should not submit with dice in wild pool when ship button is clicked', () => {
                 mockPhaseDice.wildDice.dice.push(getMockDie());
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);
@@ -1025,7 +1029,7 @@ describe('Popup', () => {
 
             it('should not submit with no selector dice when ship button is clicked', () => {
                 mockPhaseDice.selectorDice.dice = [];
-                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} initialState={mockPhaseDice} assignDice={mockAssignDice} />);
+                const { getByText } = render(<AssignmentPopup closePopup={mockClosePopupEvent} phaseDice={mockPhaseDice} assignDice={mockAssignDice} modifyPhaseDice={mockModifyPhaseDice} />);
 
                 expect(assignDiceCalled).toBe(false);
                 expect(closePopupEventFired).toBe(false);

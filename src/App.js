@@ -1,11 +1,12 @@
 import React from 'react';
-import Game from "./components/Game";
-import { initialState } from "./enums";
+import Game from './components/Game';
+import GameManager from './components/utils/GameManager';
+import DiceManager from './components/utils/DiceManager';
 
 class App extends React.Component {
     render() {
         return (
-            <Game initialState={JSON.parse(JSON.stringify(initialState))} />
+            <Game gameManager={new GameManager()} diceManager={new DiceManager()} />
         );
     }
 }

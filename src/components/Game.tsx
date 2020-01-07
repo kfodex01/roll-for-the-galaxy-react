@@ -4,19 +4,15 @@ import { BigText, FlexColumnDiv } from '../styled-components';
 import PlayerBoard, { PlayerBoardProps } from './PlayerBoard';
 import { PhaseDice } from './PhaseDice';
 import { Tiles } from './ConstructionZone';
-import AssignmentPopup from './AssignmentPopup';
-import ExplorePopup from './ExplorePopup';
-import { rollHumanPlayerDice, createPlayers, finishAssignmentPhase } from './utils/game-utilities';
+import AssignmentPopup, { AssignmentState } from './AssignmentPopup';
+import ExplorePopup, { ExploreState } from './ExplorePopup';
+import { rollHumanPlayerDice, createPlayers, finishAssignmentPhase, setNextPhase } from './utils/game-utilities';
 import { DicePoolProps } from './DicePool';
 import { DieProps } from './Die';
-import Chance from 'chance';
-
-const chance = new Chance();
+import GameManager from './utils/GameManager';
+import DiceManager from './utils/DiceManager';
 
 export interface gameState {
-    factionTiles: Array<Tiles>,
-    gameTiles: Array<Tiles>,
-    homeWorldTiles: Array<Tiles>,
     players: Array<PlayerBoardProps>,
     victoryPointPool: number
 }
@@ -37,15 +33,13 @@ export interface fullState {
 };
 
 interface gameProps {
-    initialState: fullState
+    gameManager: GameManager,
+    diceManager: DiceManager
 };
 
 class Game extends React.Component<gameProps, fullState> {
     state: fullState = {
         game: {
-            factionTiles: [],
-            gameTiles: [],
-            homeWorldTiles: [],
             victoryPointPool: 0,
             players: []
         },
@@ -62,12 +56,6 @@ class Game extends React.Component<gameProps, fullState> {
         }
     };
 
-    componentDidMount() {
-        this.setState({
-            ...this.props.initialState
-        });
-    };
-
     hideBeginGameForm = (): void => {
         this.setState({
             startFormVisibility: false
@@ -76,24 +64,53 @@ class Game extends React.Component<gameProps, fullState> {
 
     createPlayers = (numberOfPlayers: number): void => {
         let gameState: gameState = { ...this.state.game };
-        const game = createPlayers(gameState, numberOfPlayers);
+        const game = createPlayers(this.props.gameManager, gameState, numberOfPlayers);
         this.setState({ game });
     };
 
     toggleAssignmentPopup = (): void => {
         let state: fullState = { ...this.state };
-        const gameWithRolledDice = rollHumanPlayerDice(state.game);
+        const gameWithRolledDice = rollHumanPlayerDice(state.game, this.props.diceManager);
         this.setState({ assignmentPopupVisibility: !state.assignmentPopupVisibility, game: gameWithRolledDice });
     };
 
     toggleExplorePopup = (): void => {
         let state: fullState = { ...this.state };
-        this.setState({ explorePopupVisibility: !state.explorePopupVisibility });
+        state.explorePopupVisibility = !state.explorePopupVisibility;
+        if (state.game.players[0].phaseDice.exploreDice.dice.length > 0) {
+            state.game.players[0].explorePhase.unassignedPool.dice = state.game.players[0].phaseDice.exploreDice.dice;
+            state.game.players[0].phaseDice.exploreDice.dice = [];
+        };
+        if (state.game.players[0].explorePhase.unassignedPool.dice.length === 0 &&
+            state.game.players[0].explorePhase.scoutPool.dice.length === 0 &&
+            state.game.players[0].explorePhase.stockPool.dice.length === 0 &&
+            state.game.players[0].explorePhase.tiles.length === 0) {
+                state.explorePopupVisibility = false;
+                state.pickedPhases.explore = false;
+                setNextPhase(state);
+        };
+        this.setState({ ...state });
+    };
+
+    modifyPhaseDice = (phaseDice: AssignmentState): void => {
+        let state = { ...this.state };
+        state.game.players[0].phaseDice = phaseDice;
+        this.setState({
+            ...state
+        });
+    };
+
+    modifyExplorePhase = (explorePhase: ExploreState): void => {
+        let state = { ...this.state };
+        state.game.players[0].explorePhase = explorePhase;
+        this.setState({
+            ...state
+        });
     };
 
     assignDice = (pickedPhase: string): void => {
         let state = { ...this.state };
-        state = finishAssignmentPhase(state, pickedPhase);
+        state = finishAssignmentPhase(state, pickedPhase, this.props.diceManager);
         this.setState({
             ...state
         });
@@ -103,16 +120,17 @@ class Game extends React.Component<gameProps, fullState> {
         let state: fullState = { ...this.state };
         state.game.players[0].credits = state.game.players[0].credits + (dicePool.dice.length * 2);
         state.game.players[0].citizenry.dice = state.game.players[0].citizenry.dice.concat(dicePool.dice);
+        state.game.players[0].explorePhase.stockPool.dice = [];
         this.setState({ ...state });
     };
 
-    assignDieToScout = (die: DieProps): Tiles => {
+    assignDieToScout = (die: DieProps): void => {
         let state: fullState = { ...this.state };
-        let pickedTile: Tiles = chance.pickone(state.game.gameTiles);
-        state.game.gameTiles = state.game.gameTiles.filter((tile: Tiles) => tile !== pickedTile);
+        let pickedTile: Tiles = this.props.gameManager.popRandomGameTile();
         state.game.players[0].citizenry.dice.push(die);
+        state.game.players[0].explorePhase.scoutPool.dice = [];
+        state.game.players[0].explorePhase.tiles.push(pickedTile);
         this.setState({ ...state });
-        return pickedTile;
     };
 
     assignTileToQueue = (tile: Tiles, isDevelopmentQueue: boolean): void => {
@@ -122,6 +140,7 @@ class Game extends React.Component<gameProps, fullState> {
         } else {
             state.game.players[0].settleBuildQueue.push(tile);
         };
+        state.game.players[0].explorePhase.tiles = [];
         this.setState({ ...state });
     };
 
@@ -161,7 +180,7 @@ class Game extends React.Component<gameProps, fullState> {
                 {
                     this.state.assignmentPopupVisibility === true ?
                         (
-                            <AssignmentPopup closePopup={this.toggleAssignmentPopup} assignDice={this.assignDice} initialState={this.state.game.players[0].phaseDice} />
+                            <AssignmentPopup closePopup={this.toggleAssignmentPopup} assignDice={this.assignDice} phaseDice={this.state.game.players[0].phaseDice} modifyPhaseDice={this.modifyPhaseDice} />
                         ) : null
                 }
                 {
@@ -169,10 +188,11 @@ class Game extends React.Component<gameProps, fullState> {
                         (
                             <ExplorePopup
                                 closePopup={this.toggleExplorePopup}
-                                exploreDice={this.state.game.players[0].phaseDice.exploreDice}
+                                explorePhase={this.state.game.players[0].explorePhase}
                                 assignDiceToStock={this.assignDiceToStock}
                                 assignDieToScout={this.assignDieToScout}
                                 assignTileToQueue={this.assignTileToQueue}
+                                modifyExplorePhase={this.modifyExplorePhase}
                             />
                         ) : null
                 }

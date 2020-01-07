@@ -24,32 +24,20 @@ const TileSideDiv = styled.div`
 interface ExplorePopupProps {
     closePopup(): void,
     assignDiceToStock(dicePool: DicePoolProps): void,
-    assignDieToScout(die: DieProps): Tiles,
+    assignDieToScout(die: DieProps): void,
     assignTileToQueue(tile: Tiles, isDevelopQueue: boolean): void,
-    exploreDice: DicePoolProps
+    explorePhase: ExploreState,
+    modifyExplorePhase(explorePhase: ExploreState): void
 };
 
-interface ExploreState {
+export interface ExploreState {
     scoutPool: DicePoolProps,
     stockPool: DicePoolProps,
     unassignedPool: DicePoolProps,
     tiles: Array<Tiles>
 };
 
-class ExplorePopup extends React.Component<ExplorePopupProps, ExploreState> {
-    state = {
-        scoutPool: {
-            dice: []
-        },
-        stockPool: {
-            dice: []
-        },
-        unassignedPool: {
-            dice: []
-        },
-        tiles: Array<Tiles>()
-    };
-
+class ExplorePopup extends React.Component<ExplorePopupProps> {
     findDieByIdInExploreState = (state: ExploreState, id: string): DieProps => {
         let die: DieProps[] = [];
         die.push(state.scoutPool.dice.filter(die => die.id === id)[0]);
@@ -85,51 +73,45 @@ class ExplorePopup extends React.Component<ExplorePopupProps, ExploreState> {
     };
 
     initiateStock = (): void => {
-        let state = { ...this.state };
-        this.props.assignDiceToStock(state.stockPool);
-        state.stockPool.dice = [];
-        this.setState({ ...state });
+        let stockPool = { ...this.props.explorePhase.stockPool };
+        this.props.assignDiceToStock(stockPool);
     };
 
     initiateScout = (): void => {
-        let state = { ...this.state };
-        state.tiles.push(this.props.assignDieToScout(state.scoutPool.dice[0]));
-        state.scoutPool.dice = [];
-        this.setState({ ...state });
+        let scoutPool = { ...this.props.explorePhase.scoutPool };
+        this.props.assignDieToScout(scoutPool.dice[0]);
     };
 
     initiateTileSelection = (isDevelopQueue: boolean): void => {
-        let state = { ...this.state };
-        this.props.assignTileToQueue(state.tiles[0], isDevelopQueue);
-        state.tiles = [];
-        this.setState({...state});
+        let tiles = { ...this.props.explorePhase.tiles };
+        this.props.assignTileToQueue(tiles[0], isDevelopQueue);
     };
 
     getListOfTilePowers = (tile: TileProps): Array<JSX.Element> => {
         let powerList: Array<JSX.Element> = [];
         if (tile.bonus) {
-            powerList.push(<p>{'Bonus: '}{tile.bonus}</p>);
+            powerList.push(<p key={tile.tileId + 'bonus'}>{'Bonus: '}{tile.bonus}</p>);
         };
         if (tile.assignment) {
-            powerList.push(<p>{'Assignment: '}{tile.assignment}</p>);
+            powerList.push(<p key={tile.tileId + 'assignment'}>{'Assignment: '}{tile.assignment}</p>);
         };
         if (tile.explore) {
-            powerList.push(<p>{'Explore: '}{tile.explore}</p>);
+            powerList.push(<p key={tile.tileId + 'explore'}>{'Explore: '}{tile.explore}</p>);
         };
         if (tile.develop) {
-            powerList.push(<p>{'Develop: '}{tile.develop}</p>);
+            powerList.push(<p key={tile.tileId + 'develop'}>{'Develop: '}{tile.develop}</p>);
         };
         if (tile.settle) {
-            powerList.push(<p>{'Settle: '}{tile.settle}</p>);
+            powerList.push(<p key={tile.tileId + 'settle'}>{'Settle: '}{tile.settle}</p>);
         };
         if (tile.produce) {
-            powerList.push(<p>{'Produce: '}{tile.produce}</p>);
+            powerList.push(<p key={tile.tileId + 'produce'}>{'Produce: '}{tile.produce}</p>);
         };
         if (tile.ship) {
-            powerList.push(<p>{'Assignment: '}{tile.ship}</p>);
+            powerList.push(<p key={tile.tileId + 'ship'}>{'Ship: '}{tile.ship}</p>);
         };
         if (tile.endGame) {
-            powerList.push(<p>{'End Game: '}{tile.endGame}</p>);
+            powerList.push(<p key={tile.tileId + 'endGame'}>{'End Game: '}{tile.endGame}</p>);
         };
         return powerList;
     };
@@ -145,25 +127,19 @@ class ExplorePopup extends React.Component<ExplorePopupProps, ExploreState> {
     };
 
     dropInContainer = (event: React.DragEvent<HTMLDivElement>, containerToDropIn: string): void => {
-        let state: ExploreState = { ...this.state };
+        let explorePhase: ExploreState = { ...this.props.explorePhase };
         let dragEvent: React.DragEvent<HTMLDivElement> = getDragEvent(event);
         let id: string = dragEvent.dataTransfer.getData('id');
-        let die: DieProps = this.findDieByIdInExploreState(state, id);
-        state = this.removeDieByIdFromExploreState(state, id);
-        state = this.moveDieToPool(state, die, containerToDropIn);
-        this.setState({ ...state });
-    };
-
-    componentDidMount() {
-        this.setState({
-            unassignedPool: this.props.exploreDice
-        });
+        let die: DieProps = this.findDieByIdInExploreState(explorePhase, id);
+        explorePhase = this.removeDieByIdFromExploreState(explorePhase, id);
+        explorePhase = this.moveDieToPool(explorePhase, die, containerToDropIn);
+        this.props.modifyExplorePhase(explorePhase);
     };
 
     render() {
         return (
             <PopupFullPageCoverDiv>
-                <PopupOnlyDiv>
+                <PopupOnlyDiv data-testid='explore-popup'>
                     <FlexMaxRowDiv>
                         <BigText>Explore Phase</BigText>
                         <button onClick={this.props.closePopup}>
@@ -180,10 +156,10 @@ class ExplorePopup extends React.Component<ExplorePopupProps, ExploreState> {
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, "Scout")}>
                             {'Scout'}
                             <FlexRowDiv>
-                                <DicePool {...this.state.scoutPool} draggable={true} onDragStart={this.onDragStart} />
+                                <DicePool {...this.props.explorePhase.scoutPool} draggable={true} onDragStart={this.onDragStart} />
                             </FlexRowDiv>
                             {
-                                this.state.scoutPool.dice.length > 0 && this.state.tiles.length === 0 ? <button onClick={this.initiateScout}>{'Send Scout'}</button> : null
+                                this.props.explorePhase.scoutPool.dice.length > 0 && this.props.explorePhase.tiles.length === 0 ? <button onClick={this.initiateScout}>{'Send Scout'}</button> : null
                             }
                         </DropBoxDiv>
                         <DropBoxDiv
@@ -192,7 +168,7 @@ class ExplorePopup extends React.Component<ExplorePopupProps, ExploreState> {
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, "Unassigned")}>
                             {'Unassigned'}
                             <FlexRowDiv>
-                                <DicePool {...this.state.unassignedPool} draggable={true} onDragStart={this.onDragStart} />
+                                <DicePool {...this.props.explorePhase.unassignedPool} draggable={true} onDragStart={this.onDragStart} />
                             </FlexRowDiv>
                         </DropBoxDiv>
                         <DropBoxDiv
@@ -201,31 +177,31 @@ class ExplorePopup extends React.Component<ExplorePopupProps, ExploreState> {
                             onDrop={(event: React.DragEvent<HTMLDivElement>) => this.dropInContainer(event, "Stock")}>
                             {'Stock'}
                             <FlexRowDiv>
-                                <DicePool {...this.state.stockPool} draggable={true} onDragStart={this.onDragStart} />
+                                <DicePool {...this.props.explorePhase.stockPool} draggable={true} onDragStart={this.onDragStart} />
                             </FlexRowDiv>
                             {
-                                this.state.stockPool.dice.length > 0 ? <button onClick={this.initiateStock}>{'Get Credits'}</button> : null
+                                this.props.explorePhase.stockPool.dice.length > 0 ? <button onClick={this.initiateStock}>{'Get Credits'}</button> : null
                             }
                         </DropBoxDiv>
                     </FlexDropBoxRowDiv>
                     {
-                        this.state.tiles.length > 0 ?
+                        this.props.explorePhase.tiles.length > 0 ?
                             <>
                                 <TileSideDiv>
                                     <FlexRowDiv>
-                                        <BigText>{this.state.tiles[0].tiles[0].points}</BigText>
-                                        <Tile key={this.state.tiles[0].tileId} {...this.state.tiles[0].tiles[0]} />
+                                        <BigText>{this.props.explorePhase.tiles[0].tiles[0].points}</BigText>
+                                        <Tile key={this.props.explorePhase.tiles[0].tileId} {...this.props.explorePhase.tiles[0].tiles[0]} />
                                     </FlexRowDiv>
-                                    {this.getListOfTilePowers(this.state.tiles[0].tiles[0])}
+                                    {this.getListOfTilePowers(this.props.explorePhase.tiles[0].tiles[0])}
                                     <button onClick={() => this.initiateTileSelection(true)}>Select Tile</button>
                                 </TileSideDiv>
                                 <BigText>{'- OR -'}</BigText>
                                 <TileSideDiv>
                                     <FlexRowDiv>
-                                        <BigText>{this.state.tiles[0].tiles[1].points}</BigText>
-                                        <Tile key={this.state.tiles[0].tileId + 1} {...this.state.tiles[0].tiles[1]} />
+                                        <BigText>{this.props.explorePhase.tiles[0].tiles[1].points}</BigText>
+                                        <Tile key={this.props.explorePhase.tiles[0].tileId + 1} {...this.props.explorePhase.tiles[0].tiles[1]} />
                                     </FlexRowDiv>
-                                    {this.getListOfTilePowers(this.state.tiles[0].tiles[1])}
+                                    {this.getListOfTilePowers(this.props.explorePhase.tiles[0].tiles[1])}
                                     <button onClick={() => this.initiateTileSelection(false)}>Select Tile</button>
                                 </TileSideDiv>
                             </>

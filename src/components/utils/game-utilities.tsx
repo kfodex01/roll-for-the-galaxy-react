@@ -7,9 +7,9 @@ import { AssignmentState } from '../AssignmentPopup';
 import { gameState, fullState } from '../Game';
 import { PhasePowersProps, PlayerBoardProps } from '../PlayerBoard';
 import { assignAiPlayersDice } from './ai-components';
-import Chance from 'chance';
-
-const chance = new Chance();
+import GameManager from './GameManager';
+import DiceManager from './DiceManager';
+import { ExploreState } from '../ExplorePopup';
 
 const addDieToPool = (dicePool: DicePoolProps, dieColor: string, dieFace: string): DicePoolProps => {
     dicePool.dice.push({
@@ -116,19 +116,20 @@ const returnPhaseDiceForInactivePhases = (state: fullState): fullState => {
     return state;
 };
 
-const setNextPhase = (state: fullState): fullState => {
+export const setNextPhase = (state: fullState): fullState => {
     if (state.pickedPhases.explore) {
         state.currentPhase = 'Explore Phase';
-    // } else if (state.pickedPhases.develop) {
-    //     state.currentPhase = 'Develop Phase';
-    // } else if (state.pickedPhases.settle) {
-    //     state.currentPhase = 'Settle Phase';
-    // } else if (state.pickedPhases.produce) {
-    //     state.currentPhase = 'Produce Phase';
-    // } else if (state.pickedPhases.ship) {
-    //     state.currentPhase = 'Ship Phase';
+    } else if (state.pickedPhases.develop) {
+        state.currentPhase = 'Develop Phase';
+    } else if (state.pickedPhases.settle) {
+        state.currentPhase = 'Settle Phase';
+    } else if (state.pickedPhases.produce) {
+        state.currentPhase = 'Produce Phase';
+    } else if (state.pickedPhases.ship) {
+        state.currentPhase = 'Ship Phase';
     } else {
         state.currentPhase = 'Start Round';
+        state.game.players[0].phaseDice.phaseDiceRolled = false;
     };
     return state;
 };
@@ -183,139 +184,24 @@ export const sortDiceByFaceInAssignmentState = (phaseStripDicePool: DicePoolProp
     return newState;
 };
 
-export const rollDice = (dicePool: DicePoolProps): DicePoolProps => {
-    let rolledDicePool: DicePoolProps = {
-        dice: []
-    };
-    dicePool.dice.forEach((die: DieProps, id: number) => {
-        switch (die.color) {
-            case dieColor.BLUE:
-                rolledDicePool.dice.push({
-                    color: die.color,
-                    id: id.toString(),
-                    face: chance.pickone([
-                        dieFace.EXPLORE,
-                        dieFace.PRODUCE,
-                        dieFace.PRODUCE,
-                        dieFace.SHIP,
-                        dieFace.SHIP,
-                        dieFace.WILD
-                    ])
-                });
-                break;
-            case dieColor.BROWN:
-                rolledDicePool.dice.push({
-                    color: die.color,
-                    id: id.toString(),
-                    face: chance.pickone([
-                        dieFace.EXPLORE,
-                        dieFace.DEVELOP,
-                        dieFace.DEVELOP,
-                        dieFace.PRODUCE,
-                        dieFace.SHIP,
-                        dieFace.WILD
-                    ])
-                });
-                break;
-            case dieColor.GREEN:
-                rolledDicePool.dice.push({
-                    color: die.color,
-                    id: id.toString(),
-                    face: chance.pickone([
-                        dieFace.EXPLORE,
-                        dieFace.SETTLE,
-                        dieFace.SETTLE,
-                        dieFace.PRODUCE,
-                        dieFace.WILD,
-                        dieFace.WILD
-                    ])
-                });
-                break;
-            case dieColor.PURPLE:
-                rolledDicePool.dice.push({
-                    color: die.color,
-                    id: id.toString(),
-                    face: chance.pickone([
-                        dieFace.EXPLORE,
-                        dieFace.DEVELOP,
-                        dieFace.SHIP,
-                        dieFace.SHIP,
-                        dieFace.SHIP,
-                        dieFace.WILD
-                    ])
-                });
-                break;
-            case dieColor.RED:
-                rolledDicePool.dice.push({
-                    color: die.color,
-                    id: id.toString(),
-                    face: chance.pickone([
-                        dieFace.EXPLORE,
-                        dieFace.DEVELOP,
-                        dieFace.DEVELOP,
-                        dieFace.SETTLE,
-                        dieFace.SETTLE,
-                        dieFace.WILD
-                    ])
-                });
-                break;
-            case dieColor.WHITE:
-                rolledDicePool.dice.push({
-                    color: die.color,
-                    id: id.toString(),
-                    face: chance.pickone([
-                        dieFace.EXPLORE,
-                        dieFace.EXPLORE,
-                        dieFace.DEVELOP,
-                        dieFace.SETTLE,
-                        dieFace.PRODUCE,
-                        dieFace.SHIP
-                    ])
-                });
-                break;
-            case dieColor.YELLOW:
-                rolledDicePool.dice.push({
-                    color: die.color,
-                    id: id.toString(),
-                    face: chance.pickone([
-                        dieFace.DEVELOP,
-                        dieFace.SETTLE,
-                        dieFace.PRODUCE,
-                        dieFace.WILD,
-                        dieFace.WILD,
-                        dieFace.WILD
-                    ])
-                });
-                break;
-        };
-    });
-    return rolledDicePool;
-};
-
-export const rollHumanPlayerDice = (game: gameState): gameState => {
+export const rollHumanPlayerDice = (game: gameState, diceManager: DiceManager): gameState => {
     if (game.players && !game.players[0].phaseDice.phaseDiceRolled) {
-        const phaseStripDice: DicePoolProps = rollDice(game.players[0].cup);
+        const phaseStripDice: DicePoolProps = diceManager.rollDice(game.players[0].cup);
 
         game.players[0].phaseDice = sortDiceByFaceInAssignmentState(phaseStripDice);
     };
     return game;
 };
 
-export const createPlayers = (state: gameState, numberOfPlayers: number): gameState => {
+export const createPlayers = (gameManager: GameManager, state: gameState, numberOfPlayers: number): gameState => {
     const victoryPointPool = 12 * numberOfPlayers;
     const players: Array<PlayerBoardProps> = [];
-    const factionTiles: Array<Tiles> = chance.pickset(state.factionTiles, numberOfPlayers);
-    const homeWorldTiles: Array<Tiles> = chance.pickset(state.homeWorldTiles, numberOfPlayers);
-    const gameTiles: Array<Tiles> = chance.pickset(state.gameTiles, numberOfPlayers * 2);
-    state.factionTiles = state.factionTiles.filter((tile: Tiles) => !factionTiles.includes(tile));
-    state.homeWorldTiles = state.homeWorldTiles.filter((tile: Tiles) => !homeWorldTiles.includes(tile));
-    state.gameTiles = state.gameTiles.filter((tile: Tiles) => !gameTiles.includes(tile));
     for (let i = 0; i < numberOfPlayers; i++) {
-        const factionTile: Tiles = factionTiles[i];
-        const homeWorldTile: Tiles = homeWorldTiles[i];
+        const factionTile: Tiles = gameManager.popRandomFactionTile();
+        const homeWorldTile: Tiles = gameManager.popRandomHomeWorldTile();
         let buildQueueTiles: Array<Tiles> = [];
-        buildQueueTiles.push(gameTiles[i * 2]);
-        buildQueueTiles.push(gameTiles[(i * 2) + 1]);
+        buildQueueTiles.push(gameManager.popRandomGameTile());
+        buildQueueTiles.push(gameManager.popRandomGameTile());
         buildQueueTiles = getLowestConstructionQueueTotal(buildQueueTiles);
         const credits = homeWorldTile.tiles[0].bonus === bonuses.EIGHT_CREDITS ? 8 : 1;
         let points = 0;
@@ -406,6 +292,18 @@ export const createPlayers = (state: gameState, numberOfPlayers: number): gameSt
             },
             phaseDiceRolled: false
         };
+        let explorePhase: ExploreState = {
+            scoutPool: {
+                dice: []
+            },
+            stockPool: {
+                dice: []
+            },
+            tiles: [],
+            unassignedPool: {
+                dice: []
+            }
+        };
         players.push(
             {
                 id: i + 1,
@@ -413,6 +311,7 @@ export const createPlayers = (state: gameState, numberOfPlayers: number): gameSt
                 citizenry,
                 cup,
                 developBuildQueue: [buildQueueTiles[0]],
+                explorePhase,
                 nextTileId: 4,
                 phaseDice,
                 phasePowers,
@@ -432,7 +331,7 @@ export const createPlayers = (state: gameState, numberOfPlayers: number): gameSt
     );
 };
 
-export const finishAssignmentPhase = (state: fullState, pickedPhase: string): fullState => {
+export const finishAssignmentPhase = (state: fullState, pickedPhase: string, diceManager: DiceManager): fullState => {
     state = addPickedPhaseToList(pickedPhase, state);
     let randomPhaseRolls = 3 - state.game.players.length;
     if (randomPhaseRolls > 0) {
@@ -446,11 +345,11 @@ export const finishAssignmentPhase = (state: fullState, pickedPhase: string): fu
         };
 
         for (let i = 0; i < randomPhaseRolls; i++) {
-            whiteDicePool = rollDice(whiteDicePool);
+            whiteDicePool = diceManager.rollDice(whiteDicePool);
             state = addPickedPhaseToList(whiteDicePool.dice[0].face, state);
         };
     };
-    state = assignAiPlayersDice(state);
+    state = assignAiPlayersDice(state, diceManager);
     state = returnPhaseDiceForInactivePhases(state);
     state = setNextPhase(state);
 

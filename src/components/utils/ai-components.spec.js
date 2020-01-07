@@ -1,11 +1,12 @@
 import { assignAiPlayersDice } from './ai-components';
 import { dieColor, phases, dieFace } from '../../enums';
 import Chance from 'chance';
+import DiceManager from './DiceManager';
 
 jest.mock('chance');
 
 describe('ai-components', () => {
-    let mockFullState;
+    let mockFullState, diceManager = new DiceManager();
 
     beforeEach(() => {
         mockFullState = {
@@ -56,12 +57,12 @@ describe('ai-components', () => {
                 ship: false
             }
         };
-        Chance.mockClear();
+        jest.clearAllMocks();
     });
 
     it('should add the only die to the explore pool when explore is rolled', () => {
         Chance.prototype.pickone.mockReturnValue(dieFace.EXPLORE);
-        let result = assignAiPlayersDice(mockFullState);
+        let result = assignAiPlayersDice(mockFullState, diceManager);
 
         expect(result.game.players[1].phaseDice.exploreDice.dice.length).toBe(1);
     });
@@ -74,14 +75,14 @@ describe('ai-components', () => {
                 face: phases.EXPLORE
             }
         );
-        let result = assignAiPlayersDice(mockFullState);
+        let result = assignAiPlayersDice(mockFullState, diceManager);
 
         expect(result.game.players[1].phaseDice.exploreDice.dice.length).toBe(2);
     });
 
     it('should add the only die from the develop pool to the explore pool', () => {
         Chance.prototype.pickone.mockReturnValue(dieFace.DEVELOP);
-        let result = assignAiPlayersDice(mockFullState);
+        let result = assignAiPlayersDice(mockFullState, diceManager);
 
         expect(result.game.players[1].phaseDice.exploreDice.dice.length).toBe(1);
         expect(result.game.players[1].phaseDice.developDice.dice.length).toBe(0);
@@ -95,7 +96,7 @@ describe('ai-components', () => {
                 face: phases.EXPLORE
             }
         );
-        let result = assignAiPlayersDice(mockFullState);
+        let result = assignAiPlayersDice(mockFullState, diceManager);
 
         expect(result.game.players[1].phaseDice.exploreDice.dice.length).toBe(1);
         expect(result.game.players[1].phaseDice.developDice.dice.length).toBe(1);
@@ -103,7 +104,7 @@ describe('ai-components', () => {
 
     it('should add the only die from the settle pool to the explore pool', () => {
         Chance.prototype.pickone.mockReturnValue(dieFace.SETTLE);
-        let result = assignAiPlayersDice(mockFullState);
+        let result = assignAiPlayersDice(mockFullState, diceManager);
 
         expect(result.game.players[1].phaseDice.exploreDice.dice.length).toBe(1);
         expect(result.game.players[1].phaseDice.settleDice.dice.length).toBe(0);
@@ -117,7 +118,7 @@ describe('ai-components', () => {
                 face: phases.EXPLORE
             }
         );
-        let result = assignAiPlayersDice(mockFullState);
+        let result = assignAiPlayersDice(mockFullState, diceManager);
 
         expect(result.game.players[1].phaseDice.exploreDice.dice.length).toBe(1);
         expect(result.game.players[1].phaseDice.settleDice.dice.length).toBe(1);
@@ -125,7 +126,7 @@ describe('ai-components', () => {
 
     it('should add the only die from the produce pool to the explore pool', () => {
         Chance.prototype.pickone.mockReturnValue(dieFace.PRODUCE);
-        let result = assignAiPlayersDice(mockFullState);
+        let result = assignAiPlayersDice(mockFullState, diceManager);
 
         expect(result.game.players[1].phaseDice.exploreDice.dice.length).toBe(1);
         expect(result.game.players[1].phaseDice.produceDice.dice.length).toBe(0);
@@ -139,7 +140,7 @@ describe('ai-components', () => {
                 face: phases.EXPLORE
             }
         );
-        let result = assignAiPlayersDice(mockFullState);
+        let result = assignAiPlayersDice(mockFullState, diceManager);
 
         expect(result.game.players[1].phaseDice.exploreDice.dice.length).toBe(1);
         expect(result.game.players[1].phaseDice.produceDice.dice.length).toBe(1);
@@ -147,7 +148,7 @@ describe('ai-components', () => {
 
     it('should add the only die from the ship pool to the explore pool', () => {
         Chance.prototype.pickone.mockReturnValue(dieFace.SHIP);
-        let result = assignAiPlayersDice(mockFullState);
+        let result = assignAiPlayersDice(mockFullState, diceManager);
 
         expect(result.game.players[1].phaseDice.exploreDice.dice.length).toBe(1);
         expect(result.game.players[1].phaseDice.shipDice.dice.length).toBe(0);
@@ -161,7 +162,7 @@ describe('ai-components', () => {
                 face: phases.EXPLORE
             }
         );
-        let result = assignAiPlayersDice(mockFullState);
+        let result = assignAiPlayersDice(mockFullState, diceManager);
 
         expect(result.game.players[1].phaseDice.exploreDice.dice.length).toBe(1);
         expect(result.game.players[1].phaseDice.shipDice.dice.length).toBe(1);
@@ -169,7 +170,7 @@ describe('ai-components', () => {
 
     it('should add the only die from the wild pool to the explore pool', () => {
         Chance.prototype.pickone.mockReturnValue(dieFace.WILD);
-        let result = assignAiPlayersDice(mockFullState);
+        let result = assignAiPlayersDice(mockFullState, diceManager);
 
         expect(result.game.players[1].phaseDice.exploreDice.dice.length).toBe(1);
         expect(result.game.players[1].phaseDice.wildDice.dice.length).toBe(0);
@@ -183,7 +184,7 @@ describe('ai-components', () => {
                 face: phases.EXPLORE
             }
         );
-        let result = assignAiPlayersDice(mockFullState);
+        let result = assignAiPlayersDice(mockFullState, diceManager);
 
         expect(result.game.players[1].phaseDice.exploreDice.dice.length).toBe(2);
         expect(result.game.players[1].phaseDice.wildDice.dice.length).toBe(0);
@@ -191,7 +192,7 @@ describe('ai-components', () => {
 
     it('should return an empty strip when the cup is empty', () => {
         mockFullState.game.players[1].cup.dice = [];
-        let result = assignAiPlayersDice(mockFullState);
+        let result = assignAiPlayersDice(mockFullState, diceManager);
 
         expect(result.game.players[1].phaseDice.exploreDice.dice.length).toBe(0);
         expect(result.game.players[1].phaseDice.developDice.dice.length).toBe(0);

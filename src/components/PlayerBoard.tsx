@@ -6,6 +6,7 @@ import Tile, { TileProps } from "./Tile";
 import DicePool, { DicePoolProps } from "./DicePool";
 import ConstructionZone, { Tiles } from "./ConstructionZone";
 import { AssignmentState } from "./AssignmentPopup";
+import { ExploreState } from "./ExplorePopup";
 
 export interface PhasePowersProps {
     assignment: Array<string>;
@@ -22,6 +23,7 @@ export interface PlayerBoardProps {
     credits: number;
     cup: DicePoolProps;
     developBuildQueue: Array<Tiles>;
+    explorePhase: ExploreState;
     id: number;
     nextTileId: number;
     phasePowers: PhasePowersProps;
@@ -79,7 +81,7 @@ class PlayerBoard extends React.Component<PlayerBoardProps> {
                         <DicePool {...this.props.cup} />
                     </FlexRowDiv>
                 </FlexRowDiv>
-                <FlexRowDiv>
+                <FlexRowDiv data-testid='tableau'>
                     <BigText>Tableau: </BigText>
                     {this.props.tiles.map((tile) => {
                         return (
